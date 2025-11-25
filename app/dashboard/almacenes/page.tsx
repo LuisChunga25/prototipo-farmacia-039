@@ -8,7 +8,7 @@ import { ArrowLeft } from "lucide-react"
 
 export default function AlmacenesPage() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-4">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Almacenes</h1>
@@ -26,7 +26,7 @@ export default function AlmacenesPage() {
         <Link href="/dashboard/almacenes/ingresos">
           <Card className="h-full hover:bg-muted/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-base font-medium">Ingresos</CardTitle>
+              <CardTitle className="text-base font-medium">Ingresos de Items a Almacenes</CardTitle>
               <Package className="h-6 w-6 text-blue-500" />
             </CardHeader>
             <CardContent>
@@ -37,7 +37,7 @@ export default function AlmacenesPage() {
         <Link href="/dashboard/almacenes/salidas">
           <Card className="h-full hover:bg-muted/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-base font-medium">Salidas</CardTitle>
+              <CardTitle className="text-base font-medium">Salidas de Items</CardTitle>
               <ArrowUpDown className="h-6 w-6 text-blue-500" />
             </CardHeader>
             <CardContent>
@@ -48,7 +48,7 @@ export default function AlmacenesPage() {
         <Link href="/dashboard/almacenes/transferencias">
           <Card className="h-full hover:bg-muted/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-base font-medium">Transferencias</CardTitle>
+              <CardTitle className="text-base font-medium">Transferencias entre Almacenes</CardTitle>
               <Truck className="h-6 w-6 text-blue-500" />
             </CardHeader>
             <CardContent>
@@ -59,7 +59,7 @@ export default function AlmacenesPage() {
         <Link href="/dashboard/almacenes/stock">
           <Card className="h-full hover:bg-muted/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-base font-medium">Stock</CardTitle>
+              <CardTitle className="text-base font-medium">Stocks de Almacenes</CardTitle>
               <Database className="h-6 w-6 text-blue-500" />
             </CardHeader>
             <CardContent>

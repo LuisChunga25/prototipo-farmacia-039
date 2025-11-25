@@ -1,10 +1,32 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calculator } from "lucide-react"
+import { deleteCookie } from "cookies-next"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+
+const obtenerPeriodoActual = () => {
+  const fecha = new Date()
+  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
+    "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+
+  const mes = meses[fecha.getMonth()]
+  const anio = fecha.getFullYear()
+
+  return `${mes} ${anio}`
+}
+
+const obtenerFechaActual = () => {
+  const hoy = new Date();
+  const dia = String(hoy.getDate()).padStart(2, "0");
+  const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+  const anio = hoy.getFullYear();
+  return `${dia}/${mes}/${anio}`;
+};
+
 
 // Componente de Calculadora
 const CalculadoraComponent = () => {
@@ -148,17 +170,39 @@ const CalculadoraComponent = () => {
 
 // Componente de Footer unificado
 export default function UnifiedFooter() {
-  const [almacen, setAlmacen] = useState("FARMACIA")
-  const [periodo, setPeriodo] = useState("Abril 2025")
+  const [almacen, setAlmacen] = useState("F")
+  const [periodo, setPeriodo] = useState(obtenerPeriodoActual)
+  const [fechaActual] = useState(obtenerFechaActual())
+  const [usuario, setUsuario] = useState("Usuario")
+  const router = useRouter()
+
+  useEffect(() => {
+    // Obtener información del usuario del localStorage
+    if (typeof window !== "undefined") {
+      const userStr = localStorage.getItem("hospital-user")
+      if (userStr) {
+        const user = JSON.parse(userStr)
+        setUsuario(user.NOMBRE || user.name || "Usuario")
+      }
+    }
+  }, [])
+
+  const handleLogout = () => {
+    // Eliminar token y datos de usuario
+    deleteCookie('token')
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("hospital-user")
+    }
+    router.push("/login")
+  }
 
   // Opciones para los selectores
   const almacenes = [
-    { value: "FARMACIA", label: "FARMACIA" },
-    { value: "ALMACEN_GENERAL", label: "ALMACEN GENERAL(MEDICAMENTOS)" },
-    { value: "FARMACIA_EMERGENCIA", label: "FARMACIA EMERGENCIA" },
-    { value: "FARMACIA_INMUNIZACION", label: "FARMACIA INMUNIZACION" },
-    { value: "FARMACIA_DOSIS_UNITARIA", label: "FARMACIA DOSIS UNITARIA" },
-    { value: "ALMACEN_INSUMOS", label: "ALMACEN INSUMOS" },
+    { value: "A", label: "A - ALMACEN GENERAL (MEDICAMENTOS)" },
+    { value: "AI", label: "AI - ALMACEN INSUMOS" },
+    { value: "CE", label: "CE - CONSULTORIOS EXTERNOS" },
+    { value: "DU", label: "DU - FARMACIA DOSIS UNITARIA" },
+    { value: "F", label: "F - FARMACIA EMERGENCIA" },
   ]
 
   const periodos = [
@@ -187,20 +231,20 @@ export default function UnifiedFooter() {
             </DialogContent>
           </Dialog>
           <div>
-            <span className="font-bold">Usuario:</span> Administrador
+            <span className="font-bold">Usuario:</span> {usuario}
           </div>
           <div>
-            <span className="font-bold">Fecha:</span> 01/04/2025
+            <span className="font-bold">Fecha:</span> {fechaActual}
           </div>
-          <div>
+          {/*<div>
             <span className="font-bold">Almacén:</span> {almacen}
-          </div>
+          </div>*/}
           <div>
             <span className="font-bold">Periodo:</span> {periodo}
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
+        {/*<div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
             <span>Almacén:</span>
             <Select value={almacen} onValueChange={setAlmacen}>
@@ -232,7 +276,7 @@ export default function UnifiedFooter() {
               </SelectContent>
             </Select>
           </div>
-        </div>
+        </div>*/}
       </div>
     </div>
   )

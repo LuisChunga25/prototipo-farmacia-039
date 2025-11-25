@@ -20,13 +20,13 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pt-4">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Bienvenido, {userName}</h1>
-        <p className="text-muted-foreground text-sm">Sistema Integral de Gestión para el Hospital José Agurto Tello</p>
+        <h1 className="text-2xl font-bold tracking-tight">Sistema de Farmacia Web</h1>
+        <p className="text-muted-foreground text-sm">Seleccione la opción a la que desea acceder</p>
       </div>
 
-      <div className="grid gap-8 grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto">
+      <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         <Link href="/dashboard/tablas" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors shadow-sm hover:shadow-md">
             <CardHeader className="p-6">

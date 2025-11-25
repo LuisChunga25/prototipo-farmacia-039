@@ -5,6 +5,9 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { deleteCookie } from "cookies-next"
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,8 +34,11 @@ import {
   ShieldCheck,
   Stethoscope,
   UserSquare,
+  Boxes,
+  CalendarDays,
 } from "lucide-react"
 import { ThemeToggle } from "./theme-toggle"
+import { useAlmacen } from "@/context/AlmacenContext"
 
 // Define types for navigation items
 interface SubItem {
@@ -59,6 +65,26 @@ export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const [userName, setUserName] = useState("Usuario")
+
+  const { almacen, setAlmacen } = useAlmacen();
+  const [openAlmacen, setOpenAlmacen] = useState(false)
+  const [openPeriodo, setOpenPeriodo] = useState(false)
+  
+  const [periodoMes, setPeriodoMes] = useState("")
+  const [periodoAnio, setPeriodoAnio] = useState(new Date().getFullYear().toString())
+
+  const almacenes = [
+    { value: "A", label: "A - ALMACEN GENERAL (MEDICAMENTOS)" },
+    { value: "AI", label: "AI - ALMACEN INSUMOS" },
+    { value: "CE", label: "CE - CONSULTORIOS EXTERNOS" },
+    { value: "DU", label: "DU - FARMACIA DOSIS UNITARIA" },
+    { value: "F", label: "F - FARMACIA EMERGENCIA" },
+  ]
+
+  const meses = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ]
 
   useEffect(() => {
     // Obtener información del usuario del localStorage
@@ -227,9 +253,9 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background">
-      <div className="container flex h-14 items-center justify-between">
-        <div className="flex items-center gap-2">
+    <header className="sticky top-0 z-50 w-full border-b bg-blue-600 text-white shadow-lg">
+      <div className="flex items-center justify-between px-6 py-4">
+        <div className="flex items-center space-x-4">
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="md:hidden">
@@ -238,9 +264,13 @@ export default function Navbar() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-64">
-              <div className="flex items-center gap-2 mb-6">
-                <Hospital className="h-6 w-6 text-primary" />
-                <span className="font-bold text-primary">Hospital José Agurto Tello</span>
+              <div className="flex items-center space-x-4">
+                <div className="h-6 w-6">
+                  <Hospital className="text-white" />
+                </div>
+                <div>
+                  <h1 className="font-bold text-white">Hospital José Agurto Tello</h1>
+                </div>
               </div>
               <nav className="flex flex-col gap-4">
                 <Link
@@ -302,10 +332,108 @@ export default function Navbar() {
             </SheetContent>
           </Sheet>
 
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <Hospital className="h-6 w-6 text-primary" />
-            <span className="font-bold text-primary hidden md:inline-block">Hospital José Agurto Tello</span>
+          <Link href="/dashboard" className="flex items-center space-x-4">
+            <div className="flex items-center gap-2">
+              <Hospital className="w-8 h-8 flex items-center justify-center" />
+            </div>
+            <div>
+              <h1 className="text-x1 font-bold">Sistema de Farmacia Web</h1>
+              <p className="text-sm opacity-90">HOSPITAL JOSÉ AGURTO TELLO DE CHOSICA - HJATCH</p>
+            </div>
           </Link>
+
+          <div className="hidden md:flex items-center gap-2 ml-6">
+            <Button
+              variant="secondary"
+              onClick={() => setOpenAlmacen(true)}
+              className="bg-white/20 text-white hover:bg-white/30 flex items-center gap-2"
+            >
+              <Boxes className="h-4 w-4" />
+              Seleccionar Almacén
+            </Button>
+
+            {/*<Button
+              variant="secondary"
+              onClick={() => setOpenPeriodo(true)}
+              className="bg-white/20 text-white hover:bg-white/30 flex items-center gap-2"
+            >
+              <CalendarDays className="h-4 w-4" />
+              Periodo
+            </Button>*/}
+          </div>
+
+          {/* MODAL ALMACÉN */}
+          <Dialog open={openAlmacen} onOpenChange={setOpenAlmacen}>
+            <DialogContent onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+              <DialogHeader>
+                <DialogTitle>Seleccionar Almacén</DialogTitle>
+              </DialogHeader>
+
+
+              <div>
+                <label className="text-sm font-medium">Almacén</label>
+                <Select value={almacen} onValueChange={setAlmacen}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {almacenes.map((a) => (
+                      <SelectItem key={a.value} value={a.value}>{a.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+
+              <DialogFooter className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setOpenAlmacen(false)}>Cancelar</Button>
+                <Button onClick={() => setOpenAlmacen(false)}>Aceptar</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+
+          {/* MODAL PERIODO */}
+          <Dialog open={openPeriodo} onOpenChange={setOpenPeriodo}>
+            <DialogContent onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+              <DialogHeader>
+                <DialogTitle>Seleccionar Periodo</DialogTitle>
+              </DialogHeader>
+
+
+              <div className="flex flex-col gap-4">
+                <div>
+                  <label className="text-sm font-medium">Año</label>
+                  <Input
+                    value={periodoAnio}
+                    onChange={(e) => setPeriodoAnio(e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+
+
+                <div>
+                  <label className="text-sm font-medium">Mes</label>
+                  <Select onValueChange={setPeriodoMes}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Seleccione un mes" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {meses.map((m, i) => (
+                        <SelectItem key={i} value={m}>{m}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+
+              <DialogFooter className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setOpenPeriodo(false)}>Cancelar</Button>
+                <Button onClick={() => setOpenPeriodo(false)}>Aceptar</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
 
         <nav className="hidden md:flex items-center gap-6">
@@ -313,7 +441,7 @@ export default function Navbar() {
             <div key={item.href} className="relative group">
               <Link
                 href={item.href}
-                className={`flex items-center gap-2 text-sm ${pathname === item.href ? "text-primary font-medium" : "text-muted-foreground hover:text-primary"}`}
+                className={`flex items-center gap-2 text-sm ${pathname === item.href ? "text-white font-semibold" : "text-white/70 hover:text-white"}`}
               >
                 {item.icon}
                 {item.name}
@@ -322,7 +450,7 @@ export default function Navbar() {
               {/* Menú desplegable para categorías */}
               {item.subCategories && (
                 <div className="absolute left-0 top-full pt-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                  <div className="bg-background rounded-md shadow-md border p-2 flex flex-col gap-1">
+                  <div className="bg-white rounded-md shadow-md border p-2 flex flex-col gap-1 text-gray-800">
                     {item.subCategories.map((category, idx) => (
                       <div key={idx} className="relative group/category">
                         <div className="text-sm font-medium px-3 py-2 rounded-sm flex justify-between items-center hover:bg-muted">
@@ -330,12 +458,12 @@ export default function Navbar() {
                           <ChevronRight className="h-4 w-4" />
                         </div>
                         <div className="absolute left-full top-0 pt-0 pl-2 w-64 opacity-0 invisible group-hover/category:opacity-100 group-hover/category:visible transition-all duration-200 z-50">
-                          <div className="bg-background rounded-md shadow-md border p-2 flex flex-col gap-1">
+                          <div className="bg-white rounded-md shadow-md border p-2 flex flex-col gap-1 text-gray-800">
                             {category.subItems.map((subItem) => (
                               <Link
                                 key={subItem.href}
                                 href={subItem.href}
-                                className={`text-sm px-3 py-2 rounded-sm flex items-center gap-2 ${pathname === subItem.href ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-muted"}`}
+                                className={`text-sm px-3 py-2 rounded-sm flex items-center gap-2 ${pathname === subItem.href ? "bg-blue-50 text-blue-700 font-medium" : "text-gray-800 hover:bg-gray-100"}`}
                               >
                                 {subItem.icon}
                                 {subItem.name}
@@ -352,14 +480,14 @@ export default function Navbar() {
               {/* Menú desplegable para subítems (para Almacenes, Ventas, etc.) */}
               {item.subItems && !item.subCategories && (
                 <div className="absolute left-0 top-full pt-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                  <div className="bg-background rounded-md shadow-md border p-2 flex flex-col gap-1">
+                  <div className="bg-white rounded-md shadow-md border p-2 flex flex-col gap-1 text-gray-800">
                     {item.subItems.map((subItem) => (
                       <div key={typeof subItem === "object" ? subItem.href : ""} className="relative group/subitem">
                         {typeof subItem === "object" && (
                           <>
                             <Link
                               href={subItem.href}
-                              className={`text-sm px-3 py-2 rounded-sm flex justify-between items-center ${pathname === subItem.href ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-muted"}`}
+                              className={`text-sm px-3 py-2 rounded-sm flex justify-between items-center ${pathname === subItem.href ? "bg-blue-50 text-blue-700 font-medium" : "text-gray-800 hover:bg-gray-100"}`}
                             >
                               {subItem.name}
                               {'subItems' in subItem && subItem.subItems && <ChevronRight className="h-4 w-4" />}
@@ -367,12 +495,12 @@ export default function Navbar() {
 
                             {'subItems' in subItem && subItem.subItems && (
                               <div className="absolute left-full top-0 pt-0 pl-2 w-64 opacity-0 invisible group-hover/subitem:opacity-100 group-hover/subitem:visible transition-all duration-200 z-50">
-                                <div className="bg-background rounded-md shadow-md border p-2 flex flex-col gap-1">
+                                <div className="bg-white rounded-md shadow-md border p-2 flex flex-col gap-1 gray-800">
                                   {subItem.subItems.map((nestedItem: SubItem) => (
                                     <Link
                                       key={nestedItem.href}
                                       href={nestedItem.href}
-                                      className={`text-sm px-3 py-2 rounded-sm ${pathname === nestedItem.href ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-muted"}`}
+                                      className={`text-sm px-3 py-2 rounded-sm ${pathname === nestedItem.href ? "bg-blue-50 text-blue-700 font-medium" : "text-gray-800 hover:bg-gray-100"}`}
                                     >
                                       {nestedItem.name}
                                     </Link>
@@ -392,13 +520,13 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <ThemeToggle />
+          {/*<ThemeToggle />*/}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="flex items-center gap-2 px-3">
-                <User className="h-4 w-4 text-primary" />
-                <span className="text-sm">Hola, {userName}</span>
+                <User className="h-4 w-4" />
+                <span className="text-sm">{userName}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

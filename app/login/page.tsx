@@ -62,13 +62,13 @@ export default function LoginPage() {
           <div className="flex justify-center">
             <Hospital className="h-12 w-12 text-primary" />
           </div>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight text-primary">Hospital José Agurto Tello</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Sistema Integral de Gestión Hospitalaria</p>
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-primary text-blue-900">Sistema de Farmacia Web</h1>
+          <p className="mt-2 text-sm text-muted-foreground text-blue-700">Hospital José Agurto Tello de Chosica</p>
         </div>
 
         <Card>
-          <CardHeader>
-            <CardTitle className="text-xl">Iniciar Sesión</CardTitle>
+          <CardHeader className="text-center">
+            <CardTitle className="text-x2">Iniciar Sesión</CardTitle>
             <CardDescription>Ingrese sus credenciales para acceder al sistema</CardDescription>
           </CardHeader>
           <CardContent>
@@ -117,12 +117,13 @@ export default function LoginPage() {
             </form>
           </CardContent>
           <CardFooter className="flex justify-center text-sm text-muted-foreground">
-            <p>Sistema de Farmacia - SIGSALUD</p>
+            <p>Sistema de Farmacia Web - HJATCH</p>
           </CardFooter>
         </Card>
 
         <p className="text-center text-sm text-muted-foreground">
-          {new Date().getFullYear()} Hospital José Agurto Tello. Todos los derechos reservados.
+          {/*{new Date().getFullYear()}*/}
+          © Todos los derechos reservados - HJATCH - UEI - 2025
         </p>
       </div>
     </div>

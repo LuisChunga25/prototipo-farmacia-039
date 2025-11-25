@@ -9,10 +9,37 @@ export async function verifyAuth(token: string) {
 }
 
 export async function authenticate(username: string, password: string) {
-  const user = await prisma.uSUARIO.findUnique({
-    where: { MODULO_USUARIO: { MODULO: "FARMACIA", USUARIO: username } }
-  })
-
+  // Usar queryRaw para evitar OFFSET en SQL Server con compatibilidad < 110
+  const users = await prisma.$queryRaw<Array<{
+    MODULO: string
+    USUARIO: string
+    CONTRASENA: string
+    NOMBRE: string
+    DIRECCION: string
+    TELEFONO: string
+    CARGO: string
+    FECHA_EXPIRACION: Date
+    ACTIVO: any
+    CONSULTORIO: string
+    GRUPO_RECAUDACION: string
+    MEDICO: string | null
+    FLAT1: boolean
+    FLAT2: boolean
+    FLAT3: boolean
+    EESS: string
+    DNI: string | null
+    ESTADO: boolean | null
+    USUNOMBRE: string | null
+    USUPATERNO: string | null
+    USUMATERNO: string | null
+    FECHAULTIMOINGRESO: Date | null
+  }>>`
+    SELECT TOP (1) * 
+    FROM [USUARIO] 
+    WHERE MODULO = ${`FARMACIA`} AND USUARIO = ${username}
+  `
+  
+  const user = users[0]
   if (!user) throw new Error('Usuario no encontrado')
 
   // Verificar si el usuario está activo
