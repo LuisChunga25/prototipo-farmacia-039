@@ -253,7 +253,7 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-blue-600 text-white shadow-lg">
+    <header className="bg-gradient-to-r from-[#114C5F] to-[#4A6EB0] text-white shadow-md border-b border-[#9CD2D3]/20">
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center space-x-4">
           <Sheet>

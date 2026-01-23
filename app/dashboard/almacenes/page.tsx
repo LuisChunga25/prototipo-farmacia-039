@@ -52,7 +52,7 @@ export default function AlmacenesPage() {
               <Truck className="h-6 w-6 text-blue-500" />
             </CardHeader>
             <CardContent>
-              <CardDescription className="text-sm">Transferencias entre almacenes</CardDescription>
+              <CardDescription className="text-sm">Distribución a las farmacias y transferencia entre farmacias</CardDescription>
             </CardContent>
           </Card>
         </Link>
