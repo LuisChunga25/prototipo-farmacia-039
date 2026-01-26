@@ -120,11 +120,11 @@ export function DespachoPrerrequerimiento({
                 lotesAsignados: [
                     {
                         id: 101,
-                        lote: "L001",
-                        cantidad: 40,
-                        precio: 1.5,
-                        regSanitario: "RS-001",
-                        fechaVcto: "2026-01-31",
+                        lote: "L003",
+                        cantidad: 10,
+                        precio: 2.5,
+                        regSanitario: "RS-003",
+                        fechaVcto: "2026-06-30",
                     },
                     {
                         id: 102,
@@ -136,11 +136,11 @@ export function DespachoPrerrequerimiento({
                     },
                     {
                         id: 103,
-                        lote: "L003",
-                        cantidad: 10,
-                        precio: 2.5,
-                        regSanitario: "RS-003",
-                        fechaVcto: "2026-06-30",
+                        lote: "L001",
+                        cantidad: 40,
+                        precio: 1.5,
+                        regSanitario: "RS-001",
+                        fechaVcto: "2026-01-31",
                     },
                 ],
             },
@@ -175,7 +175,16 @@ export function DespachoPrerrequerimiento({
                 lote: "",
                 regSanitario: "",
                 fecha_vcto: "",
-                lotesAsignados: [],
+                lotesAsignados: [
+                    {
+                        id: 301,
+                        lote: "L020",
+                        cantidad: 10,
+                        precio: 2,
+                        regSanitario: "RS-020",
+                        fechaVcto: "2026-07-31",
+                    },
+                ],
             },
         ]);
     }, []);
@@ -208,6 +217,12 @@ export function DespachoPrerrequerimiento({
         }
     };
 
+    const resetAsignacionLotes = () => {
+        setLotesAsignados([]);
+        setOrdenAsignacion(1);
+        setSumaStockAsignado(0);
+        setLoteSeleccionado(null);
+    };
 
 
     return (
@@ -625,7 +640,13 @@ export function DespachoPrerrequerimiento({
                             </Table>
 
                             <DialogFooter className="mt-4">
-                                <Button variant="outline" onClick={() => setOpenAsignarLoteModal(false)}>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                        resetAsignacionLotes();
+                                        setOpenAsignarLoteModal(false);
+                                    }}
+                                >
                                     Cerrar
                                 </Button>
                             </DialogFooter>
@@ -656,7 +677,18 @@ export function DespachoPrerrequerimiento({
                             </p>
 
                             <DialogFooter className="mt-4">
-                                <Button variant="outline" onClick={() => setOpenConfirmLoteModal(false)}>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                        setOpenConfirmLoteModal(false);
+
+                                        // 🔄 RESET TOTAL de la selección
+                                        setLotesAsignados([]);
+                                        setOrdenAsignacion(1);
+                                        setSumaStockAsignado(0);
+                                        setLoteSeleccionado(null);
+                                    }}
+                                >
                                     Cancelar
                                 </Button>
 

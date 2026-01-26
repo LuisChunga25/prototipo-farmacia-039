@@ -27,6 +27,7 @@ import {
   MoveRight,
   Edit,
   XCircle,
+  PackageCheck,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Plus } from "lucide-react"
@@ -36,6 +37,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DespachoPrerrequerimiento } from "@/components/transferencias/despacho-prerrequerimiento"
 import { FormularioNuevaDevolucion } from "@/components/devoluciones/formulario-nueva-devolucion"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 
 // Datos de ejemplo para la tabla de prerrequerimientos
 const prerrequerimientosData = [
@@ -55,7 +57,7 @@ const prerrequerimientosData = [
   },
   {
     id: 2,
-    estado: "1",
+    estado: "2",
     prerrequerimientoId: "00000004",
     tipoRequerimiento: "Pre-requerimiento Farmacia",
     fecha: "05/12/2025",
@@ -69,7 +71,7 @@ const prerrequerimientosData = [
   },
   {
     id: 3,
-    estado: "2",
+    estado: "3",
     prerrequerimientoId: "00000003",
     tipoRequerimiento: "Pre-requerimiento Farmacia",
     fecha: "04/12/2025",
@@ -83,7 +85,7 @@ const prerrequerimientosData = [
   },
   {
     id: 4,
-    estado: "2",
+    estado: "3",
     prerrequerimientoId: "00000002",
     tipoRequerimiento: "Pre-requerimiento Farmacia",
     fecha: "04/12/2025",
@@ -97,7 +99,7 @@ const prerrequerimientosData = [
   },
   {
     id: 5,
-    estado: "3",
+    estado: "4",
     prerrequerimientoId: "00000001",
     tipoRequerimiento: "Pre-requerimiento Farmacia",
     fecha: "03/12/2025",
@@ -108,85 +110,6 @@ const prerrequerimientosData = [
     hora_conformidad: "09:35:12",
     almacenSolicitante: "DU",
     usuario: "CROJAS",
-  },
-]
-
-// Datos de ejemplo para la tabla de transferencias
-const transferenciasData = [
-  {
-    id: 1,
-    estado: 2,
-    transferenciaId: "25000649",
-    documento: "25000649",
-    fecha: "31/03/2025",
-    hora: "18:12:07",
-    fecha_proceso: "31/03/2025",
-    hora_proceso: "18:24:05",
-    deAlmacen: "F",
-    aAlmacen: "DU",
-    total: 67.4,
-    usuario: "MALVAREZ",
-    observacion: "TRANSFERENCIA",
-  },
-  {
-    id: 2,
-    estado: 2,
-    transferenciaId: "25000648",
-    documento: "PPA-558",
-    fecha: "31/03/2025",
-    hora: "14:42:24",
-    fecha_proceso: "31/03/2025",
-    hora_proceso: "14:45:19",
-    deAlmacen: "A",
-    aAlmacen: "CE",
-    total: 213.68,
-    usuario: "EROMERO",
-    observacion: "CAMPAÑA MÉDICA",
-  },
-  {
-    id: 3,
-    estado: 2,
-    transferenciaId: "25000647",
-    documento: "25000647",
-    fecha: "31/03/2025",
-    hora: "13:26:28",
-    fecha_proceso: "31/03/2025",
-    hora_proceso: "13:26:55",
-    deAlmacen: "DU",
-    aAlmacen: "F",
-    total: 224.64,
-    usuario: "MARIH",
-    observacion: "",
-  },
-  {
-    id: 4,
-    estado: 2,
-    transferenciaId: "25000646",
-    documento: "PPA-646",
-    fecha: "31/03/2025",
-    hora: "11:19:24",
-    fecha_proceso: "31/03/2025",
-    hora_proceso: "11:20:45",
-    deAlmacen: "A",
-    aAlmacen: "DU",
-    total: 5000,
-    usuario: "ECHATE",
-    observacion: "REQUERIMIENTO O2",
-  },
-  {
-    id: 5,
-    estado: 2,
-    transferenciaId: "25000645",
-    documento: "25000645",
-    fecha: "31/03/2025",
-    hora: "10:18:50",
-    fecha_proceso: "31/03/2025",
-    hora_proceso: "11:19:12",
-    deAlmacen: "DU",
-    aAlmacen: "A",
-    total: 299.52,
-    usuario: "MALVAREZ",
-    observacion: "SOBRE STOCK",
   },
 ]
 
@@ -401,6 +324,8 @@ export default function TransferenciasPage() {
   const [openModalExitoDevolucion, setOpenModalExitoDevolucion] = useState(false);
   const [openModalProcesarDevol, setOpenModalProcesarDevol] = useState(false);
   const [openModalExitoProcDevol, setOpenModalExitoProcDevol] = useState(false);
+  const [openModalPreparar, setOpenModalPreparar] = useState(false);
+  const [openModalExitoPreparar, setOpenModalExitoPreparar] = useState(false);
   const [solicitudSeleccionada, setSolicitudSeleccionada] = useState<any>(null);
   const [transferenciaSelec, setTransferenciaSelec] = useState<any>(null);
   const [devolucionSelec, setDevolucionSelec] = useState<any>(null);
@@ -502,14 +427,16 @@ export default function TransferenciasPage() {
   const getEstadoBadge = (estado: string) => {
     const variants = {
       "1": "bg-red-100 text-red-800 border-red-300",
-      "2": "bg-yellow-100 text-yellow-800 border-yellow-300",
-      "3": "bg-green-100 text-green-800 border-green-300",
+      "2": "bg-purple-100 text-purple-800 border-purple-300",
+      "3": "bg-yellow-100 text-yellow-800 border-yellow-300",
+      "4": "bg-green-100 text-green-800 border-green-300",
     }
 
     const nombreEstado = {
       "1": "REGISTRADO",
-      "2": "DESPACHADO",
-      "3": "CONFORME",
+      "2": "EN PREPARACIÓN",
+      "3": "DESPACHADO",
+      "4": "CONFORME",
     }
 
     return <Badge className={`${variants[estado as keyof typeof variants]} w-32 justify-center text-sm font-semibold py-1`}>
@@ -1541,21 +1468,35 @@ export default function TransferenciasPage() {
                                       <TableCell>{solicitud.usuario}</TableCell>
                                       <TableCell>
                                         <div className="flex gap-2">
-                                          <Button
-                                            variant="outline"
-                                            className={`h-8 w-10 p-1.5 border-green-600 text-green-600 hover:bg-green-50
-                                    ${solicitud.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
-                                            disabled={solicitud.estado !== "1"}
-                                            title="Despachar"
-                                            onClick={() => {
-                                              if (solicitud.estado === "1") {
+                                          {/* PREPARAR PEDIDO – solo estado REGISTRADO */}
+                                          {solicitud.estado === "1" && (
+                                            <Button
+                                              variant="outline"
+                                              className="h-8 w-10 p-1.5 border-orange-600 text-orange-600 hover:bg-orange-50"
+                                              title="Preparar pedido"
+                                              onClick={() => {
+                                                setSolicitudSeleccionada(solicitud);
+                                                setOpenModalPreparar(true);
+                                              }}
+                                            >
+                                              <PackageCheck className="h-4 w-4" />
+                                            </Button>
+                                          )}
+
+                                          {/* DESPACHAR – solo estado EN PREPARACIÓN */}
+                                          {solicitud.estado === "2" && (
+                                            <Button
+                                              variant="outline"
+                                              className="h-8 w-10 p-1.5 border-green-600 text-green-600 hover:bg-green-50"
+                                              title="Despachar"
+                                              onClick={() => {
                                                 setSolicitudSeleccionada(solicitud);
                                                 setVistaDistribucion("despacho");
-                                              }
-                                            }}
-                                          >
-                                            <MoveRight className="h-4 w-4" />
-                                          </Button>
+                                              }}
+                                            >
+                                              <MoveRight className="h-4 w-4" />
+                                            </Button>
+                                          )}
                                           <Button
                                             variant="outline"
                                             className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50"
@@ -2638,7 +2579,6 @@ export default function TransferenciasPage() {
                   <Dialog open={openModalExitoProcDevol} onOpenChange={setOpenModalExitoProcDevol}>
                     <DialogContent className="max-w-sm" onInteractOutside={(e) => e.preventDefault()}>
                       <DialogHeader>
-                        {/*<DialogTitle>Conformidad realizada</DialogTitle>*/}
                         <DialogTitle className="flex flex-col items-center gap-3">
                           <CheckCircle className="h-16 w-16 text-green-600" />
                           <span>Devolución procesada</span>
@@ -2666,6 +2606,71 @@ export default function TransferenciasPage() {
                     </DialogContent>
                   </Dialog>
 
+                  {/* MODAL DE CONFIRMACIÓN DE PREPARACIÓN DE PEDIDO */}
+                  <Dialog open={openModalPreparar} onOpenChange={setOpenModalPreparar}>
+                    <DialogContent className="max-w-sm" onInteractOutside={(e) => e.preventDefault()}>
+                      <DialogHeader>
+                        <DialogTitle>Confirmar preparación</DialogTitle>
+                      </DialogHeader>
+
+                      <p className="text-gray-700">
+                        Al realizar esta acción, se asignarán automáticamente los lotes a cada producto dentro del prerrequerimiento <br />
+                        <br />
+                        ¿Está seguro de que desea preparar el prerrequerimiento
+                        <strong> {solicitudSeleccionada?.prerrequerimientoId}</strong>? <br />
+                        <span className="font-semibold text-red-600">Esta acción no se puede deshacer.</span>
+                      </p>
+
+                      <DialogFooter className="mt-4">
+                        <Button variant="outline" onClick={() => setOpenModalPreparar(false)}>
+                          Cancelar
+                        </Button>
+
+                        <Button
+                          className="bg-green-600 hover:bg-green-700 text-white"
+                          onClick={() => {
+                            setOpenModalPreparar(false);
+                            setOpenModalExitoPreparar(true);
+
+                            // 👉 Aquí luego podrás cambiar el estado a "2"
+                            // cuando conectes backend
+                          }}
+                        >
+                          Confirmar
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+
+                  {/* MODAL DE ÉXITO DE PREPARACIÓN REALIZADA */}
+                  <Dialog open={openModalExitoPreparar} onOpenChange={setOpenModalExitoPreparar}>
+                    <DialogContent className="max-w-sm" onInteractOutside={(e) => e.preventDefault()}>
+                      <DialogHeader>
+                        <DialogTitle className="flex flex-col items-center gap-3">
+                          <CheckCircle className="h-16 w-16 text-green-600" />
+                          <span>Preparación realizada</span>
+                        </DialogTitle>
+                      </DialogHeader>
+
+                      <p className="text-gray-700">
+                        La preparación del prerrequerimiento se realizó con éxito. <br/>
+                        <br/>
+                        Los lotes han sido asignados a cada producto de forma satisfactoria.
+                      </p>
+
+                      <DialogFooter className="mt-4">
+                        <Button
+                          className="bg-blue-600 hover:bg-blue-700 text-white"
+                          onClick={() => {
+                            setOpenModalExitoPreparar(false);
+                          }}
+                        >
+                          Finalizar
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                  
 
                 </CardContent>
               </Card>
