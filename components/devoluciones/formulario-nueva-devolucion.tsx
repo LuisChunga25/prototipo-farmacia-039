@@ -5,7 +5,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { Edit, PackagePlus, Trash2 } from "lucide-react";
+import { ArrowLeft, Edit, PackagePlus, Trash2 } from "lucide-react";
 
 interface Props {
     onCancel: () => void;
@@ -38,11 +38,21 @@ export function FormularioNuevaDevolucion({ onCancel, onSave }: Props) {
 
     return (
         <>
-            <CardHeader>
-                <CardTitle>Registrar Devolución</CardTitle>
-            </CardHeader>
+            <div className="space-y-6 ml-6 mt-8">
+                <div className="flex items-center gap-3">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={onCancel}
+                        className="flex items-center gap-1 bg-blue-600 text-white hover:bg-blue-700"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        Regresar
+                    </Button>
+                    <h2 className="text-xl font-semibold">Registrar Devolución</h2>
+                </div>
 
-            <CardContent className="space-y-4">
+
 
                 {/* ======= TODO tu contenido del DialogContent ======= */}
                 {/* (sin Dialog, DialogHeader ni DialogFooter) */}
@@ -106,7 +116,7 @@ export function FormularioNuevaDevolucion({ onCancel, onSave }: Props) {
                                 />
                             </div>
                         </div>
-                        
+
                         {/* BOTÓN AGREGAR */}
                         <div className="mt-4">
                             <Button
@@ -142,28 +152,28 @@ export function FormularioNuevaDevolucion({ onCancel, onSave }: Props) {
                                         <TableCell></TableCell>
                                         <TableCell>
                                             <div className="flex space-x-2">
-                                            <Button
-                                                variant="outline"
-                                                title="Asignar Lote"
-                                                className="h-8 px-3 gap-1 border-blue-600 text-blue-600 hover:bg-blue-50"
-                                            >
-                                                <PackagePlus className="w-3 h-3" />
-                                            </Button>
-                                            <Button
-                                                variant="outline"
-                                                title="Editar cantidad solicitada"
-                                                className="h-8 w-10 p-1.5 border-yellow-600 text-yellow-600 hover:bg-yellow-50"
-                                            >
-                                                <Edit className="w-3 h-3" />
-                                            </Button>
-                                            <Button
-                                                variant="outline"
-                                                title="Eliminar"
-                                                className="h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50"
-                                            >
-                                                <Trash2 className="w-3 h-3" />
-                                            </Button>
-                                        </div>
+                                                <Button
+                                                    variant="outline"
+                                                    title="Asignar Lote"
+                                                    className="h-8 px-3 gap-1 border-blue-600 text-blue-600 hover:bg-blue-50"
+                                                >
+                                                    <PackagePlus className="w-3 h-3" />
+                                                </Button>
+                                                <Button
+                                                    variant="outline"
+                                                    title="Editar cantidad solicitada"
+                                                    className="h-8 w-10 p-1.5 border-yellow-600 text-yellow-600 hover:bg-yellow-50"
+                                                >
+                                                    <Edit className="w-3 h-3" />
+                                                </Button>
+                                                <Button
+                                                    variant="outline"
+                                                    title="Eliminar"
+                                                    className="h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50"
+                                                >
+                                                    <Trash2 className="w-3 h-3" />
+                                                </Button>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>
@@ -189,7 +199,7 @@ export function FormularioNuevaDevolucion({ onCancel, onSave }: Props) {
                     </Button>
                 </div>
 
-            </CardContent>
+            </div>
         </>
     );
 }
