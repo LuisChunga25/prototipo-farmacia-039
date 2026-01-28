@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { use, useState } from "react"
+import { use, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -27,6 +27,7 @@ import {
 import { useRouter } from "next/navigation"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 // Datos de ejemplo para la tabla
 const salidasData = [
@@ -120,6 +121,13 @@ export default function SalidasPage() {
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
   const [nuevaSalida, setNuevaSalida] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [showSuccessDelete, setShowSuccessDelete] = useState(false);
+  const [salidaToDelete, setSalidaToDelete] = useState<any>(null);
+  const [salidasVisibles, setSalidasVisibles] = useState<any[]>([]);
+  const [showConfirmProcesar, setShowConfirmProcesar] = useState(false);
+  const [showSuccessProcesar, setShowSuccessProcesar] = useState(false);
+  const [salidaToProcesar, setSalidaToProcesar] = useState<any>(null);
   const router = useRouter();
 
   const almacenes = [
@@ -130,7 +138,7 @@ export default function SalidasPage() {
     { value: "F", label: "F - FARMACIA EMERGENCIA" },
   ];
 
-  // Filtrar datos según término de búsqueda
+  // FILTRAR DATOS SEGÚN TÉRMINO DE BÚSQUEDA
   const filteredData = salidasData.filter(
     (salida) =>
       salida.documento.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -156,7 +164,12 @@ export default function SalidasPage() {
     return matchesSearch && matchesFechaInicio && matchesFechaFin;
   });
 
-  // Manejar selección de todos los items
+  // INICIALIZAR CUANDO CARGUE LA PÁGINA
+  useEffect(() => {
+    setSalidasVisibles(salidasData);
+  }, [salidasData]);
+
+  // MANEJAR SELECCIÓN DE TODOS LOS ÍTEMS
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedItems([])
@@ -166,7 +179,7 @@ export default function SalidasPage() {
     setSelectAll(!selectAll)
   }
 
-  // Manejar selección individual
+  // MANEJAR SELECCIÓN INDIVIDUAL
   const handleSelectItem = (id: number) => {
     if (selectedItems.includes(id)) {
       setSelectedItems(selectedItems.filter((itemId) => itemId !== id))
@@ -179,7 +192,44 @@ export default function SalidasPage() {
     }
   }
 
-  // Verificar si hay elementos seleccionados
+  // ELIMINAR DOCUMENTO DE SALIDA
+  const handleDeleteClick = (salida: any) => {
+    setSalidaToDelete(salida);
+    setShowConfirmDelete(true);
+  };
+
+  const confirmDelete = () => {
+    setShowConfirmDelete(false);
+
+    // Ocultamiento visual
+    setSalidasVisibles((prev) =>
+      prev.filter((s) => s.id !== salidaToDelete.id)
+    );
+
+    setTimeout(() => {
+      setShowSuccessDelete(true);
+    }, 200);
+  };
+
+  // SIMULAR PROCESAMIENTO DE UN DOCUMENTO DE SALIDA
+  const confirmProcesar = () => {
+    setShowConfirmProcesar(false);
+
+    // Simulación de cambio de estado
+    setSalidasVisibles((prev) =>
+      prev.map((s) =>
+        s.id === salidaToProcesar.id
+          ? { ...s, estado: "2" }
+          : s
+      )
+    );
+
+    setTimeout(() => {
+      setShowSuccessProcesar(true);
+    }, 200);
+  };
+
+  // VERIFICAR SI HAY ELEMENTOS SELECCIONADOS
   const hasSelection = selectedItems.length > 0
 
   const getEstadoBadge = (estado: string) => {
@@ -196,11 +246,13 @@ export default function SalidasPage() {
     return <Badge className={`${variants[estado as keyof typeof variants]}`}>{nombreEstado[estado as keyof typeof nombreEstado]}</Badge>
   }
 
+  // LIMPIAR FILTROS DE BÚSQUEDA
   const limpiarFiltros = () => {
     setSearchTerm("");
     setFechaInicio("");
     setFechaFin("");
   }
+
 
   return (
     <div className="container mx-auto py-6">
@@ -272,14 +324,14 @@ export default function SalidasPage() {
             Actualizar
           </Button>
 
-          <Button variant="outline" size="sm" className="gap-1">
+          {/*<Button variant="outline" size="sm" className="gap-1">
             <FileSpreadsheet className="h-4 w-4" />
             Excel
-          </Button>
+          </Button>*/}
 
-          <Button 
-            className="bg-green-600 hover:bg-green-700 text-white gap-2 font-semibold" 
-            size="sm" 
+          <Button
+            className="bg-green-600 hover:bg-green-700 text-white gap-2 font-semibold"
+            size="sm"
             onClick={() => router.push("/dashboard/almacenes/salidas/nueva")}
           >
             <Plus className="h-4 w-4" strokeWidth={3} />
@@ -304,7 +356,7 @@ export default function SalidasPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredSalidas.map((salida) => (
+            {salidasVisibles.map((salida) => (
               <TableRow key={salida.id} className={selectedItems.includes(salida.id) ? "bg-primary/10" : ""}>
                 <TableCell>{getEstadoBadge(salida.estado)}</TableCell>
                 <TableCell className="font-medium">{salida.salidaId}</TableCell>
@@ -329,8 +381,12 @@ export default function SalidasPage() {
                       title="Procesar"
                       variant="outline"
                       className={`h-8 w-10 p-1.5 border-green-600 text-green-600 hover:bg-green-50
-              ${salida.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
+                        ${salida.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
                       disabled={salida.estado !== "1"}
+                      onClick={() => {
+                        setSalidaToProcesar(salida);
+                        setShowConfirmProcesar(true);
+                      }}
                     >
                       <CheckCircle className="w-3 h-3" />
                     </Button>
@@ -345,7 +401,7 @@ export default function SalidasPage() {
                       title="Editar"
                       variant="outline"
                       className={`h-8 w-10 p-1.5 border-yellow-600 text-yellow-600 hover:bg-yellow-50
-              ${salida.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
+                        ${salida.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
                       disabled={salida.estado !== "1"}
                     >
                       <Edit className="w-3 h-3" />
@@ -361,8 +417,9 @@ export default function SalidasPage() {
                       title="Eliminar"
                       variant="outline"
                       className={`h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50
-              ${salida.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
+                        ${salida.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
                       disabled={salida.estado !== "1"}
+                      onClick={() => handleDeleteClick(salida)}
                     >
                       <Trash2 className="w-3 h-3" />
                     </Button>
@@ -373,7 +430,110 @@ export default function SalidasPage() {
           </TableBody>
         </Table>
       </div>
-      
+
+      {/* MODAL DE CONFIRMACIÓN DE ELIMINAR DOCUMENTO DE SALIDA */}
+      {showConfirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+            <h2 className="text-lg font-semibold mb-2">Confirmar eliminación</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              ¿Está seguro de eliminar el documento{" "}
+              <span className="font-semibold">{salidaToDelete?.documento}</span>?
+            </p>
+
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowConfirmDelete(false)}
+              >
+                Cancelar
+              </Button>
+              <Button
+                className="bg-red-600 hover:bg-red-700 text-white"
+                onClick={confirmDelete}
+              >
+                Eliminar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE ÉXITO DE ELIMINACIÓN DE DOCUMENTO DE SALIDA */}
+      {showSuccessDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-center">
+            <CheckCircle className="mx-auto h-12 w-12 text-green-600 mb-3" />
+            <h2 className="text-lg font-semibold mb-2">Eliminado con éxito</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              El documento fue eliminado correctamente.
+            </p>
+
+            <Button
+              className="bg-green-600 hover:bg-green-700 text-white"
+              onClick={() => setShowSuccessDelete(false)}
+            >
+              Aceptar
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE CONFIRMACIÓN DE PROCESAR DOCUMENTO DE SALIDA */}
+      {showConfirmProcesar && (
+        <Dialog open={showConfirmProcesar} onOpenChange={setShowConfirmProcesar}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirmar procesamiento</DialogTitle>
+              <DialogDescription>
+                ¿Está seguro de procesar este documento?
+                <br />
+                <span className="text-red-500 font-medium">
+                  Esta acción no podrá deshacerse.
+                </span>
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex justify-end gap-3 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => setShowConfirmProcesar(false)}
+              >
+                Cancelar
+              </Button>
+
+              <Button
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={confirmProcesar}
+              >
+                Confirmar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* MODAL DE ÉXITO DE PROCESAMIENTO DE DOCUMENTO DE SALIDA */}
+      {showSuccessProcesar && (
+        <Dialog open={showSuccessProcesar} onOpenChange={setShowSuccessProcesar}>
+          <DialogContent>
+            <DialogHeader>
+              <CheckCircle className="mx-auto h-12 w-12 text-green-600 mb-3" />
+              <DialogTitle>Documento procesado</DialogTitle>
+              <DialogDescription>
+                El documento de salida ha sido procesado con éxito.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex justify-end mt-4">
+              <Button onClick={() => setShowSuccessProcesar(false)}>
+                Aceptar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
     </div>
   )
 }
