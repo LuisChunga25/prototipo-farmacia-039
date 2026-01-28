@@ -1,10 +1,11 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Save, PlusCircle, Trash2 } from "lucide-react"
+import { ArrowLeft, Save, PlusCircle, Trash2, Loader2, CheckCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 
@@ -67,6 +68,26 @@ const tipoTransfer = [
     { id: "TPD", codigo: "TPD", nombre: "Transferencia por Devolución" },
 ]
 
+const productosMock = [
+    {
+        id: "P01",
+        nombre: "Algodón Hidrófilo x 500 gr",
+        precio: 2.7,
+        lote: "PT12402",
+        registro: "EE-11024",
+        vencimiento: "2027-08-01",
+    },
+    {
+        id: "P02",
+        nombre: "Ácido Tranexámico 1g 10ml",
+        precio: 8.5,
+        lote: "LT88991",
+        registro: "RS-99221",
+        vencimiento: "2026-12-31",
+    },
+];
+
+
 export default function NuevaSalidaPage() {
     const router = useRouter();
 
@@ -83,6 +104,12 @@ export default function NuevaSalidaPage() {
     const [tipoDeUso, setTipoDeUso] = useState("");
     const [tipoDeTransferencia, setTipoDeTransferencia] = useState("");
     const [productos, setProductos] = useState<any[]>([]);
+    const [productoId, setProductoId] = useState("");
+    const [productoSeleccionado, setProductoSeleccionado] = useState<any>(null);
+    const [cantidad, setCantidad] = useState<number>(1);
+    const [guardando, setGuardando] = useState(false);
+    const [openModalExito, setOpenModalExito] = useState(false);
+    const puedeGuardarSalida = productos.length > 0;
     const isACTA = tipoDocumento === "ACTA";
     const isRDS = tipoDocumento === "RDS";
     const isDDL = tipoDocumento === "DDL";
@@ -131,6 +158,23 @@ export default function NuevaSalidaPage() {
             setTipoDeUso("");
         }
     }, [tipoDocumento]);
+
+    // AUTOCOMPLETAR CAMPOS AL SELECCIONAR PRODUCTO
+    useEffect(() => {
+        const prod = productosMock.find(p => p.id === productoId);
+        setProductoSeleccionado(prod || null);
+    }, [productoId]);
+
+    // FUNCIÓN GUARDAR SALIDA
+    const handleGuardarSalida = () => {
+        setGuardando(true);
+
+        // Simulación de guardado (API / backend)
+        setTimeout(() => {
+            setGuardando(false);
+            setOpenModalExito(true);
+        }, 1500);
+    };
 
 
 
@@ -414,37 +458,76 @@ export default function NuevaSalidaPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <Label>Producto:</Label>
-                                <Input />
+                                <Select
+                                    value={productoId}
+                                    onValueChange={setProductoId}
+                                >
+                                    <SelectTrigger className="w-full bg-white">
+                                        <SelectValue placeholder="Seleccionar producto" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white border shadow-md">
+                                        {productosMock.map(prod => (
+                                            <SelectItem key={prod.id} value={prod.id}>
+                                                {prod.nombre}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
 
                             <div>
                                 <Label>Cantidad:</Label>
-                                <Input type="number" min="1" />
+                                <Input
+                                    type="number"
+                                    min="1"
+                                    value={cantidad}
+                                    onChange={(e) => setCantidad(Number(e.target.value))}
+                                />
                             </div>
 
                             <div>
                                 <Label>Precio de Operación:</Label>
-                                <Input />
+                                <Input
+                                    value={productoSeleccionado?.precio ?? ""}
+                                    disabled
+                                />
                             </div>
 
                             <div>
                                 <Label>Importe Total:</Label>
-                                <Input disabled />
+                                <Input
+                                    disabled
+                                    value={
+                                        productoSeleccionado
+                                            ? (productoSeleccionado.precio * cantidad).toFixed(2)
+                                            : ""
+                                    }
+                                />
                             </div>
 
                             <div>
                                 <Label>Lote:</Label>
-                                <Input />
+                                <Input
+                                    value={productoSeleccionado?.lote ?? ""}
+                                    disabled
+                                />
                             </div>
 
                             <div>
                                 <Label>Registro Sanitario:</Label>
-                                <Input />
+                                <Input
+                                    value={productoSeleccionado?.registro ?? ""}
+                                    disabled
+                                />
                             </div>
 
                             <div>
                                 <Label>Fecha de Vencimiento:</Label>
-                                <Input type="date" />
+                                <Input
+                                    type="date"
+                                    value={productoSeleccionado?.vencimiento ?? ""}
+                                    disabled
+                                />
                             </div>
 
                         </div>
@@ -454,6 +537,21 @@ export default function NuevaSalidaPage() {
                                 className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
                                 onClick={() => {
                                     // lógica se completa luego
+                                    if (!productoSeleccionado || cantidad <= 0) return;
+
+                                    const nuevoProducto = {
+                                        nombre: productoSeleccionado.nombre,
+                                        precio: productoSeleccionado.precio.toFixed(2),
+                                        cantidad,
+                                        importe: (productoSeleccionado.precio * cantidad).toFixed(2),
+                                    };
+
+                                    setProductos([...productos, nuevoProducto]);
+
+                                    // RESET FORM
+                                    setProductoId("");
+                                    setProductoSeleccionado(null);
+                                    setCantidad(1);
                                 }}
                             >
                                 <PlusCircle className="w-4 h-4" />
@@ -521,13 +619,54 @@ export default function NuevaSalidaPage() {
                     <Button variant="outline" onClick={() => router.back()}>
                         Cancelar
                     </Button>
-                    <Button className="bg-green-600 hover:bg-green-700 text-white">
-                        <Save className="w-4 h-4" />
-                        Guardar Salida
+                    <Button
+                        className={`bg-green-600 hover:bg-green-700 text-white flex items-center gap-2
+                            ${!puedeGuardarSalida || guardando ? "opacity-50 cursor-not-allowed" : ""}`}
+                        disabled={!puedeGuardarSalida || guardando}
+                        onClick={handleGuardarSalida}
+                    >
+                        {guardando ? (
+                            <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                Guardando...
+                            </>
+                        ) : (
+                            <>
+                                <Save className="w-4 h-4" />
+                                Guardar Salida
+                            </>
+                        )}
                     </Button>
                 </div>
             )}
 
+            {/* MODAL DE ÉXITO DEL GUARDADO DEL DOCUMENTO DE SALIDA */}
+            <Dialog open={openModalExito} onOpenChange={setOpenModalExito}>
+                <DialogContent className="max-w-sm">
+                    <DialogHeader>
+                        <DialogTitle className="flex flex-col items-center gap-3">
+                            <CheckCircle className="w-16 h-16 text-green-600" />
+                            <span>Registro exitoso</span>
+                        </DialogTitle>
+                    </DialogHeader>
+
+                    <p className="text-center text-gray-700">
+                        El documento de salida ha sido registrado con éxito.
+                    </p>
+
+                    <DialogFooter className="flex justify-center mt-4">
+                        <Button
+                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                            onClick={() => {
+                                setOpenModalExito(false);
+                                router.push("/dashboard/almacenes/salidas");
+                            }}
+                        >
+                            Finalizar
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
         </div>
     )
