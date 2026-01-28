@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Save, PlusCircle, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 
@@ -12,6 +12,59 @@ const tipoDocSalida = [
     { id: "ACTA", codigo: "ACTA", nombre: "Acta" },
     { id: "RDS", codigo: "RDS", nombre: "Requerimiento de Servicios" },
     { id: "DDL", codigo: "DDL", nombre: "Distribución de Laboratorio" },
+]
+
+const almOrigen = [
+    { id: "AG", codigo: "AG", nombre: "Almacén General" },
+    { id: "AI", codigo: "AI", nombre: "Almacén Insumos" },
+]
+
+const tipoSalida = [
+    { id: "STE", codigo: "STE", nombre: "Salida por Transferencias entre Unidades Ejecutoras" },
+    { id: "STS", codigo: "STS", nombre: "Salida por Transferencia de Servicios" },
+    { id: "STL", codigo: "STL", nombre: "Salida por Transferencia de Laboratorio" },
+]
+
+const destUE = [
+    { id: "d01", codigo: "d01", nombre: "Hospital Nacional Hipólito Unanue" },
+    { id: "d02", codigo: "d02", nombre: "Hospital Lima Este Vitarte" },
+    { id: "d03", codigo: "d03", nombre: "Hospital de Huaycán" },
+]
+
+const destOperativo = [
+    { id: "DE", codigo: "DE", nombre: "Dirección Ejecutiva" },
+    { id: "UFGR", codigo: "UFGR", nombre: "Unidad Funcional de Gestión de Riesgo" },
+    { id: "DA", codigo: "DA", nombre: "Dirección Adjunta" },
+    { id: "UFAL", codigo: "UFAL", nombre: "Unidad Funcional Asesoría Legal" },
+    { id: "UFT", codigo: "UFT", nombre: "Unidad Funcional de Telesalud" },
+    { id: "UFGDA", codigo: "UFGDA", nombre: "Unidad Funcional de Gestión Documentario y Archivo" },
+    { id: "OCI", codigo: "OCI", nombre: "Órgano de Control Institucional" },
+    { id: "OPE", codigo: "OPE", nombre: "Oficina de Planeamiento Estratégico" },
+    { id: "UESA", codigo: "UESA", nombre: "Unidad de Epidemiología y Salud Ambiental" },
+    { id: "UGC", codigo: "UGC", nombre: "Unidad de Gestión de la Calidad" },
+]
+
+const labDest = [
+    { id: "LDI", codigo: "LDI", nombre: "Laboratorio de Inmunología" },
+    { id: "LDB", codigo: "LDB", nombre: "Laboratorio de Bioquímica" },
+    { id: "LDH", codigo: "LDH", nombre: "Laboratorio de Hematología" },
+    { id: "LDM", codigo: "LDM", nombre: "Laboratorio de Microbiología" },
+    { id: "LDE", codigo: "LDE", nombre: "Laboratorio de Emergencia" },
+    { id: "BDS", codigo: "BDS", nombre: "Banco de Sangre" },
+    { id: "LDHE", codigo: "LDHE", nombre: "Laboratorio de Hemostasia" },
+    { id: "SPC", codigo: "SPC", nombre: "Servicio de Patología Clínica" },
+]
+
+const tipoUso = [
+    { id: "V", codigo: "V", nombre: "Venta" },
+    { id: "C", codigo: "C", nombre: "Consumo" },
+]
+
+const tipoTransfer = [
+    { id: "TD", codigo: "TD", nombre: "Transferencia Definitiva" },
+    { id: "TCR", codigo: "TCR", nombre: "Transferencia con Retorno" },
+    { id: "AER", codigo: "AER", nombre: "Apoyo en Rotación" },
+    { id: "TPD", codigo: "TPD", nombre: "Transferencia por Devolución" },
 ]
 
 export default function NuevaSalidaPage() {
@@ -22,6 +75,14 @@ export default function NuevaSalidaPage() {
     const [observacion, setObservacion] = useState("");
     const [fechaActual, setFechaActual] = useState("");
     const [horaActual, setHoraActual] = useState("");
+    const [almacenOrigen, setAlmacenOrigen] = useState("");
+    const [tipoDeSalida, setTipoDeSalida] = useState("");
+    const [destino, setDestino] = useState("");
+    const [destinoOperativo, setDestinoOperativo] = useState("");
+    const [laboratorioDestino, setLaboratorioDestino] = useState("");
+    const [tipoDeUso, setTipoDeUso] = useState("");
+    const [tipoDeTransferencia, setTipoDeTransferencia] = useState("");
+    const [productos, setProductos] = useState<any[]>([]);
     const isACTA = tipoDocumento === "ACTA";
     const isRDS = tipoDocumento === "RDS";
     const isDDL = tipoDocumento === "DDL";
@@ -50,6 +111,27 @@ export default function NuevaSalidaPage() {
         setFechaActual(fechaFormateada);
         setHoraActual(hora);
     }, []);
+
+    // SETEAR VALORES AUTOMATICOS SEGÚN TIPO DE DOCUMENTO
+    useEffect(() => {
+        if (isRDS) {
+            setAlmacenOrigen("AI");
+            setTipoDeSalida("STS");
+            setTipoDeUso("C");
+        }
+
+        if (isDDL) {
+            setTipoDeSalida("STL");
+            setTipoDeUso("C");
+        }
+
+        if (isACTA) {
+            setAlmacenOrigen("");
+            setTipoDeSalida("");
+            setTipoDeUso("");
+        }
+    }, [tipoDocumento]);
+
 
 
     return (
@@ -120,89 +202,316 @@ export default function NuevaSalidaPage() {
 
             {/* CAMPOS DINÁMICOS SEGÚN TIPO DE DOCUMENTO */}
             {tipoDocumento && (
-                <div className="bg-white border rounded-lg shadow-sm p-4 space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <div>
-                            <Label>Documento:</Label>
-                            <Input />
-                        </div>
-
-                        <div>
-                            <Label>Producto</Label>
-                            <Input />
-                        </div>
-
-                        <div>
-                            <Label>Cantidad</Label>
-                            <Input type="number" />
-                        </div>
-
-                        <div>
-                            <Label>Precio de Operación</Label>
-                            <Input />
-                        </div>
-
-                        <div>
-                            <Label>Importe Total</Label>
-                            <Input disabled />
-                        </div>
-
-                        <div>
-                            <Label>Lote</Label>
-                            <Input />
-                        </div>
-
-                        <div>
-                            <Label>Registro Sanitario</Label>
-                            <Input />
-                        </div>
-
-                        <div>
-                            <Label>Fecha de Vencimiento</Label>
-                            <Input type="date" />
-                        </div>
-
-                        {isACTA && (
-                            <>
+                <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+                    <div className="bg-gradient-to-r from-cyan-600 to-cyan-700 px-4 py-3">
+                        <h2 className="font-semibold text-white">Detalle del documento de salida</h2>
+                    </div>
+                    <div className="p-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {(isACTA || isRDS) && (
                                 <div>
-                                    <Label>Tipo de Transferencia</Label>
-                                    <Input placeholder="Préstamo con retorno" />
+                                    <Label>Almacén Origen:</Label>
+                                    <Select
+                                        value={almacenOrigen}
+                                        onValueChange={setAlmacenOrigen}
+                                        disabled={isRDS}
+                                    >
+                                        <SelectTrigger className="w-full bg-white">
+                                            <SelectValue placeholder="Seleccionar almacén de origen" />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-white border shadow-md">
+                                            {almOrigen.map((alm) => (
+                                                <SelectItem key={alm.id} value={alm.codigo}>
+                                                    {alm.nombre}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
+                            )}
 
+                            {isACTA && (
                                 <div>
-                                    <Label>Motivo</Label>
-                                    <Input placeholder="Riesgo de desabastecimiento" />
+                                    <Label>Destino:</Label>
+                                    <Select
+                                        value={destino}
+                                        onValueChange={setDestino}
+                                    >
+                                        <SelectTrigger className="w-full bg-white">
+                                            <SelectValue placeholder="Seleccionar destino" />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-white border shadow-md">
+                                            {destUE.map((dest) => (
+                                                <SelectItem key={dest.id} value={dest.codigo}>
+                                                    {dest.nombre}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
-                            </>
-                        )}
+                            )}
 
-                        {isRDS && (
+                            {isRDS && (
+                                <div>
+                                    <Label>Destino Operativo:</Label>
+                                    <Select
+                                        value={destinoOperativo}
+                                        onValueChange={setDestinoOperativo}
+                                    >
+                                        <SelectTrigger className="w-full bg-white">
+                                            <SelectValue placeholder="Seleccionar destino operativo" />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-white border shadow-md">
+                                            {destOperativo.map((destOp) => (
+                                                <SelectItem key={destOp.id} value={destOp.codigo}>
+                                                    {destOp.nombre}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            )}
+
+                            {isDDL && (
+                                <>
+                                    <div>
+                                        <Label>Origen:</Label>
+                                        <Input value="Laboratorio General" disabled />
+                                    </div>
+                                    <div>
+                                        <Label>Laboratorio Destino:</Label>
+                                        <Select
+                                            value={laboratorioDestino}
+                                            onValueChange={setLaboratorioDestino}
+                                        >
+                                            <SelectTrigger className="w-full bg-white">
+                                                <SelectValue placeholder="Seleccionar laboratorio destino" />
+                                            </SelectTrigger>
+                                            <SelectContent className="bg-white border shadow-md">
+                                                {labDest.map((lab) => (
+                                                    <SelectItem key={lab.id} value={lab.codigo}>
+                                                        {lab.nombre}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </>
+                            )}
+
+                            <div>
+                                <Label>Tipo de Salida:</Label>
+                                {isACTA ? (
+                                    <Select
+                                        value={tipoDeSalida}
+                                        onValueChange={setTipoDeSalida}
+                                    >
+                                        <SelectTrigger className="w-full bg-white">
+                                            <SelectValue placeholder="Seleccionar tipo de salida" />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-white border shadow-md">
+                                            {tipoSalida.map((tipoS) => (
+                                                <SelectItem key={tipoS.id} value={tipoS.codigo}>
+                                                    {tipoS.nombre}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                ) : (
+                                    <Input
+                                        disabled
+                                        value={
+                                            isRDS
+                                                ? "Salida por Transferencia de Servicios"
+                                                : "Salida por Transferencia de Laboratorio"
+                                        }
+                                    />
+                                )}
+                            </div>
+
+                            <div>
+                                <Label>Documento:</Label>
+                                <Input />
+                            </div>
+
+                            {isACTA && (
+                                <>
+                                    <div>
+                                        <Label>Tipo de Transferencia:</Label>
+                                        <Select
+                                            value={tipoDeTransferencia}
+                                            onValueChange={setTipoDeTransferencia}
+                                        >
+                                            <SelectTrigger className="w-full bg-white">
+                                                <SelectValue placeholder="Seleccionar tipo de transferencia" />
+                                            </SelectTrigger>
+                                            <SelectContent className="bg-white border shadow-md">
+                                                {tipoTransfer.map((tipoT) => (
+                                                    <SelectItem key={tipoT.id} value={tipoT.codigo}>
+                                                        {tipoT.nombre}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div>
+                                        <Label>Motivo:</Label>
+                                        <Input />
+                                    </div>
+                                </>
+                            )}
+
                             <div>
                                 <Label>Tipo de Uso</Label>
-                                <Input placeholder="Consumo" />
+                                {isACTA ? (
+                                    <Select
+                                        value={tipoDeUso}
+                                        onValueChange={setTipoDeUso}
+                                    >
+                                        <SelectTrigger className="w-full bg-white">
+                                            <SelectValue placeholder="Seleccionar tipo de uso" />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-white border shadow-md">
+                                            {tipoUso.map((tipoU) => (
+                                                <SelectItem key={tipoU.id} value={tipoU.codigo}>
+                                                    {tipoU.nombre}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                ) : (
+                                    <Input disabled value="Consumo" />
+                                )}
                             </div>
-                        )}
 
-                        {isDDL && (
-                            <>
-                                <div>
-                                    <Label>Origen</Label>
-                                    <Input />
-                                </div>
+                            <div>
+                                <Label>Fecha Emisión Documento:</Label>
+                                <Input type="date" />
+                            </div>
 
-                                <div>
-                                    <Label>Laboratorio Destino</Label>
-                                    <Input />
-                                </div>
-                            </>
-                        )}
+                            <div>
+                                <Label>Fecha Ejecución:</Label>
+                                <Input type="date" />
+                            </div>
 
-                        <div className="md:col-span-2">
-                            <Label>Observación / Comentario</Label>
-                            <Input />
+                            <div className="md:col-span-2">
+                                <Label>Observación / Comentario:</Label>
+                                <Input />
+                            </div>
+
                         </div>
-
                     </div>
+                </div>
+            )}
+
+            {tipoDocumento && (
+                <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+                    <div className="bg-gradient-to-r from-cyan-600 to-cyan-700 px-4 py-3">
+                        <h2 className="font-semibold text-white">Registrar Producto</h2>
+                    </div>
+                    <div className="p-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <Label>Producto:</Label>
+                                <Input />
+                            </div>
+
+                            <div>
+                                <Label>Cantidad:</Label>
+                                <Input type="number" min="1" />
+                            </div>
+
+                            <div>
+                                <Label>Precio de Operación:</Label>
+                                <Input />
+                            </div>
+
+                            <div>
+                                <Label>Importe Total:</Label>
+                                <Input disabled />
+                            </div>
+
+                            <div>
+                                <Label>Lote:</Label>
+                                <Input />
+                            </div>
+
+                            <div>
+                                <Label>Registro Sanitario:</Label>
+                                <Input />
+                            </div>
+
+                            <div>
+                                <Label>Fecha de Vencimiento:</Label>
+                                <Input type="date" />
+                            </div>
+
+                        </div>
+                        <div className="flex justify-end mt-4">
+                            <Button
+                                type="button"
+                                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+                                onClick={() => {
+                                    // lógica se completa luego
+                                }}
+                            >
+                                <PlusCircle className="w-4 h-4" />
+                                Agregar Producto
+                            </Button>
+                        </div>
+                        <div className="mt-6 border rounded-lg overflow-hidden">
+                            <table className="w-full text-sm">
+                                <thead className="bg-slate-100">
+                                    <tr>
+                                        <th className="px-3 py-2 text-left">Item</th>
+                                        <th className="px-3 py-2 text-left">Nombre</th>
+                                        <th className="px-3 py-2 text-right">Precio</th>
+                                        <th className="px-3 py-2 text-right">Cantidad</th>
+                                        <th className="px-3 py-2 text-right">Importe</th>
+                                        <th className="px-3 py-2 text-center">Acción</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {productos.length === 0 ? (
+                                        <tr>
+                                            <td
+                                                colSpan={6}
+                                                className="px-3 py-4 text-center text-slate-500"
+                                            >
+                                                No hay productos agregados
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        productos.map((prod, index) => (
+                                            <tr key={index} className="border-t">
+                                                <td className="px-3 py-2">{index + 1}</td>
+                                                <td className="px-3 py-2">{prod.nombre}</td>
+                                                <td className="px-3 py-2 text-right">{prod.precio}</td>
+                                                <td className="px-3 py-2 text-right">{prod.cantidad}</td>
+                                                <td className="px-3 py-2 text-right">{prod.importe}</td>
+                                                <td className="px-3 py-2 text-center">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="border-red-500 text-red-600 hover:bg-red-50"
+                                                        onClick={() =>
+                                                            setProductos(productos.filter((_, i) => i !== index))
+                                                        }
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
                 </div>
             )}
 
@@ -213,6 +522,7 @@ export default function NuevaSalidaPage() {
                         Cancelar
                     </Button>
                     <Button className="bg-green-600 hover:bg-green-700 text-white">
+                        <Save className="w-4 h-4" />
                         Guardar Salida
                     </Button>
                 </div>
