@@ -29,7 +29,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
-// Datos de ejemplo para la tabla
+// DATOS DE EJEMPLO PARA LA TABLA
 const salidasData = [
   {
     id: 1,
@@ -113,6 +113,30 @@ const salidasData = [
   },
 ]
 
+// DATOS DE PRUEBA PARA PRODUCTOS
+const productosMock = [
+  {
+    id: 1,
+    codigo: "00070",
+    nombre: "ACETILCISTEINA 100 MG SOB",
+    regSan: "RS001",
+    lote: "LR12345",
+    fechaVenc: "02/02/2027",
+    precio: 0.9,
+    cantidad: 100,
+  },
+  {
+    id: 2,
+    codigo: "00132",
+    nombre: "ACICLOVIR 250 MG INY X 10 ML",
+    regSan: "RS002",
+    lote: "H1477",
+    fechaVenc: "15/06/2028",
+    precio: 14.79,
+    cantidad: 150,
+  },
+];
+
 export default function SalidasPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSalida, setSelectedSalida] = useState(null);
@@ -128,6 +152,8 @@ export default function SalidasPage() {
   const [showConfirmProcesar, setShowConfirmProcesar] = useState(false);
   const [showSuccessProcesar, setShowSuccessProcesar] = useState(false);
   const [salidaToProcesar, setSalidaToProcesar] = useState<any>(null);
+  const [showDetalleModal, setShowDetalleModal] = useState(false);
+  const [salidaDetalle, setSalidaDetalle] = useState<any>(null);
   const router = useRouter();
 
   const almacenes = [
@@ -394,6 +420,10 @@ export default function SalidasPage() {
                       title="Ver detalle"
                       variant="outline"
                       className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50"
+                      onClick={() => {
+                        setSalidaDetalle(salida);
+                        setShowDetalleModal(true);
+                      }}
                     >
                       <Eye className="w-3 h-3" />
                     </Button>
@@ -403,6 +433,9 @@ export default function SalidasPage() {
                       className={`h-8 w-10 p-1.5 border-yellow-600 text-yellow-600 hover:bg-yellow-50
                         ${salida.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
                       disabled={salida.estado !== "1"}
+                      onClick={() =>
+                        router.push(`/dashboard/almacenes/salidas/editar/${salida.id}`)
+                      }
                     >
                       <Edit className="w-3 h-3" />
                     </Button>
@@ -525,20 +558,162 @@ export default function SalidasPage() {
           <DialogContent>
             <DialogHeader>
               <CheckCircle className="mx-auto h-12 w-12 text-green-600 mb-3" />
-              <DialogTitle>Documento procesado</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-center">Documento procesado</DialogTitle>
+              <DialogDescription className="text-center">
                 El documento de salida ha sido procesado con éxito.
               </DialogDescription>
             </DialogHeader>
 
             <div className="flex justify-end mt-4">
-              <Button onClick={() => setShowSuccessProcesar(false)}>
+              <Button
+                className="bg-green-600 hover:bg-green-700 text-white"
+                onClick={() => setShowSuccessProcesar(false)}
+              >
                 Aceptar
               </Button>
             </div>
           </DialogContent>
         </Dialog>
       )}
+
+      {/* MODAL DE VER DETALLE (SOLO LECTURA) */}
+      {showDetalleModal && salidaDetalle && (
+        <Dialog open={showDetalleModal} onOpenChange={setShowDetalleModal}>
+          <DialogContent className="max-w-6xl">
+            <DialogHeader>
+              <DialogTitle>Detalle de Documento de Salida</DialogTitle>
+              <DialogDescription>
+                Información del documento de salida (solo lectura)
+              </DialogDescription>
+            </DialogHeader>
+
+            {/* CONTENIDO */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+
+              <div>
+                <Label>Estado</Label>
+                <div className="mt-1">
+                  {getEstadoBadge(salidaDetalle.estado)}
+                </div>
+              </div>
+
+              <div>
+                <Label>Salida ID</Label>
+                <Input disabled value={salidaDetalle.salidaId} />
+              </div>
+
+              <div>
+                <Label>Documento</Label>
+                <Input disabled value={salidaDetalle.documento} />
+              </div>
+
+              <div>
+                <Label>Tipo de Transacción</Label>
+                <Input disabled value={`${salidaDetalle.tipo_transaccion} - ${salidaDetalle.nombre_transaccion}`} />
+              </div>
+
+              <div>
+                <Label>Fecha Registro</Label>
+                <Input
+                  disabled
+                  value={`${salidaDetalle.fecha} ${salidaDetalle.hora}`}
+                />
+              </div>
+
+              <div>
+                <Label>Fecha Proceso</Label>
+                <Input
+                  disabled
+                  value={`${salidaDetalle.fecha_proceso} ${salidaDetalle.hora_proceso}`}
+                />
+              </div>
+
+              <div>
+                <Label>Total (S/.)</Label>
+                <Input disabled value={salidaDetalle.total.toFixed(2)} />
+              </div>
+
+              <div>
+                <Label>Usuario</Label>
+                <Input disabled value={salidaDetalle.usuario} />
+              </div>
+
+              <div className="md:col-span-2">
+                <Label>Observación</Label>
+                <Input disabled value={salidaDetalle.observacion || "-"} />
+              </div>
+
+            </div>
+
+            <div className="mt-6">
+              <h3 className="text-base font-semibold mb-3">
+                Detalle de Productos
+              </h3>
+
+              <div className="border rounded-lg overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>N°</TableHead>
+                      <TableHead>Item</TableHead>
+                      <TableHead>Nombre</TableHead>
+                      <TableHead>Registro Sanitario</TableHead>
+                      <TableHead>Lote</TableHead>
+                      <TableHead>F. Venc.</TableHead>
+                      <TableHead className="text-right">Precio</TableHead>
+                      <TableHead className="text-right">Cantidad</TableHead>
+                      <TableHead className="text-right">Importe</TableHead>
+                    </TableRow>
+                  </TableHeader>
+
+                  <TableBody>
+                    {productosMock.map((prod, index) => {
+                      const importe = prod.precio * prod.cantidad;
+
+                      return (
+                        <TableRow key={prod.id}>
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{prod.codigo}</TableCell>
+                          <TableCell>{prod.nombre}</TableCell>
+                          <TableCell>{prod.regSan}</TableCell>
+                          <TableCell>{prod.lote}</TableCell>
+                          <TableCell>{prod.fechaVenc}</TableCell>
+                          <TableCell className="text-right">
+                            {prod.precio.toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {prod.cantidad}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {(importe).toFixed(2)}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+
+              <div className="flex justify-end mt-4 font-semibold">
+                Total: S/{" "}
+                {productosMock
+                  .reduce((sum, p) => sum + p.precio * p.cantidad, 0)
+                  .toFixed(2)}
+              </div>
+            </div>
+
+
+            {/* FOOTER */}
+            <div className="flex justify-end mt-6">
+              <Button variant="outline" onClick={() => setShowDetalleModal(false)}>
+                Cerrar
+              </Button>
+            </div>
+
+          </DialogContent>
+        </Dialog>
+      )}
+
 
     </div>
   )

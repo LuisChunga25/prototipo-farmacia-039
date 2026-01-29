@@ -5,10 +5,12 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Save, PlusCircle, Trash2, Loader2, CheckCircle } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { ArrowLeft, Save, Loader2, CheckCircle, Trash2, PlusCircle } from "lucide-react"
+import { useRouter, useParams } from "next/navigation"
 import { useState, useEffect } from "react"
 
+// 👉 reutilizas los mismos catálogos
+// tipoDocSalida, almOrigen, tipoSalida, etc.
 const tipoDocSalida = [
     { id: "ACTA", codigo: "ACTA", nombre: "Acta" },
     { id: "RDS", codigo: "RDS", nombre: "Requerimiento de Servicios" },
@@ -87,96 +89,66 @@ const productosMock = [
     },
 ];
 
-
-export default function NuevaSalidaPage() {
-    const router = useRouter();
-
-    const [tipoDocumento, setTipoDocumento] = useState("");
-    const [documento, setDocumento] = useState("");
-    const [observacion, setObservacion] = useState("");
-    const [fechaActual, setFechaActual] = useState("");
-    const [horaActual, setHoraActual] = useState("");
-    const [almacenOrigen, setAlmacenOrigen] = useState("");
-    const [tipoDeSalida, setTipoDeSalida] = useState("");
+export default function EditarSalidaPage() {
+    const router = useRouter()
+    const params = useParams()
+    const salidaId = params.salidaId
+    
+    // 🔹 estados (idénticos a nueva-page.tsx)
+    const [tipoDocumento, setTipoDocumento] = useState("")
+    const [almacenOrigen, setAlmacenOrigen] = useState("")
+    const [tipoDeSalida, setTipoDeSalida] = useState("")
+    const [tipoDeUso, setTipoDeUso] = useState("")
+    const [productos, setProductos] = useState<any[]>([])
+    const [guardando, setGuardando] = useState(false)
+    const [openModalExito, setOpenModalExito] = useState(false)
     const [destino, setDestino] = useState("");
     const [destinoOperativo, setDestinoOperativo] = useState("");
     const [laboratorioDestino, setLaboratorioDestino] = useState("");
-    const [tipoDeUso, setTipoDeUso] = useState("");
     const [tipoDeTransferencia, setTipoDeTransferencia] = useState("");
-    const [productos, setProductos] = useState<any[]>([]);
     const [productoId, setProductoId] = useState("");
     const [productoSeleccionado, setProductoSeleccionado] = useState<any>(null);
     const [cantidad, setCantidad] = useState<number>(1);
-    const [guardando, setGuardando] = useState(false);
-    const [openModalExito, setOpenModalExito] = useState(false);
-    const puedeGuardarSalida = productos.length > 0;
-    const isACTA = tipoDocumento === "ACTA";
-    const isRDS = tipoDocumento === "RDS";
-    const isDDL = tipoDocumento === "DDL";
 
-    // CALCULAR LA FECHA Y HORA ACTUALES
+    const puedeGuardarSalida = productos.length > 0
+
+    const isACTA = tipoDocumento === "ACTA"
+    const isRDS = tipoDocumento === "RDS"
+    const isDDL = tipoDocumento === "DDL"
+
+    // 🔹 CARGA SIMULADA DEL DOCUMENTO
     useEffect(() => {
-        const ahora = new Date();
-
-        const dia = String(ahora.getDate()).padStart(2, "0");
-        const mes = String(ahora.getMonth() + 1).padStart(2, "0");
-        const anio = ahora.getFullYear();
-
-        const fechaFormateada = `${dia}-${mes}-${anio}`;
-
-        // Fecha formato YYYY-MM-DD
-        const fecha = ahora.toISOString().split("T")[0];
-
-        // Hora formato HH:mm:ss
-        const hora = ahora.toLocaleTimeString("es-PE", {
-            hour12: false,
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-        });
-
-        setFechaActual(fechaFormateada);
-        setHoraActual(hora);
-    }, []);
-
-    // SETEAR VALORES AUTOMATICOS SEGÚN TIPO DE DOCUMENTO
-    useEffect(() => {
-        if (isRDS) {
-            setAlmacenOrigen("AI");
-            setTipoDeSalida("STS");
-            setTipoDeUso("C");
+        // Simulación de fetch por ID
+        const salidaMock = {
+            tipoDocumento: "ACTA",
+            almacenOrigen: "AG",
+            tipoDeSalida: "STE",
+            tipoDeUso: "V",
+            productos: [
+                {
+                    nombre: "Algodón Hidrófilo x 500 gr",
+                    precio: "2.70",
+                    cantidad: 15,
+                    importe: "40.50",
+                },
+            ],
         }
 
-        if (isDDL) {
-            setTipoDeSalida("STL");
-            setTipoDeUso("C");
-        }
+        setTipoDocumento(salidaMock.tipoDocumento)
+        setAlmacenOrigen(salidaMock.almacenOrigen)
+        setTipoDeSalida(salidaMock.tipoDeSalida)
+        setTipoDeUso(salidaMock.tipoDeUso)
+        setProductos(salidaMock.productos)
+    }, [salidaId])
 
-        if (isACTA) {
-            setAlmacenOrigen("");
-            setTipoDeSalida("");
-            setTipoDeUso("");
-        }
-    }, [tipoDocumento]);
+    const handleActualizarSalida = () => {
+        setGuardando(true)
 
-    // AUTOCOMPLETAR CAMPOS AL SELECCIONAR PRODUCTO
-    useEffect(() => {
-        const prod = productosMock.find(p => p.id === productoId);
-        setProductoSeleccionado(prod || null);
-    }, [productoId]);
-
-    // FUNCIÓN GUARDAR SALIDA
-    const handleGuardarSalida = () => {
-        setGuardando(true);
-
-        // Simulación de guardado (API / backend)
         setTimeout(() => {
-            setGuardando(false);
-            setOpenModalExito(true);
-        }, 1500);
-    };
-
-
+            setGuardando(false)
+            setOpenModalExito(true)
+        }, 1500)
+    }
 
     return (
         <div className="max-w-7xl mx-auto p-6 space-y-6 bg-slate-50/50 min-h-screen">
@@ -184,18 +156,15 @@ export default function NuevaSalidaPage() {
             {/* Header */}
             <div className="flex justify-between items-center bg-white rounded-lg p-4 shadow-sm border">
                 <div className="flex items-center gap-4 w-full">
-                    <Button
-                        variant="outline"
-                        onClick={() => router.push("/dashboard/almacenes/salidas")}
-                    >
+                    <Button variant="outline" onClick={() => router.back()}>
                         <ArrowLeft className="w-4 h-4 mr-1" />
                         Regresar
                     </Button>
 
                     <div>
-                        <h1 className="text-xl font-bold">Registrar Nueva Salida</h1>
+                        <h1 className="text-xl font-bold">Editar Documento de Salida</h1>
                         <p className="text-muted-foreground">
-                            Complete los datos para registrar una salida
+                            Modifique los datos del documento de salida
                         </p>
                     </div>
 
@@ -206,16 +175,18 @@ export default function NuevaSalidaPage() {
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="text-sm text-slate-600 font-medium">Fecha:</span>
-                            <Input disabled value={fechaActual} className="w-28 bg-white border-slate-300 text-slate-700 h-8" />
+                            <Input disabled className="w-28 bg-white border-slate-300 text-slate-700 h-8" />
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="text-sm text-slate-600 font-medium">Hora:</span>
-                            <Input disabled value={horaActual} className="w-24 bg-white border-slate-300 text-slate-700 h-8" />
+                            <Input disabled className="w-24 bg-white border-slate-300 text-slate-700 h-8" />
                         </div>
                     </div>
                 </div>
             </div>
 
+            {/* 🔁 Todo el JSX intermedio es EL MISMO que nueva-page.tsx */}
+            {/* Solo cambian valores iniciales */}
             <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
                 <div className="bg-gradient-to-r from-cyan-600 to-cyan-700 px-4 py-3">
                     <h2 className="font-semibold text-white">Tipo de Documento</h2>
@@ -614,53 +585,47 @@ export default function NuevaSalidaPage() {
             )}
 
             {/* Footer */}
-            {tipoDocumento && (
-                <div className="flex justify-end gap-3">
-                    <Button variant="outline" onClick={() => router.back()}>
-                        Cancelar
-                    </Button>
-                    <Button
-                        className={`bg-green-600 hover:bg-green-700 text-white flex items-center gap-2
-                            ${!puedeGuardarSalida || guardando ? "opacity-50 cursor-not-allowed" : ""}`}
-                        disabled={!puedeGuardarSalida || guardando}
-                        onClick={handleGuardarSalida}
-                    >
-                        {guardando ? (
-                            <>
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                                Guardando...
-                            </>
-                        ) : (
-                            <>
-                                <Save className="w-4 h-4" />
-                                Guardar Salida
-                            </>
-                        )}
-                    </Button>
-                </div>
-            )}
+            <div className="flex justify-end gap-3">
+                <Button variant="outline" onClick={() => router.back()}>
+                    Cancelar
+                </Button>
 
-            {/* MODAL DE ÉXITO DEL GUARDADO DEL DOCUMENTO DE SALIDA */}
+                <Button
+                    disabled={!puedeGuardarSalida || guardando}
+                    onClick={handleActualizarSalida}
+                    className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+                >
+                    {guardando ? (
+                        <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Actualizando...
+                        </>
+                    ) : (
+                        <>
+                            <Save className="w-4 h-4" />
+                            Actualizar Salida
+                        </>
+                    )}
+                </Button>
+            </div>
+
+            {/* MODAL ÉXITO */}
             <Dialog open={openModalExito} onOpenChange={setOpenModalExito}>
                 <DialogContent className="max-w-sm">
                     <DialogHeader>
                         <DialogTitle className="flex flex-col items-center gap-3">
                             <CheckCircle className="w-16 h-16 text-green-600" />
-                            <span>Registro exitoso</span>
+                            Actualización exitosa
                         </DialogTitle>
                     </DialogHeader>
 
                     <p className="text-center text-gray-700">
-                        El documento de salida ha sido registrado con éxito.
+                        El documento de salida fue actualizado correctamente.
                     </p>
 
                     <DialogFooter className="flex justify-center mt-4">
                         <Button
-                            className="bg-blue-600 hover:bg-blue-700 text-white"
-                            onClick={() => {
-                                setOpenModalExito(false);
-                                router.push("/dashboard/almacenes/salidas");
-                            }}
+                            onClick={() => router.push("/dashboard/almacenes/salidas")}
                         >
                             Finalizar
                         </Button>
