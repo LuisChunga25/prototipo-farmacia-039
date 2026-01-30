@@ -460,22 +460,6 @@ export default function TransferenciasPage() {
     </Badge>
   }
 
-  const getEstadoBadgeDevol = (estado: string) => {
-    const variants = {
-      "1": "bg-yellow-100 text-yellow-800 border-yellow-300",
-      "2": "bg-green-100 text-green-800 border-green-300",
-    }
-
-    const nombreEstado = {
-      "1": "REGISTRADO",
-      "2": "PROCESADO",
-    }
-
-    return <Badge className={`${variants[estado as keyof typeof variants]} w-32 justify-center text-sm font-semibold py-1`}>
-      {nombreEstado[estado as keyof typeof nombreEstado]}
-    </Badge>
-  }
-
   // Formatear fecha: DD/MM/YYYY
   const fechaActual = now.toLocaleDateString("es-PE", {
     day: "2-digit",
@@ -800,11 +784,11 @@ export default function TransferenciasPage() {
                                 <Button
                                   variant="outline"
                                   className={`h-8 w-10 p-1.5 border-green-600 text-green-600 hover:bg-green-50
-                                    ${solicitud.estado !== "3" ? "opacity-40 cursor-not-allowed" : ""}`}
-                                  disabled={solicitud.estado !== "3"}
+                                    ${solicitud.estado !== "2" ? "opacity-40 cursor-not-allowed" : ""}`}
+                                  disabled={solicitud.estado !== "2"}
                                   title="Brindar Conformidad"
                                   onClick={() => {
-                                    if (solicitud.estado === "3") {
+                                    if (solicitud.estado === "2") {
                                       setSolicitudSeleccionada(solicitud);
                                       setOpenModalConformidad(true);
                                     }
