@@ -784,11 +784,11 @@ export default function TransferenciasPage() {
                                 <Button
                                   variant="outline"
                                   className={`h-8 w-10 p-1.5 border-green-600 text-green-600 hover:bg-green-50
-                                    ${solicitud.estado !== "2" ? "opacity-40 cursor-not-allowed" : ""}`}
-                                  disabled={solicitud.estado !== "2"}
+                                    ${solicitud.estado !== "3" ? "opacity-40 cursor-not-allowed" : ""}`}
+                                  disabled={solicitud.estado !== "3"}
                                   title="Brindar Conformidad"
                                   onClick={() => {
-                                    if (solicitud.estado === "2") {
+                                    if (solicitud.estado === "3") {
                                       setSolicitudSeleccionada(solicitud);
                                       setOpenModalConformidad(true);
                                     }
