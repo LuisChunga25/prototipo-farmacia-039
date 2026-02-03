@@ -154,7 +154,7 @@ export default function NuevaSalidaPage() {
 
         if (isACTA) {
             setAlmacenOrigen("");
-            setTipoDeSalida("");
+            setTipoDeSalida("STE");
             setTipoDeUso("");
         }
     }, [tipoDocumento]);
@@ -345,32 +345,16 @@ export default function NuevaSalidaPage() {
 
                             <div>
                                 <Label>Tipo de Salida: <span className="text-red-500">*</span></Label>
-                                {isACTA ? (
-                                    <Select
-                                        value={tipoDeSalida}
-                                        onValueChange={setTipoDeSalida}
-                                    >
-                                        <SelectTrigger className="w-full bg-white">
-                                            <SelectValue placeholder="Seleccionar tipo de salida" />
-                                        </SelectTrigger>
-                                        <SelectContent className="bg-white border shadow-md">
-                                            {tipoSalida.map((tipoS) => (
-                                                <SelectItem key={tipoS.id} value={tipoS.codigo}>
-                                                    {tipoS.nombre}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                ) : (
-                                    <Input
-                                        disabled
-                                        value={
-                                            isRDS
+                                <Input
+                                    disabled
+                                    value={
+                                        isACTA
+                                            ? "Salida por Transferencias entre Unidades Ejecutoras"
+                                            : isRDS
                                                 ? "Salida por Transferencia de Servicios"
                                                 : "Salida por Transferencia de Laboratorio"
-                                        }
-                                    />
-                                )}
+                                    }
+                                />
                             </div>
 
                             <div>

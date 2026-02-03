@@ -33,11 +33,12 @@ import { useRouter } from "next/navigation"
 import { Plus } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DespachoPrerrequerimiento } from "@/components/transferencias/despacho-prerrequerimiento"
 import { FormularioNuevaDevolucion } from "@/components/devoluciones/formulario-nueva-devolucion"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
+import { Textarea } from "@/components/ui/textarea"
 
 // Datos de ejemplo para la tabla de prerrequerimientos
 const prerrequerimientosData = [
@@ -289,6 +290,16 @@ const farmaciasSolicitantes = [
   { id: 4, codigo: "F", nombre: "Farmacia Emergencia" },
   { id: 6, codigo: "FL", nombre: "Farmacia Laboratorio" },
 ]
+
+const detallePrerrequerimientoMock = {
+  observacion: "Reposición de medicamentos para turno noche",
+  productos: [
+    { codigo: "00070", nombre: "ACETILCISTEINA 100 MG", cantidad: 50 },
+    { codigo: "00132", nombre: "ACICLOVIR 250 MG INY", cantidad: 20 },
+    { codigo: "00456", nombre: "PARACETAMOL 500 MG", cantidad: 100 },
+  ],
+};
+
 
 export default function TransferenciasPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -1248,73 +1259,94 @@ export default function TransferenciasPage() {
                   {/* MODAL DE DETALLE DEL PRERREQUERIMIENTO */}
                   <Dialog open={openModalDetalle} onOpenChange={setOpenModalDetalle}>
                     <DialogContent
-                      className="max-w-lg"
+                      className="max-w-6xl max-h-[85vh] overflow-y-auto"
                       onInteractOutside={(e) => e.preventDefault()} // evita cerrar haciendo clic fuera
                     >
                       <DialogHeader>
                         <DialogTitle>
                           Detalle del Prerrequerimiento - {solicitudSeleccionada?.prerrequerimientoId}
                         </DialogTitle>
+                        <DialogDescription>
+                          Información completa del prerrequerimiento registrado por Farmacia (datos de prueba)
+                        </DialogDescription>
                       </DialogHeader>
 
-                      {/* CAMPOS SUPERIORES */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                      {solicitudSeleccionada && (
+                        <div className="space-y-6 text-sm">
 
-                        <div className="space-y-1">
-                          <Label>ID Prerrequerimiento:</Label>
-                          <p className="font-semibold">{solicitudSeleccionada?.prerrequerimientoId}</p>
-                        </div>
+                          {/* === DATOS GENERALES === */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <Label>Estado</Label>
+                              {getEstadoBadge(solicitudSeleccionada.estado)}
+                            </div>
 
-                        <div className="space-y-1">
-                          <Label>Usuario:</Label>
-                          <p className="font-medium">{solicitudSeleccionada?.usuario}</p>
-                        </div>
+                            <div>
+                              <Label>Tipo de Requerimiento</Label>
+                              <Input disabled value={solicitudSeleccionada.tipoRequerimiento} />
+                            </div>
 
-                        <div className="space-y-1">
-                          <Label>Estado:</Label>
-                          <p>{getEstadoBadge(solicitudSeleccionada?.estado)}</p>
-                        </div>
+                            <div>
+                              <Label>Fecha Registro</Label>
+                              <Input
+                                disabled
+                                value={`${solicitudSeleccionada.fecha} ${solicitudSeleccionada.hora}`}
+                              />
+                            </div>
 
-                      </div>
+                            <div>
+                              <Label>Usuario</Label>
+                              <Input disabled value={solicitudSeleccionada.usuario} />
+                            </div>
 
-                      {/* TABLA DE PRODUCTOS */}
-                      <div className="mt-6 border rounded-md overflow-x-auto">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Producto</TableHead>
-                              <TableHead>Cantidad</TableHead>
-                            </TableRow>
-                          </TableHeader>
+                            <div>
+                              <Label>Almacén Solicitante</Label>
+                              <Input disabled value={solicitudSeleccionada.almacenSolicitante} />
+                            </div>
+                          </div>
 
-                          <TableBody>
-                            {solicitudSeleccionada?.productos?.length > 0 ? (
-                              solicitudSeleccionada.productos.map((prod: any, index: number) => (
-                                <TableRow key={index}>
-                                  <TableCell>{prod.nombre}</TableCell>
-                                  <TableCell>{prod.cantidad}</TableCell>
+                          {/* === OBSERVACIÓN === */}
+                          <div>
+                            <Label>Observación</Label>
+                            <Textarea
+                              disabled
+                              value={detallePrerrequerimientoMock.observacion}
+                            />
+                          </div>
+
+                          {/* === PRODUCTOS === */}
+                          <div>
+                            <Label className="mb-2 block">Detalle de productos</Label>
+
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>Código</TableHead>
+                                  <TableHead>Producto</TableHead>
+                                  <TableHead>Cantidad</TableHead>
                                 </TableRow>
-                              ))
-                            ) : (
-                              <TableRow>
-                                <TableCell colSpan={2} className="text-center text-gray-500 py-4">
-                                  No hay productos registrados
-                                </TableCell>
-                              </TableRow>
-                            )}
-                          </TableBody>
-                        </Table>
-                      </div>
+                              </TableHeader>
+                              <TableBody>
+                                {detallePrerrequerimientoMock.productos.map((prod, index) => (
+                                  <TableRow key={index}>
+                                    <TableCell>{prod.codigo}</TableCell>
+                                    <TableCell>{prod.nombre}</TableCell>
+                                    <TableCell>{prod.cantidad}</TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </div>
 
-                      <DialogFooter className="mt-4">
-                        <Button variant="outline" onClick={() => setOpenModalDetalle(false)}>
-                          Cerrar
-                        </Button>
-                      </DialogFooter>
+                          <div className="flex justify-end">
+                            <Button onClick={() => setOpenModalDetalle(false)}>
+                              Cerrar
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     </DialogContent>
                   </Dialog>
-
-
                 </CardContent>
               </Card>
             </TabsContent>
@@ -1487,7 +1519,7 @@ export default function TransferenciasPage() {
                                             title="Ver detalle"
                                             onClick={() => {
                                               setSolicitudSeleccionada(solicitud);
-                                              setOpenModalDetalleDist(true);
+                                              setOpenModalDetalle(true);
                                             }}
                                           >
                                             <Eye className="h-4 w-4" />
@@ -2637,8 +2669,8 @@ export default function TransferenciasPage() {
                       </DialogHeader>
 
                       <p className="text-gray-700">
-                        La preparación del prerrequerimiento se realizó con éxito. <br/>
-                        <br/>
+                        La preparación del prerrequerimiento se realizó con éxito. <br />
+                        <br />
                         Los lotes han sido asignados a cada producto de forma satisfactoria.
                       </p>
 
@@ -2654,7 +2686,7 @@ export default function TransferenciasPage() {
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
-                  
+
 
                 </CardContent>
               </Card>
