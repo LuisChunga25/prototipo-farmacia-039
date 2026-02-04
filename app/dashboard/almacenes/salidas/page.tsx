@@ -579,7 +579,7 @@ export default function SalidasPage() {
       {/* MODAL DE VER DETALLE (SOLO LECTURA) */}
       {showDetalleModal && salidaDetalle && (
         <Dialog open={showDetalleModal} onOpenChange={setShowDetalleModal}>
-          <DialogContent className="max-w-6xl">
+          <DialogContent className="max-w-6xl" onInteractOutside={(e) => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle>Detalle de Documento de Salida</DialogTitle>
               <DialogDescription>

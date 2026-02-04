@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "
 import { Trash2, Edit, PackagePlus, ArrowLeft, CheckCircle, Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useState, useEffect, Fragment } from "react";
+import { Textarea } from "../ui/textarea";
 
 interface Props {
     solicitud: any;
@@ -53,6 +54,7 @@ export function DespachoPrerrequerimiento({
     const [openSuccessModal, setOpenSuccessModal] = useState(false);
     const [detalles, setDetalles] = useState<DetalleProducto[]>(detallesPrerreq);
     const [openEditModal, setOpenEditModal] = useState(false);
+    const [motivoEliminacion, setMotivoEliminacion] = useState("");
     const [detalleAEditar, setDetalleAEditar] = useState<any | null>(null);
     const [cantidadEditada, setCantidadEditada] = useState<number>(0);
     const [openEditSuccessModal, setOpenEditSuccessModal] = useState(false);
@@ -72,8 +74,18 @@ export function DespachoPrerrequerimiento({
 
     const [nuevoProducto, setNuevoProducto] = useState({
         producto: "",
-        cantidad: ""
+        cantidad: "",
+        motivo: "",
     });
+
+    const resetNuevoProducto = () => {
+        setNuevoProducto({
+            producto: "",
+            cantidad: "",
+            motivo: "",
+        });
+    };
+
 
     const lotesMock = [
         {
@@ -81,27 +93,27 @@ export function DespachoPrerrequerimiento({
             cantidad: 40,
             precio: 1.5,
             regSanitario: "RS-001",
-            fechaVcto: "2026-01-31",
+            fechaVcto: "31-01-2026",
             lote: "L001",
-            fechaRegistro: "2025-01-10",
+            fechaRegistro: "10-01-2025",
         },
         {
             id: 2,
             cantidad: 30,
             precio: 2,
             regSanitario: "RS-002",
-            fechaVcto: "2026-03-15",
+            fechaVcto: "15-03-2026",
             lote: "L002",
-            fechaRegistro: "2025-01-10",
+            fechaRegistro: "10-01-2025",
         },
         {
             id: 3,
             cantidad: 30,
             precio: 2.5,
             regSanitario: "RS-003",
-            fechaVcto: "2026-06-30",
+            fechaVcto: "30-06-2026",
             lote: "L003",
-            fechaRegistro: "2025-02-20",
+            fechaRegistro: "20-02-2025",
         },
     ];
 
@@ -124,7 +136,7 @@ export function DespachoPrerrequerimiento({
                         cantidad: 10,
                         precio: 2.5,
                         regSanitario: "RS-003",
-                        fechaVcto: "2026-06-30",
+                        fechaVcto: "31-01-2026",
                     },
                     {
                         id: 102,
@@ -132,7 +144,7 @@ export function DespachoPrerrequerimiento({
                         cantidad: 30,
                         precio: 2,
                         regSanitario: "RS-002",
-                        fechaVcto: "2026-03-15",
+                        fechaVcto: "15-03-2026",
                     },
                     {
                         id: 103,
@@ -140,7 +152,7 @@ export function DespachoPrerrequerimiento({
                         cantidad: 40,
                         precio: 1.5,
                         regSanitario: "RS-001",
-                        fechaVcto: "2026-01-31",
+                        fechaVcto: "30-06-2026",
                     },
                 ],
             },
@@ -161,7 +173,7 @@ export function DespachoPrerrequerimiento({
                         cantidad: 50,
                         precio: 2,
                         regSanitario: "RS-010",
-                        fechaVcto: "2026-05-20",
+                        fechaVcto: "20-05-2026",
                     },
                 ],
             },
@@ -182,7 +194,7 @@ export function DespachoPrerrequerimiento({
                         cantidad: 10,
                         precio: 2,
                         regSanitario: "RS-020",
-                        fechaVcto: "2026-07-31",
+                        fechaVcto: "31-07-2026",
                     },
                 ],
             },
@@ -223,6 +235,17 @@ export function DespachoPrerrequerimiento({
         setSumaStockAsignado(0);
         setLoteSeleccionado(null);
     };
+
+    const isGuardarHabilitado =
+        nuevoProducto.producto.trim() !== "" &&
+        nuevoProducto.cantidad !== "" &&
+        Number(nuevoProducto.cantidad) > 0 &&
+        nuevoProducto.motivo.trim().length >= 10;
+
+    const isEliminarHabilitado =
+        motivoEliminacion.trim().length >= 10;
+
+    const isGuardarCantidadHabilitado = cantidadEditada >= 1;
 
 
     return (
@@ -414,6 +437,7 @@ export function DespachoPrerrequerimiento({
                                                 className="h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50"
                                                 onClick={() => {
                                                     setDetalleAEliminar(detalle);
+                                                    setMotivoEliminacion("");
                                                     setOpenDeleteModal(true);
                                                 }}
                                             >
@@ -428,10 +452,10 @@ export function DespachoPrerrequerimiento({
                     </TableBody>
 
                     <Dialog open={openDeleteModal} onOpenChange={setOpenDeleteModal}>
-                        <DialogContent className="max-w-sm">
+                        <DialogContent className="max-w-sm" onInteractOutside={(e) => e.preventDefault()}>
                             <DialogHeader>
                                 <DialogTitle className="text-red-600">
-                                    ¿Eliminar producto?
+                                    Eliminar producto
                                 </DialogTitle>
                             </DialogHeader>
 
@@ -447,12 +471,22 @@ export function DespachoPrerrequerimiento({
                                 </span>
                             </p>
 
+                            <div className="space-y-2 mt-3">
+                                <Label>Motivo de eliminación: <span className="text-red-500">*</span></Label>
+                                <Input
+                                    placeholder="Ingrese mínimo 10 caracteres"
+                                    value={motivoEliminacion}
+                                    onChange={(e) => setMotivoEliminacion(e.target.value)}
+                                />
+                            </div>
+
                             <DialogFooter className="mt-4">
                                 <Button
                                     variant="outline"
                                     onClick={() => {
                                         setOpenDeleteModal(false);
                                         setDetalleAEliminar(null);
+                                        setMotivoEliminacion("");
                                     }}
                                 >
                                     Cancelar
@@ -460,14 +494,16 @@ export function DespachoPrerrequerimiento({
 
                                 <Button
                                     className="bg-red-600 hover:bg-red-700 text-white"
+                                    disabled={!isEliminarHabilitado}
                                     onClick={() => {
-                                        // AQUÍ luego conectas el backend o el setState
-                                        console.log("Eliminar:", detalleAEliminar);
+                                        console.log("Eliminar:", {
+                                            producto: detalleAEliminar,
+                                            motivo: motivoEliminacion,
+                                        });
 
                                         setOpenDeleteModal(false);
                                         setDetalleAEliminar(null);
-
-                                        // Mostrar modal de éxito
+                                        setMotivoEliminacion("");
                                         setOpenSuccessModal(true);
                                     }}
                                 >
@@ -478,7 +514,7 @@ export function DespachoPrerrequerimiento({
                     </Dialog>
 
                     <Dialog open={openSuccessModal} onOpenChange={setOpenSuccessModal}>
-                        <DialogContent className="max-w-sm">
+                        <DialogContent className="max-w-sm" onInteractOutside={(e) => e.preventDefault()}>
                             <DialogHeader>
                                 <DialogTitle className="flex flex-col items-center gap-3 text-green-600">
                                     <CheckCircle className="w-14 h-14" />
@@ -502,10 +538,16 @@ export function DespachoPrerrequerimiento({
                     </Dialog>
 
                     <Dialog open={openEditModal} onOpenChange={setOpenEditModal}>
-                        <DialogContent className="max-w-sm">
+                        <DialogContent className="max-w-sm" onInteractOutside={(e) => e.preventDefault()}>
                             <DialogHeader>
                                 <DialogTitle>Editar cantidad solicitada</DialogTitle>
                             </DialogHeader>
+
+                            <p className="text-sm text-yellow-700 bg-yellow-50 border border-yellow-300 rounded p-2">
+                                Al editar la cantidad solicitada, los lotes asignados se resetearán automáticamente
+                                y deberá volver a seleccionar los lotes para este producto.
+                            </p>
+
 
                             <div className="space-y-3">
                                 <Label>Cantidad solicitada:</Label>
@@ -529,6 +571,8 @@ export function DespachoPrerrequerimiento({
                                 </Button>
 
                                 <Button
+                                    disabled={!isGuardarCantidadHabilitado}
+                                    className="disabled:opacity-50"
                                     onClick={() => {
                                         setDetalles((prev) =>
                                             prev.map((d) =>
@@ -537,6 +581,7 @@ export function DespachoPrerrequerimiento({
                                                         ...d,
                                                         cantidad: cantidadEditada,
                                                         importe: cantidadEditada * d.precio,
+                                                        lotesAsignados: [], // 🔄 reset de lotes
                                                     }
                                                     : d
                                             )
@@ -549,12 +594,13 @@ export function DespachoPrerrequerimiento({
                                 >
                                     Guardar
                                 </Button>
+
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
 
                     <Dialog open={openEditSuccessModal} onOpenChange={setOpenEditSuccessModal}>
-                        <DialogContent className="max-w-sm">
+                        <DialogContent className="max-w-sm" onInteractOutside={(e) => e.preventDefault()}>
                             <DialogHeader>
                                 <DialogTitle className="flex flex-col items-center gap-3 text-green-600">
                                     <CheckCircle className="w-14 h-14" />
@@ -577,8 +623,16 @@ export function DespachoPrerrequerimiento({
                         </DialogContent>
                     </Dialog>
 
-                    <Dialog open={openAsignarLoteModal} onOpenChange={setOpenAsignarLoteModal}>
-                        <DialogContent className="max-w-4xl">
+                    <Dialog
+                        open={openAsignarLoteModal}
+                        onOpenChange={(open) => {
+                            setOpenAsignarLoteModal(open);
+                            if (!open) {
+                                resetAsignacionLotes();
+                            }
+                        }}
+                    >
+                        <DialogContent className="max-w-4xl" onInteractOutside={(e) => e.preventDefault()}>
                             <DialogHeader>
                                 <DialogTitle>Asignar lote</DialogTitle>
                             </DialogHeader>
@@ -654,7 +708,7 @@ export function DespachoPrerrequerimiento({
                     </Dialog>
 
                     <Dialog open={openConfirmLoteModal} onOpenChange={setOpenConfirmLoteModal}>
-                        <DialogContent className="max-w-sm">
+                        <DialogContent className="max-w-sm" onInteractOutside={(e) => e.preventDefault()}>
                             <DialogHeader>
                                 <DialogTitle>Confirmar asignación</DialogTitle>
                             </DialogHeader>
@@ -714,7 +768,7 @@ export function DespachoPrerrequerimiento({
                     </Dialog>
 
                     <Dialog open={openSuccessLoteModal} onOpenChange={setOpenSuccessLoteModal}>
-                        <DialogContent className="max-w-sm">
+                        <DialogContent className="max-w-sm" onInteractOutside={(e) => e.preventDefault()}>
                             <DialogHeader>
                                 <DialogTitle className="flex flex-col items-center gap-3 text-green-600">
                                     <CheckCircle className="w-14 h-14" />
@@ -740,8 +794,16 @@ export function DespachoPrerrequerimiento({
                         </DialogContent>
                     </Dialog>
 
-                    <Dialog open={openAgregarProducto} onOpenChange={setOpenAgregarProducto}>
-                        <DialogContent className="max-w-md">
+                    <Dialog
+                        open={openAgregarProducto}
+                        onOpenChange={(open) => {
+                            setOpenAgregarProducto(open);
+                            if (!open) {
+                                resetNuevoProducto();
+                            }
+                        }}
+                    >
+                        <DialogContent className="max-w-md" onInteractOutside={(e) => e.preventDefault()}>
                             <DialogHeader>
                                 <DialogTitle>Agregar producto</DialogTitle>
                             </DialogHeader>
@@ -749,7 +811,7 @@ export function DespachoPrerrequerimiento({
                             <div className="space-y-4">
                                 {/* Producto */}
                                 <div>
-                                    <label className="text-sm font-medium">Producto</label>
+                                    <label className="text-sm font-medium">Producto: <span className="text-red-500">*</span></label>
                                     <Input
                                         placeholder="Ej. Paracetamol 500mg"
                                         value={nuevoProducto.producto}
@@ -761,7 +823,7 @@ export function DespachoPrerrequerimiento({
 
                                 {/* Cantidad */}
                                 <div>
-                                    <label className="text-sm font-medium">Cantidad</label>
+                                    <label className="text-sm font-medium">Cantidad: <span className="text-red-500">*</span></label>
                                     <Input
                                         type="number"
                                         min={1}
@@ -771,26 +833,41 @@ export function DespachoPrerrequerimiento({
                                         }
                                     />
                                 </div>
+
+                                {/* Motivo */}
+                                <div>
+                                    <label className="text-sm font-medium">Motivo: <span className="text-red-500">*</span></label>
+                                    <Input
+                                        placeholder="Ingrese mínimo 10 caracteres"
+                                        value={nuevoProducto.motivo}
+                                        onChange={(e) =>
+                                            setNuevoProducto({ ...nuevoProducto, motivo: e.target.value })
+                                        }
+                                    />
+                                </div>
                             </div>
 
                             <DialogFooter className="mt-4">
                                 <Button
                                     variant="outline"
-                                    onClick={() => setOpenAgregarProducto(false)}
+                                    onClick={() => {
+                                        setOpenAgregarProducto(false);
+                                        resetNuevoProducto();
+                                    }}
                                 >
                                     Cancelar
                                 </Button>
 
                                 <Button
                                     className="bg-green-600 hover:bg-green-700 text-white"
+                                    disabled={!isGuardarHabilitado}
                                     onClick={() => {
-                                        // Aquí luego se conecta a la tabla
                                         console.log("Producto agregado:", nuevoProducto);
 
                                         setOpenAgregarProducto(false);
                                         setOpenExitoAgregarProducto(true);
 
-                                        setNuevoProducto({ producto: "", cantidad: "" });
+                                        setNuevoProducto({ producto: "", cantidad: "", motivo: "" });
                                     }}
                                 >
                                     Guardar
@@ -800,7 +877,7 @@ export function DespachoPrerrequerimiento({
                     </Dialog>
 
                     <Dialog open={openExitoAgregarProducto} onOpenChange={setOpenExitoAgregarProducto}>
-                        <DialogContent className="max-w-sm">
+                        <DialogContent className="max-w-sm" onInteractOutside={(e) => e.preventDefault()}>
                             <DialogHeader>
                                 <DialogTitle className="flex flex-col items-center gap-3">
                                     <CheckCircle className="h-14 w-14 text-green-600" />
