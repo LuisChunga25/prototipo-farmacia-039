@@ -545,7 +545,7 @@ export function DespachoPrerrequerimiento({
 
                             <p className="text-sm text-yellow-700 bg-yellow-50 border border-yellow-300 rounded p-2">
                                 Al editar la cantidad solicitada, los lotes asignados se resetearán automáticamente
-                                y deberá volver a seleccionar los lotes para este producto.
+                                y deberá volver a seleccionar los lotes para el producto <span className="font-semibold">{detalleAEditar?.nombre}</span>.
                             </p>
 
 

@@ -300,6 +300,33 @@ const detallePrerrequerimientoMock = {
   ],
 };
 
+const historialCambiosMock = [
+  {
+    id: 1,
+    fechaHora: "04/02/2026 09:15",
+    usuario: "Axel Huamán",
+    accion: "AGREGAR PRODUCTO",
+    producto: "184844 - Tramadol 200mg",
+    motivo: "Producto faltante en el prerrequerimiento original",
+  },
+  {
+    id: 2,
+    fechaHora: "04/02/2026 09:32",
+    usuario: "Axel Huamán",
+    accion: "EDITAR CANTIDAD",
+    producto: "104589 - Paracetamol 500mg",
+    cantidad: 20,
+  },
+  {
+    id: 3,
+    fechaHora: "04/02/2026 10:05",
+    usuario: "Axel Huamán",
+    accion: "ELIMINAR PRODUCTO",
+    producto: "178514 - Ibuprofeno 400mg",
+    motivo: "Producto no disponible en stock",
+  },
+];
+
 
 export default function TransferenciasPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -343,6 +370,7 @@ export default function TransferenciasPage() {
   const [almacenSeleccionado, setAlmacenSeleccionado] = useState(farmaciasSolicitantes[0].codigo);
   const [vistaDistribucion, setVistaDistribucion] = useState<"lista" | "despacho">("lista");
   const [vistaDevolucion, setVistaDevolucion] = useState<"lista" | "nueva">("lista");
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const enDespacho = vistaDistribucion === "despacho";
   const now = new Date();
 
@@ -1277,17 +1305,17 @@ export default function TransferenciasPage() {
                           {/* === DATOS GENERALES === */}
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                              <Label>Estado</Label>
+                              <Label>Estado: </Label>
                               {getEstadoBadge(solicitudSeleccionada.estado)}
                             </div>
 
                             <div>
-                              <Label>Tipo de Requerimiento</Label>
+                              <Label>Tipo de Requerimiento:</Label>
                               <Input disabled value={solicitudSeleccionada.tipoRequerimiento} />
                             </div>
 
                             <div>
-                              <Label>Fecha Registro</Label>
+                              <Label>Fecha Registro:</Label>
                               <Input
                                 disabled
                                 value={`${solicitudSeleccionada.fecha} ${solicitudSeleccionada.hora}`}
@@ -1295,19 +1323,19 @@ export default function TransferenciasPage() {
                             </div>
 
                             <div>
-                              <Label>Usuario</Label>
+                              <Label>Usuario:</Label>
                               <Input disabled value={solicitudSeleccionada.usuario} />
                             </div>
 
                             <div>
-                              <Label>Almacén Solicitante</Label>
+                              <Label>Almacén Solicitante:</Label>
                               <Input disabled value={solicitudSeleccionada.almacenSolicitante} />
                             </div>
                           </div>
 
                           {/* === OBSERVACIÓN === */}
                           <div>
-                            <Label>Observación</Label>
+                            <Label>Observación:</Label>
                             <Textarea
                               disabled
                               value={detallePrerrequerimientoMock.observacion}
@@ -1336,6 +1364,64 @@ export default function TransferenciasPage() {
                                 ))}
                               </TableBody>
                             </Table>
+
+                            <Button
+                              variant="outline"
+                              className="mt-4 border-blue-500 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                              onClick={() => setMostrarHistorial((prev) => !prev)}
+                            >
+                              {mostrarHistorial ? "Ocultar historial de cambios" : "Ver historial de cambios"}
+                            </Button>
+
+                            {mostrarHistorial && (
+                              <div className="mt-6">
+                                <h3 className="text-sm font-semibold mb-3">
+                                  Historial de cambios
+                                </h3>
+
+                                <div className="space-y-2 max-h-64 overflow-y-auto">
+                                  {historialCambiosMock.map((h) => (
+                                    <div
+                                      key={h.id}
+                                      className={`p-3 rounded border text-sm ${h.accion === "AGREGAR PRODUCTO"
+                                        ? "bg-green-50 border-green-300"
+                                        : h.accion === "EDITAR CANTIDAD"
+                                          ? "bg-blue-50 border-blue-300"
+                                          : "bg-red-50 border-red-300"
+                                        }`}
+                                    >
+                                      {h.accion === "AGREGAR PRODUCTO" && (
+                                        <p>
+                                          El día <strong>{h.fechaHora}</strong>, el usuario{" "}
+                                          <strong>{h.usuario}</strong> agregó el producto{" "}
+                                          <strong>{h.producto}</strong> por el siguiente motivo:{" "}
+                                          <em>{h.motivo}</em>.
+                                        </p>
+                                      )}
+
+                                      {h.accion === "EDITAR CANTIDAD" && (
+                                        <p>
+                                          El día <strong>{h.fechaHora}</strong>, el usuario{" "}
+                                          <strong>{h.usuario}</strong> editó la cantidad del producto{" "}
+                                          <strong>{h.producto}</strong> a{" "}
+                                          <strong>{h.cantidad}</strong>.
+                                        </p>
+                                      )}
+
+                                      {h.accion === "ELIMINAR PRODUCTO" && (
+                                        <p>
+                                          El día <strong>{h.fechaHora}</strong>, el usuario{" "}
+                                          <strong>{h.usuario}</strong> eliminó el producto{" "}
+                                          <strong>{h.producto}</strong> por el siguiente motivo:{" "}
+                                          <em>{h.motivo}</em>.
+                                        </p>
+                                      )}
+                                    </div>
+                                  ))}
+
+                                </div>
+                              </div>
+                            )}
                           </div>
 
                           <div className="flex justify-end">
@@ -1519,7 +1605,7 @@ export default function TransferenciasPage() {
                                             title="Ver detalle"
                                             onClick={() => {
                                               setSolicitudSeleccionada(solicitud);
-                                              setOpenModalDetalle(true);
+                                              setOpenModalDetalleDist(true);
                                             }}
                                           >
                                             <Eye className="h-4 w-4" />
@@ -1959,69 +2045,92 @@ export default function TransferenciasPage() {
                   {/* MODAL DE DETALLE DEL PRERREQUERIMIENTO */}
                   <Dialog open={openModalDetalleDist} onOpenChange={setOpenModalDetalleDist}>
                     <DialogContent
-                      className="max-w-lg"
+                      className="max-w-6xl max-h-[85vh] overflow-y-auto"
                       onInteractOutside={(e) => e.preventDefault()} // evita cerrar haciendo clic fuera
                     >
                       <DialogHeader>
                         <DialogTitle>
                           Detalle del Prerrequerimiento - {solicitudSeleccionada?.prerrequerimientoId}
                         </DialogTitle>
+                        <DialogDescription>
+                          Información completa del prerrequerimiento registrado por Farmacia (datos de prueba)
+                        </DialogDescription>
                       </DialogHeader>
 
-                      {/* CAMPOS SUPERIORES */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                      {solicitudSeleccionada && (
+                        <div className="space-y-6 text-sm">
 
-                        <div className="space-y-1">
-                          <Label>ID Prerrequerimiento:</Label>
-                          <p className="font-semibold">{solicitudSeleccionada?.prerrequerimientoId}</p>
-                        </div>
+                          {/* === DATOS GENERALES === */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <Label>Estado: </Label>
+                              {getEstadoBadge(solicitudSeleccionada.estado)}
+                            </div>
 
-                        <div className="space-y-1">
-                          <Label>Usuario:</Label>
-                          <p className="font-medium">{solicitudSeleccionada?.usuario}</p>
-                        </div>
+                            <div>
+                              <Label>Tipo de Requerimiento:</Label>
+                              <Input disabled value={solicitudSeleccionada.tipoRequerimiento} />
+                            </div>
 
-                        <div className="space-y-1">
-                          <Label>Estado:</Label>
-                          <p>{getEstadoBadge(solicitudSeleccionada?.estado)}</p>
-                        </div>
+                            <div>
+                              <Label>Fecha Registro:</Label>
+                              <Input
+                                disabled
+                                value={`${solicitudSeleccionada.fecha} ${solicitudSeleccionada.hora}`}
+                              />
+                            </div>
 
-                      </div>
+                            <div>
+                              <Label>Usuario:</Label>
+                              <Input disabled value={solicitudSeleccionada.usuario} />
+                            </div>
 
-                      {/* TABLA DE PRODUCTOS */}
-                      <div className="mt-6 border rounded-md overflow-x-auto">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Producto</TableHead>
-                              <TableHead>Cantidad</TableHead>
-                            </TableRow>
-                          </TableHeader>
+                            <div>
+                              <Label>Almacén Solicitante:</Label>
+                              <Input disabled value={solicitudSeleccionada.almacenSolicitante} />
+                            </div>
+                          </div>
 
-                          <TableBody>
-                            {solicitudSeleccionada?.productos?.length > 0 ? (
-                              solicitudSeleccionada.productos.map((prod: any, index: number) => (
-                                <TableRow key={index}>
-                                  <TableCell>{prod.nombre}</TableCell>
-                                  <TableCell>{prod.cantidad}</TableCell>
+                          {/* === OBSERVACIÓN === */}
+                          <div>
+                            <Label>Observación:</Label>
+                            <Textarea
+                              disabled
+                              value={detallePrerrequerimientoMock.observacion}
+                            />
+                          </div>
+
+                          {/* === PRODUCTOS === */}
+                          <div>
+                            <Label className="mb-2 block">Detalle de productos</Label>
+
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>Código</TableHead>
+                                  <TableHead>Producto</TableHead>
+                                  <TableHead>Cantidad</TableHead>
                                 </TableRow>
-                              ))
-                            ) : (
-                              <TableRow>
-                                <TableCell colSpan={2} className="text-center text-gray-500 py-4">
-                                  No hay productos registrados
-                                </TableCell>
-                              </TableRow>
-                            )}
-                          </TableBody>
-                        </Table>
-                      </div>
+                              </TableHeader>
+                              <TableBody>
+                                {detallePrerrequerimientoMock.productos.map((prod, index) => (
+                                  <TableRow key={index}>
+                                    <TableCell>{prod.codigo}</TableCell>
+                                    <TableCell>{prod.nombre}</TableCell>
+                                    <TableCell>{prod.cantidad}</TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </div>
 
-                      <DialogFooter className="mt-4">
-                        <Button variant="outline" onClick={() => setOpenModalDetalleDist(false)}>
-                          Cerrar
-                        </Button>
-                      </DialogFooter>
+                          <div className="flex justify-end">
+                            <Button onClick={() => setOpenModalDetalleDist(false)}>
+                              Cerrar
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     </DialogContent>
                   </Dialog>
 
