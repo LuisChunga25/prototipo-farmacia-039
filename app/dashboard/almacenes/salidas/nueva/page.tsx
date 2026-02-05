@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ArrowLeft, Save, PlusCircle, Trash2, Loader2, CheckCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
@@ -87,6 +88,63 @@ const productosMock = [
     },
 ];
 
+const lotesMock = [
+    {
+        id: 1,
+        stock: 40,
+        precio: 1.5,
+        regSanitario: "RS-001",
+        fechaVcto: "31-01-2026",
+        lote: "L001",
+        fechaRecepcion: "10-01-2025",
+    },
+    {
+        id: 2,
+        stock: 30,
+        precio: 2,
+        regSanitario: "RS-002",
+        fechaVcto: "15-03-2026",
+        lote: "L002",
+        fechaRecepcion: "10-01-2025",
+    },
+    {
+        id: 3,
+        stock: 30,
+        precio: 2.5,
+        regSanitario: "RS-003",
+        fechaVcto: "30-06-2026",
+        lote: "L003",
+        fechaRecepcion: "20-02-2025",
+    },
+];
+
+type LoteDisponible = {
+    id: number;
+    stock: number;
+    precio: number;
+    regSanitario: string;
+    fechaVcto: string;
+    lote: string;
+    fechaRecepcion: string;
+};
+
+type LoteAsignado = {
+    id: number;
+    lote: string;
+    cantidad: number;
+    precio: number;
+    orden: number;
+    regSanitario?: string;
+    fechaVcto?: string;
+};
+
+type ProductoSalida = {
+    id: number;
+    nombre: string;
+    cantidadSolicitada: number;
+    lotesAsignados: LoteAsignado[];
+};
+
 
 export default function NuevaSalidaPage() {
     const router = useRouter();
@@ -103,12 +161,18 @@ export default function NuevaSalidaPage() {
     const [laboratorioDestino, setLaboratorioDestino] = useState("");
     const [tipoDeUso, setTipoDeUso] = useState("");
     const [tipoDeTransferencia, setTipoDeTransferencia] = useState("");
-    const [productos, setProductos] = useState<any[]>([]);
     const [productoId, setProductoId] = useState("");
+    const [productos, setProductos] = useState<ProductoSalida[]>([]);
     const [productoSeleccionado, setProductoSeleccionado] = useState<any>(null);
-    const [cantidad, setCantidad] = useState<number>(1);
+    const [lotesDisponibles, setLotesDisponibles] = useState<LoteDisponible[]>([]);
+    const [lotesAsignados, setLotesAsignados] = useState<LoteAsignado[]>([]);
+    const [ordenAsignacion, setOrdenAsignacion] = useState(1);
+    const [sumaStockAsignado, setSumaStockAsignado] = useState(0);
+    const [openConfirmLoteModal, setOpenConfirmLoteModal] = useState(false);
+    const [cantidad, setCantidad] = useState<string>("");
     const [guardando, setGuardando] = useState(false);
     const [openModalExito, setOpenModalExito] = useState(false);
+    const [mostrarLotes, setMostrarLotes] = useState(false);
     const puedeGuardarSalida = productos.length > 0;
     const isACTA = tipoDocumento === "ACTA";
     const isRDS = tipoDocumento === "RDS";
@@ -162,7 +226,21 @@ export default function NuevaSalidaPage() {
     // AUTOCOMPLETAR CAMPOS AL SELECCIONAR PRODUCTO
     useEffect(() => {
         const prod = productosMock.find(p => p.id === productoId);
-        setProductoSeleccionado(prod || null);
+
+        if (prod) {
+            setProductoSeleccionado(prod);
+
+            // 🔑 AQUÍ ESTABA EL PROBLEMA
+            setLotesDisponibles(lotesMock);
+
+            // reset de asignación
+            setLotesAsignados([]);
+            setOrdenAsignacion(1);
+            setSumaStockAsignado(0);
+        } else {
+            setProductoSeleccionado(null);
+            setLotesDisponibles([]);
+        }
     }, [productoId]);
 
     // FUNCIÓN GUARDAR SALIDA
@@ -176,6 +254,31 @@ export default function NuevaSalidaPage() {
         }, 1500);
     };
 
+    // LÓGICA DE SELECCIÓN DE LOTES
+    const seleccionarLote = (lote: LoteDisponible) => {
+        if (lotesAsignados.some(l => l.id === lote.id)) return;
+
+        const nuevoLote: LoteAsignado = {
+            id: lote.id,
+            lote: lote.lote,
+            cantidad: lote.stock, // luego se puede refinar
+            precio: lote.precio,
+            orden: ordenAsignacion,
+            regSanitario: lote.regSanitario,
+            fechaVcto: lote.fechaVcto,
+        };
+
+        const nuevos = [...lotesAsignados, nuevoLote];
+        const suma = nuevos.reduce((acc, l) => acc + l.cantidad, 0);
+
+        setLotesAsignados(nuevos);
+        setOrdenAsignacion(ordenAsignacion + 1);
+        setSumaStockAsignado(suma);
+
+        if (suma >= Number(cantidad)) {
+            setOpenConfirmLoteModal(true);
+        }
+    };
 
 
     return (
@@ -445,6 +548,7 @@ export default function NuevaSalidaPage() {
                                 <Select
                                     value={productoId}
                                     onValueChange={setProductoId}
+                                    disabled={mostrarLotes}
                                 >
                                     <SelectTrigger className="w-full bg-white">
                                         <SelectValue placeholder="Seleccionar producto" />
@@ -462,86 +566,94 @@ export default function NuevaSalidaPage() {
                             <div>
                                 <Label>Cantidad:</Label>
                                 <Input
-                                    type="number"
-                                    min="1"
+                                    type="text"
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
+                                    placeholder="Ingrese cantidad"
                                     value={cantidad}
-                                    onChange={(e) => setCantidad(Number(e.target.value))}
+                                    disabled={mostrarLotes}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (/^\d*$/.test(val)) setCantidad(val);
+                                    }}
                                 />
                             </div>
-
-                            <div>
-                                <Label>Precio de Operación:</Label>
-                                <Input
-                                    value={productoSeleccionado?.precio ?? ""}
-                                    disabled
-                                />
-                            </div>
-
-                            <div>
-                                <Label>Importe Total:</Label>
-                                <Input
-                                    disabled
-                                    value={
-                                        productoSeleccionado
-                                            ? (productoSeleccionado.precio * cantidad).toFixed(2)
-                                            : ""
-                                    }
-                                />
-                            </div>
-
-                            <div>
-                                <Label>Lote:</Label>
-                                <Input
-                                    value={productoSeleccionado?.lote ?? ""}
-                                    disabled
-                                />
-                            </div>
-
-                            <div>
-                                <Label>Registro Sanitario:</Label>
-                                <Input
-                                    value={productoSeleccionado?.registro ?? ""}
-                                    disabled
-                                />
-                            </div>
-
-                            <div>
-                                <Label>Fecha de Vencimiento:</Label>
-                                <Input
-                                    type="date"
-                                    value={productoSeleccionado?.vencimiento ?? ""}
-                                    disabled
-                                />
-                            </div>
-
                         </div>
+
+                        {productoSeleccionado && mostrarLotes && (
+                            <div className="mt-4 border rounded-md p-3">
+                                <h4 className="font-semibold mb-2">
+                                    Lotes disponibles para {productoSeleccionado.nombre}
+                                </h4>
+
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Stock</TableHead>
+                                            <TableHead>Precio de Operación</TableHead>
+                                            <TableHead>Registro Sanitario</TableHead>
+                                            <TableHead>Fecha Venc.</TableHead>
+                                            <TableHead>Lote</TableHead>
+                                            <TableHead>Fecha Recepción</TableHead>
+                                            <TableHead>Acción</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+
+                                    <TableBody>
+                                        {lotesDisponibles.map((lote) => (
+                                            <TableRow key={lote.id}>
+                                                <TableCell>{lote.stock}</TableCell>
+                                                <TableCell>{lote.precio}</TableCell>
+                                                <TableCell>{lote.regSanitario}</TableCell>
+                                                <TableCell>{lote.fechaVcto}</TableCell>
+                                                <TableCell>{lote.lote}</TableCell>
+                                                <TableCell>{lote.fechaRecepcion}</TableCell>
+                                                <TableCell>
+                                                    {lotesAsignados.some(l => l.id === lote.id) ? (
+                                                        <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded">
+                                                            #{lotesAsignados.find(l => l.id === lote.id)?.orden}
+                                                        </span>
+                                                    ) : (
+                                                        <Button size="sm" onClick={() => seleccionarLote(lote)}>
+                                                            Seleccionar
+                                                        </Button>
+                                                    )}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                        )}
+
+                        <Button
+                            variant="outline"
+                            className="mt-3"
+                            onClick={() => {
+                                setMostrarLotes(false);
+                                setProductoId("");
+                                setProductoSeleccionado(null);
+                                setCantidad("");
+                                setLotesAsignados([]);
+                                setOrdenAsignacion(1);
+                                setSumaStockAsignado(0);
+                            }}
+                        >
+                            Resetear
+                        </Button>
+
                         <div className="flex justify-end mt-4">
                             <Button
                                 type="button"
                                 className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
-                                onClick={() => {
-                                    // lógica se completa luego
-                                    if (!productoSeleccionado || cantidad <= 0) return;
-
-                                    const nuevoProducto = {
-                                        nombre: productoSeleccionado.nombre,
-                                        precio: productoSeleccionado.precio.toFixed(2),
-                                        cantidad,
-                                        importe: (productoSeleccionado.precio * cantidad).toFixed(2),
-                                    };
-
-                                    setProductos([...productos, nuevoProducto]);
-
-                                    // RESET FORM
-                                    setProductoId("");
-                                    setProductoSeleccionado(null);
-                                    setCantidad(1);
-                                }}
+                                disabled={!productoSeleccionado || !cantidad || Number(cantidad) < 1}
+                                onClick={() => setMostrarLotes(true)}
                             >
                                 <PlusCircle className="w-4 h-4" />
-                                Agregar Producto
+                                Consultar Lotes
                             </Button>
                         </div>
+
                         <div className="mt-6 border rounded-lg overflow-hidden">
                             <table className="w-full text-sm">
                                 <thead className="bg-slate-100">
@@ -568,11 +680,51 @@ export default function NuevaSalidaPage() {
                                     ) : (
                                         productos.map((prod, index) => (
                                             <tr key={index} className="border-t">
+                                                {/* ITEM */}
                                                 <td className="px-3 py-2">{index + 1}</td>
-                                                <td className="px-3 py-2">{prod.nombre}</td>
-                                                <td className="px-3 py-2 text-right">{prod.precio}</td>
-                                                <td className="px-3 py-2 text-right">{prod.cantidad}</td>
-                                                <td className="px-3 py-2 text-right">{prod.importe}</td>
+
+                                                {/* NOMBRE */}
+                                                <td className="px-3 py-2 font-medium">
+                                                    {prod.nombre}
+                                                </td>
+
+                                                {/* PRECIO POR LOTE */}
+                                                <td className="px-3 py-2 text-right">
+                                                    {prod.lotesAsignados.map((lote, i) => (
+                                                        <div
+                                                            key={i}
+                                                            className="border-b last:border-b-0 py-1"
+                                                        >
+                                                            {lote.precio}
+                                                        </div>
+                                                    ))}
+                                                </td>
+
+                                                {/* CANTIDAD POR LOTE */}
+                                                <td className="px-3 py-2 text-right">
+                                                    {prod.lotesAsignados.map((lote, i) => (
+                                                        <div
+                                                            key={i}
+                                                            className="border-b last:border-b-0 py-1"
+                                                        >
+                                                            {lote.cantidad}
+                                                        </div>
+                                                    ))}
+                                                </td>
+
+                                                {/* IMPORTE POR LOTE */}
+                                                <td className="px-3 py-2 text-right">
+                                                    {prod.lotesAsignados.map((lote, i) => (
+                                                        <div
+                                                            key={i}
+                                                            className="border-b last:border-b-0 py-1"
+                                                        >
+                                                            {(lote.cantidad * lote.precio).toFixed(2)}
+                                                        </div>
+                                                    ))}
+                                                </td>
+
+                                                {/* ACCIÓN */}
                                                 <td className="px-3 py-2 text-center">
                                                     <Button
                                                         variant="outline"
@@ -651,6 +803,73 @@ export default function NuevaSalidaPage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            {/* MODAL DE CONFIRMACIÓN DEL LOTE */}
+            <Dialog open={openConfirmLoteModal} onOpenChange={setOpenConfirmLoteModal}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Confirmar asignación de lotes</DialogTitle>
+                    </DialogHeader>
+
+                    <ul className="text-sm">
+                        {lotesAsignados.map(l => (
+                            <li key={l.id}>
+                                Lote {l.lote} – Cantidad {l.cantidad} (Orden #{l.orden})
+                            </li>
+                        ))}
+                    </ul>
+
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                setOpenConfirmLoteModal(false);
+                                setLotesAsignados([]);
+                                setOrdenAsignacion(1);
+                                setSumaStockAsignado(0);
+                            }}
+                        >
+                            Cancelar
+                        </Button>
+
+                        <Button
+                            className="bg-green-600 text-white"
+                            onClick={() => {
+                                const nuevoProducto = {
+                                    id: Date.now(),
+                                    nombre: productoSeleccionado.nombre,
+                                    cantidadSolicitada: Number(cantidad),
+                                    lotesAsignados: lotesAsignados.map(l => ({
+                                        id: l.id,
+                                        lote: l.lote,
+                                        cantidad: l.cantidad,
+                                        precio: l.precio,
+                                        orden: l.orden,
+                                        regSanitario: l.regSanitario,
+                                        fechaVcto: l.fechaVcto,
+                                    })),
+                                };
+
+                                setProductos(prev => [...prev, nuevoProducto]);
+
+                                // reset general
+                                setOpenConfirmLoteModal(false);
+                                setMostrarLotes(false);
+                                setProductoId("");
+                                setProductoSeleccionado(null);
+                                setCantidad("");
+                                setLotesAsignados([]);
+                                setOrdenAsignacion(1);
+                                setSumaStockAsignado(0);
+                            }}
+                        >
+                            Confirmar
+                        </Button>
+
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
 
         </div>
     )

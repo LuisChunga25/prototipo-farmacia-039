@@ -28,6 +28,7 @@ import {
   Edit,
   XCircle,
   PackageCheck,
+  History,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Plus } from "lucide-react"
@@ -1370,6 +1371,7 @@ export default function TransferenciasPage() {
                               className="mt-4 border-blue-500 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
                               onClick={() => setMostrarHistorial((prev) => !prev)}
                             >
+                              <History size={16} />
                               {mostrarHistorial ? "Ocultar historial de cambios" : "Ver historial de cambios"}
                             </Button>
 
