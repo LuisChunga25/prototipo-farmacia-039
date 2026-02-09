@@ -258,10 +258,26 @@ export default function NuevaSalidaPage() {
     const seleccionarLote = (lote: LoteDisponible) => {
         if (lotesAsignados.some(l => l.id === lote.id)) return;
 
+        const cantidadSolicitada = Number(cantidad);
+
+        // 🔑 cuánto ya se asignó
+        const yaAsignado = lotesAsignados.reduce(
+            (acc, l) => acc + l.cantidad,
+            0
+        );
+
+        // 🔑 cuánto falta por cubrir
+        const restante = cantidadSolicitada - yaAsignado;
+
+        if (restante <= 0) return;
+
+        // 🔑 asignación parcial real
+        const cantidadAsignada = Math.min(lote.stock, restante);
+
         const nuevoLote: LoteAsignado = {
             id: lote.id,
             lote: lote.lote,
-            cantidad: lote.stock, // luego se puede refinar
+            cantidad: cantidadAsignada, // luego se puede refinar
             precio: lote.precio,
             orden: ordenAsignacion,
             regSanitario: lote.regSanitario,
@@ -275,10 +291,20 @@ export default function NuevaSalidaPage() {
         setOrdenAsignacion(ordenAsignacion + 1);
         setSumaStockAsignado(suma);
 
-        if (suma >= Number(cantidad)) {
+        if (suma >= cantidadSolicitada) {
             setOpenConfirmLoteModal(true);
         }
     };
+
+    // CALCULAR TOTAL GENERAL DE LA TABLA
+    const totalGeneral = productos.reduce((acc, prod) => {
+        const subtotal = prod.lotesAsignados.reduce(
+            (s, l) => s + l.precio * l.cantidad,
+            0
+        );
+        return acc + subtotal;
+    }, 0);
+
 
 
     return (
@@ -660,9 +686,11 @@ export default function NuevaSalidaPage() {
                                     <tr>
                                         <th className="px-3 py-2 text-left">Item</th>
                                         <th className="px-3 py-2 text-left">Nombre</th>
+                                        <th className="px-3 py-2 text-left">Lote</th>
                                         <th className="px-3 py-2 text-right">Precio</th>
                                         <th className="px-3 py-2 text-right">Cantidad</th>
                                         <th className="px-3 py-2 text-right">Importe</th>
+                                        <th className="px-3 py-2 text-right">Subtotal</th>
                                         <th className="px-3 py-2 text-center">Acción</th>
                                     </tr>
                                 </thead>
@@ -678,69 +706,106 @@ export default function NuevaSalidaPage() {
                                             </td>
                                         </tr>
                                     ) : (
-                                        productos.map((prod, index) => (
-                                            <tr key={index} className="border-t">
-                                                {/* ITEM */}
-                                                <td className="px-3 py-2">{index + 1}</td>
+                                        productos.map((prod, index) => {
+                                            const subtotalProducto = prod.lotesAsignados.reduce(
+                                                (acc, l) => acc + l.precio * l.cantidad,
+                                                0
+                                            );
 
-                                                {/* NOMBRE */}
-                                                <td className="px-3 py-2 font-medium">
-                                                    {prod.nombre}
-                                                </td>
+                                            return (
+                                                <tr key={index} className="border-t">
+                                                    {/* ITEM */}
+                                                    <td className="px-3 py-2">{index + 1}</td>
 
-                                                {/* PRECIO POR LOTE */}
-                                                <td className="px-3 py-2 text-right">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
+                                                    {/* NOMBRE */}
+                                                    <td className="px-3 py-2 font-medium">
+                                                        {prod.nombre}
+                                                    </td>
+
+                                                    {/* LOTE */}
+                                                    <td className="px-3 py-2">
+                                                        {prod.lotesAsignados.map((lote, i) => (
+                                                            <div
+                                                                key={i}
+                                                                className="border-b last:border-b-0 py-1"
+                                                            >
+                                                                {lote.lote}
+                                                            </div>
+                                                        ))}
+                                                    </td>
+
+                                                    {/* PRECIO POR LOTE */}
+                                                    <td className="px-3 py-2 text-right">
+                                                        {prod.lotesAsignados.map((lote, i) => (
+                                                            <div
+                                                                key={i}
+                                                                className="border-b last:border-b-0 py-1"
+                                                            >
+                                                                {lote.precio}
+                                                            </div>
+                                                        ))}
+                                                    </td>
+
+                                                    {/* CANTIDAD POR LOTE */}
+                                                    <td className="px-3 py-2 text-right">
+                                                        {prod.lotesAsignados.map((lote, i) => (
+                                                            <div
+                                                                key={i}
+                                                                className="border-b last:border-b-0 py-1"
+                                                            >
+                                                                {lote.cantidad}
+                                                            </div>
+                                                        ))}
+                                                    </td>
+
+                                                    {/* IMPORTE POR LOTE */}
+                                                    <td className="px-3 py-2 text-right">
+                                                        {prod.lotesAsignados.map((lote, i) => (
+                                                            <div
+                                                                key={i}
+                                                                className="border-b last:border-b-0 py-1"
+                                                            >
+                                                                {(lote.cantidad * lote.precio).toFixed(2)}
+                                                            </div>
+                                                        ))}
+                                                    </td>
+
+                                                    {/* SUBTOTAL POR PRODUCTO */}
+                                                    <td className="px-3 py-2 text-right font-semibold text-slate-700">
+                                                        {subtotalProducto.toFixed(2)}
+                                                    </td>
+
+                                                    {/* ACCIÓN */}
+                                                    <td className="px-3 py-2 text-center">
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="border-red-500 text-red-600 hover:bg-red-50"
+                                                            onClick={() =>
+                                                                setProductos(productos.filter((_, i) => i !== index))
+                                                            }
                                                         >
-                                                            {lote.precio}
-                                                        </div>
-                                                    ))}
-                                                </td>
-
-                                                {/* CANTIDAD POR LOTE */}
-                                                <td className="px-3 py-2 text-right">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
-                                                        >
-                                                            {lote.cantidad}
-                                                        </div>
-                                                    ))}
-                                                </td>
-
-                                                {/* IMPORTE POR LOTE */}
-                                                <td className="px-3 py-2 text-right">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
-                                                        >
-                                                            {(lote.cantidad * lote.precio).toFixed(2)}
-                                                        </div>
-                                                    ))}
-                                                </td>
-
-                                                {/* ACCIÓN */}
-                                                <td className="px-3 py-2 text-center">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="border-red-500 text-red-600 hover:bg-red-50"
-                                                        onClick={() =>
-                                                            setProductos(productos.filter((_, i) => i !== index))
-                                                        }
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        ))
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </Button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })
                                     )}
                                 </tbody>
+
+                                <tfoot>
+                                    <tr className="bg-slate-200 font-bold">
+                                        <td colSpan={6} className="px-3 py-2 text-right">
+                                            TOTAL GENERAL:
+                                        </td>
+                                        <td className="px-3 py-2 text-right">
+                                            {totalGeneral.toFixed(2)}
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+
                             </table>
                         </div>
                     </div>
