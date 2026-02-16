@@ -29,6 +29,7 @@ import {
   XCircle,
   PackageCheck,
   History,
+  Save,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Plus } from "lucide-react"
@@ -40,6 +41,7 @@ import { DespachoPrerrequerimiento } from "@/components/transferencias/despacho-
 import { FormularioNuevaDevolucion } from "@/components/devoluciones/formulario-nueva-devolucion"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 import { Textarea } from "@/components/ui/textarea"
+import { FormularioVacuna } from "@/components/vacunas/formulario-vacuna"
 
 // Datos de ejemplo para la tabla de prerrequerimientos
 const prerrequerimientosData = [
@@ -273,7 +275,7 @@ const devolucionesData = [
   },
   {
     id: 1,
-    devolucionId: "00000003",
+    devolucionId: "00000001",
     estado: "2",
     fechaReg: "16/12/2025",
     horaReg: "11:33:25",
@@ -283,6 +285,53 @@ const devolucionesData = [
     usuario: "CROJAS",
   }
 ]
+
+const vacunasData = [
+  {
+    id: 4,
+    vacunaId: "00000004",
+    estado: "1",
+    fechaReg: "13/02/2026",
+    horaReg: "10:33:45",
+    fechaProc: "",
+    horaProc: "",
+    almacenOrigen: "A",
+    usuario: "JHUAMAN",
+  },
+  {
+    id: 3,
+    vacunaId: "00000003",
+    estado: "1",
+    fechaReg: "13/02/2026",
+    horaReg: "09:17:21",
+    fechaProc: "",
+    horaProc: "",
+    almacenOrigen: "A",
+    usuario: "JHUAMAN",
+  },
+  {
+    id: 2,
+    vacunaId: "00000002",
+    estado: "2",
+    fechaReg: "13/02/2026",
+    horaReg: "08:48:17",
+    fechaProc: "13/02/2026",
+    horaProc: "09:01:48",
+    almacenOrigen: "A",
+    usuario: "JHUAMAN",
+  },
+  {
+    id: 1,
+    vacunaId: "00000001",
+    estado: "2",
+    fechaReg: "13/02/2026",
+    horaReg: "08:30:10",
+    fechaProc: "13/02/2026",
+    horaProc: "08:38:53",
+    almacenOrigen: "A",
+    usuario: "JHUAMAN",
+  },
+];
 
 const farmaciasSolicitantes = [
   { id: 1, codigo: "T", nombre: "Todas las Áreas" },
@@ -328,22 +377,48 @@ const historialCambiosMock = [
   },
 ];
 
+const lotesMock = [
+  {
+    lote: "PT14202",
+    registroSanitario: "EE-11024",
+    fechaVencimiento: "01/08/2027",
+    stock: 3,
+    precio: 5.5,
+  },
+  {
+    lote: "PT14203",
+    registroSanitario: "EE-11025",
+    fechaVencimiento: "01/12/2027",
+    stock: 10,
+    precio: 5.5,
+  },
+];
+
+const productosMock = [
+  { id: 1, nombre: "Metamizol Sódico 1g/2ml" },
+  { id: 2, nombre: "Paracetamol 500 mg" },
+  { id: 3, nombre: "Ibuprofeno 400 mg" },
+];
+
 
 export default function TransferenciasPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchDistrib, setSearchDistrib] = useState("");
   const [searchTransfer, setSearchTransfer] = useState("");
   const [searchDevol, setSearchDevol] = useState("");
+  const [searchVacunas, setSearchVacunas] = useState("");
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const router = useRouter();
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaInicioDistrib, setFechaInicioDistrib] = useState("");
   const [fechaInicioTransfer, setFechaInicioTransfer] = useState("");
   const [fechaInicioDevol, setFechaInicioDevol] = useState("");
+  const [fechaInicioVacunas, setFechaInicioVacunas] = useState("");
   const [fechaFin, setFechaFin] = useState("");
   const [fechaFinDistrib, setFechaFinDistrib] = useState("");
   const [fechaFinTransfer, setFechaFinTransfer] = useState("");
   const [fechaFinDevol, setFechaFinDevol] = useState("");
+  const [fechaFinVacunas, setFechaFinVacunas] = useState("");
   const [openModalSolicitud, setOpenModalSolicitud] = useState(false);
   const [openModalExitoRegSol, setOpenModalExitoRegSol] = useState(false);
   const [openModalConformidad, setOpenModalConformidad] = useState(false);
@@ -352,14 +427,12 @@ export default function TransferenciasPage() {
   const [openModalExitoEliminar, setOpenModalExitoEliminar] = useState(false);
   const [openModalDetalle, setOpenModalDetalle] = useState(false);
   const [openModalDetalleDist, setOpenModalDetalleDist] = useState(false);
-  const [openModalDespachar, setOpenModalDespachar] = useState(false);
   const [openModalConfDespacho, setOpenModalConfDespacho] = useState(false);
   const [openModalExitoDespacho, setOpenModalExitoDespacho] = useState(false);
   const [openModalTransferencia, setOpenModalTransferencia] = useState(false);
   const [openModalExitoRegTransfer, setOpenModalExitoRegTransfer] = useState(false);
   const [openModalProcesarTransfer, setOpenModalProcesarTransfer] = useState(false);
   const [openModalExitoProcTransfer, setOpenModalExitoProcTransfer] = useState(false);
-  const [openModalNuevaDevolucion, setOpenModalNuevaDevolucion] = useState(false);
   const [openModalExitoDevolucion, setOpenModalExitoDevolucion] = useState(false);
   const [openModalProcesarDevol, setOpenModalProcesarDevol] = useState(false);
   const [openModalExitoProcDevol, setOpenModalExitoProcDevol] = useState(false);
@@ -368,11 +441,15 @@ export default function TransferenciasPage() {
   const [solicitudSeleccionada, setSolicitudSeleccionada] = useState<any>(null);
   const [transferenciaSelec, setTransferenciaSelec] = useState<any>(null);
   const [devolucionSelec, setDevolucionSelec] = useState<any>(null);
+  const [productosTransfer, setProductosTransfer] = useState<any[]>([]);
   const [almacenSeleccionado, setAlmacenSeleccionado] = useState(farmaciasSolicitantes[0].codigo);
   const [vistaDistribucion, setVistaDistribucion] = useState<"lista" | "despacho">("lista");
-  const [vistaDevolucion, setVistaDevolucion] = useState<"lista" | "nueva">("lista");
+  const [vistaDevolucion, setVistaDevolucion] = useState<"lista" | "nuevaDev">("lista");
+  const [vistaVacuna, setVistaVacuna] = useState<"lista" | "nuevaVac">("lista");
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const enDespacho = vistaDistribucion === "despacho";
+  const enNuevaDev = vistaDevolucion === "nuevaDev";
+  const enNuevaVac = vistaVacuna === "nuevaVac";
   const now = new Date();
 
   // Tipos de prerrequerimientos
@@ -610,6 +687,23 @@ export default function TransferenciasPage() {
     return matchesSearch && matchesFechaInicioDevol && matchesFechaFinDevol;
   });
 
+  const filteredVacunas = vacunasData.filter((vacuna) => {
+    const matchesSearch =
+      vacuna.vacunaId.toString().includes(searchVacunas.toLowerCase());
+
+    const fecha = new Date(vacuna.fechaReg);
+
+    const matchesFechaInicio = fechaInicioVacunas
+      ? fecha >= new Date(fechaInicioVacunas)
+      : true;
+
+    const matchesFechaFin = fechaFinVacunas
+      ? fecha <= new Date(fechaFinVacunas)
+      : true;
+
+    return matchesSearch && matchesFechaInicio && matchesFechaFin;
+  });
+
   // Limpiar filtros de busqueda
   const limpiarFiltros = () => {
     setSearchTerm("");
@@ -650,6 +744,65 @@ export default function TransferenciasPage() {
     setCantTransfer("");
     setObsTransfer("");
   }
+
+  // FUNCIÓN PARA AGREGAR PRODUCTO
+  const handleAgregarProductoTransfer = () => {
+    if (!prodTransfer || !cantTransfer) return;
+
+    setProductosTransfer((prev) => [
+      ...prev,
+      {
+        producto: prodTransfer,
+        cantidad: cantTransfer,
+        precio: 5.5,
+        importe: Number(cantTransfer) * 5.5,
+        lote: "PT14202",
+        registroSanitario: "EE-11024",
+        fechaVencimiento: "01/08/2027",
+      },
+    ]);
+
+    setProdTransfer("");
+    setCantTransfer("");
+  };
+
+  /*const handleAgregarProductoTransfer = () => {
+    if (!prodTransfer || !cantTransfer) return;
+
+    let cantidadNecesaria = Number(cantTransfer);
+    const registros: any[] = [];
+
+    for (const lote of lotesMock) {
+      if (cantidadNecesaria <= 0) break;
+
+      const asignado = Math.min(lote.stock, cantidadNecesaria);
+      cantidadNecesaria -= asignado;
+
+      registros.push({
+        producto: prodTransfer,
+        cantidadTransferir: Number(cantTransfer),
+        cantidadAsignada: asignado,
+        precio: lote.precio,
+        importe: asignado * lote.precio,
+        lote: lote.lote,
+        registroSanitario: lote.registroSanitario,
+        fechaVencimiento: lote.fechaVencimiento,
+      });
+    }
+
+    setProductosTransfer((prev) => [...prev, ...registros]);
+
+    // limpiar campos
+    setProdTransfer("");
+    setCantTransfer("");
+  };*/
+
+  // FUNCIÓN ELIMINAR PRODUCTO
+  const handleEliminarProductoTransfer = (index: number) => {
+    setProductosTransfer((prev) => prev.filter((_, i) => i !== index));
+  };
+
+
 
   return (
     <div className="max-w-[1600px] w-full mx-auto px-6">
@@ -1450,6 +1603,7 @@ export default function TransferenciasPage() {
                         data-[state=active]:text-white
                         data-[state=active]:shadow
                         transition-all"
+                        disabled={enNuevaDev || enNuevaVac}
                       >
                         Distribución
                       </TabsTrigger>
@@ -1458,7 +1612,7 @@ export default function TransferenciasPage() {
                         data-[state=active]:text-white
                         data-[state=active]:shadow
                         transition-all"
-                        disabled={enDespacho}
+                        disabled={enDespacho || enNuevaDev || enNuevaVac}
                       >
                         Transferencias entre Farmacias
                       </TabsTrigger>
@@ -1467,18 +1621,47 @@ export default function TransferenciasPage() {
                         data-[state=active]:text-white
                         data-[state=active]:shadow
                         transition-all"
-                        disabled={enDespacho}
+                        disabled={enDespacho || enNuevaVac}
                       >
                         Devoluciones
                       </TabsTrigger>
+                      <TabsTrigger value="vacunas" className="px-4 py-2 rounded-md
+                        data-[state=active]:bg-purple-600
+                        data-[state=active]:text-white
+                        data-[state=active]:shadow
+                        transition-all"
+                        disabled={enDespacho || enNuevaDev}
+                      >
+                        Vacunas
+                      </TabsTrigger>
                     </TabsList>
 
-                    {/* AVISO DE BLOQUEO */}
+                    {/* AVISO DE BLOQUEO EN SUBMODULO DISTRIBUCION */}
                     {enDespacho && (
                       <div className="mt-4 mb-4 rounded border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-800">
                         Está atendiendo un prerrequerimiento.
                         <strong className="ml-1">
-                          Finalice o cancele para continuar.
+                          Finalice o retorne a la tabla principal para continuar o cambiar de submódulo.
+                        </strong>
+                      </div>
+                    )}
+
+                    {/* AVISO DE BLOQUEO EN SUBMODULO DEVOLUCIONES */}
+                    {enNuevaDev && (
+                      <div className="mt-4 mb-4 rounded border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-800">
+                        Está registrando una devolución.
+                        <strong className="ml-1">
+                          Finalice o retorne a la tabla principal para continuar o cambiar de submódulo.
+                        </strong>
+                      </div>
+                    )}
+
+                    {/* AVISO DE BLOQUEO EN SUBMODULO VACUNAS */}
+                    {enNuevaVac && (
+                      <div className="mt-4 mb-4 rounded border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-800">
+                        Está registrando una transferencia de vacuna.
+                        <strong className="ml-1">
+                          Finalice o retorne a la tabla principal para continuar o cambiar de submódulo.
                         </strong>
                       </div>
                     )}
@@ -1846,7 +2029,7 @@ export default function TransferenciasPage() {
                                 </Button>
                                 <Button
                                   className="bg-green-600 hover:bg-green-700 text-white gap-2 font-semibold"
-                                  onClick={() => setVistaDevolucion("nueva")}
+                                  onClick={() => setVistaDevolucion("nuevaDev")}
                                 >
                                   <Plus className="h-4 w-4" strokeWidth={3} />
                                   Nueva Devolución
@@ -1940,7 +2123,7 @@ export default function TransferenciasPage() {
                         </>
                       )}
 
-                      {vistaDevolucion === "nueva" && (
+                      {vistaDevolucion === "nuevaDev" && (
                         <FormularioNuevaDevolucion
                           onCancel={() => setVistaDevolucion("lista")}
                           onSave={() => {
@@ -1951,98 +2134,209 @@ export default function TransferenciasPage() {
                       )}
 
                     </TabsContent>
-                  </Tabs>
 
-                  {/* MODAL DESPACHAR PRERREQUERIMIENTO*/}
-                  <Dialog open={openModalDespachar} onOpenChange={setOpenModalDespachar}>
-                    <DialogContent className="max-w-6xl" onInteractOutside={(e) => e.preventDefault()}>
-                      <DialogHeader>
-                        <DialogTitle>Atención del prerrequerimiento</DialogTitle>
-                      </DialogHeader>
+                    <TabsContent value="vacunas">
+                      {vistaVacuna === "lista" && (
+                        <>
+                          <Card className="w-full">
+                            <CardHeader>
+                              <CardTitle>Gestión de Vacunas</CardTitle>
+                              <CardDescription>Registro y control de movimientos de vacunas</CardDescription>
+                            </CardHeader>
 
-                      <div className="grid grid-cols-3 gap-4 mt-4">
-                        <div className="space-y-2">
-                          <Label>ID Prerrequerimiento:</Label>
-                          <Input value={solicitudSeleccionada?.prerrequerimientoId || ""} disabled />
-                        </div>
+                            <CardContent>
+                              {/* FILTROS */}
+                              <div className="bg-white border border-[#9CD2D3]/40 rounded-xl px-6 py-4 flex items-end justify-between gap-6 shadow-sm mb-4">
+                                <div className="flex items-end gap-4">
+                                  <div className="flex flex-col w-64">
+                                    <Label htmlFor="buscar" className="mb-1">Buscar por:</Label>
 
-                        <div className="space-y-2">
-                          <Label>Tipo de Transacción:</Label>
-                          <Input value={transaccDistrib} disabled />
-                        </div>
+                                    <div className="relative w-64">
+                                      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                      <Input
+                                        placeholder="ID Transferencia..."
+                                        className="pl-8 h-10"
+                                        value={searchVacunas}
+                                        onChange={(e) => setSearchVacunas(e.target.value)}
+                                      />
+                                    </div>
+                                  </div>
 
-                        <div className="space-y-2">
-                          <Label>Tipo de prerrequerimiento:</Label>
-                          <Input value={solicitudSeleccionada?.tipoRequerimiento || ""} disabled />
-                        </div>
-                      </div>
+                                  <div className="flex flex-col">
+                                    <Label htmlFor="fechaInicio" className="mb-1">Desde</Label>
+                                    <Input
+                                      id="fechaInicio"
+                                      type="date"
+                                      className="h-10 w-40"
+                                      value={fechaInicioVacunas}
+                                      onChange={(e) => setFechaInicioVacunas(e.target.value)}
+                                    />
+                                  </div>
 
-                      {/* TABLA DE PRODUCTOS */}
-                      <div className="mt-4 border rounded-md overflow-x-auto">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Producto</TableHead>
-                              <TableHead>Almacén Origen</TableHead>
-                              <TableHead>Área Destino</TableHead>
-                              <TableHead>Cantidad</TableHead>
-                              <TableHead>Precio de Operación</TableHead>
-                              <TableHead>Importe Total</TableHead>
-                              <TableHead>Lote</TableHead>
-                              <TableHead>Registro Sanitario</TableHead>
-                              <TableHead>Fecha de vencimiento</TableHead>
-                              <TableHead>Acciones</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {detallesPrerreq.map((detalle) => (
-                              <TableRow key={detalle.id}>
-                                <TableCell>{detalle.nombre}</TableCell>
-                                <TableCell>{detalle.aAlmacen}</TableCell>
-                                <TableCell>{detalle.deAlmacen}</TableCell>
-                                <TableCell>{detalle.cantidad}</TableCell>
-                                <TableCell>{detalle.precio}</TableCell>
-                                <TableCell>{detalle.importe}</TableCell>
-                                <TableCell>{detalle.lote}</TableCell>
-                                <TableCell>{detalle.regSanitario}</TableCell>
-                                <TableCell>{detalle.fecha_vcto}</TableCell>
-                                <TableCell>
-                                  <Button
-                                    title="Eliminar"
-                                    variant="outline"
-                                  >
-                                    <Trash2 className="w-3 h-3" />
+                                  <div className="flex flex-col">
+                                    <Label htmlFor="fechaFin" className="mb-1">Hasta</Label>
+                                    <Input
+                                      id="fechaFin"
+                                      type="date"
+                                      className="h-10 w-40"
+                                      value={fechaFinVacunas}
+                                      onChange={(e) => setFechaFinVacunas(e.target.value)}
+                                    />
+                                  </div>
+                                </div>
+
+                                <div className="flex gap-2">
+                                  <Button variant="outline" className="gap-1 border-gray-700" onClick={limpiarFiltrosDevol}>
+                                    <Eraser className="h-4 w-4" strokeWidth={3} />
+                                    Limpiar Filtros
                                   </Button>
-                                </TableCell>
+                                  <Button
+                                    className="bg-green-600 hover:bg-green-700 text-white gap-2 font-semibold"
+                                    onClick={() => setVistaVacuna("nuevaVac")}
+                                  >
+                                    <Plus className="h-4 w-4" strokeWidth={3} />
+                                    Nueva Transferencia
+                                  </Button>
+                                </div>
+                              </div>
+
+                              {/*<div className="flex gap-4 mb-4">
+                            <Input
+                              placeholder="Buscar ID Vacuna..."
+                              value={searchVacunas}
+                              onChange={(e) => setSearchVacunas(e.target.value)}
+                            />
+
+                            <Input type="date" value={fechaInicioVacunas} onChange={(e) => setFechaInicioVacunas(e.target.value)} />
+                            <Input type="date" value={fechaFinVacunas} onChange={(e) => setFechaFinVacunas(e.target.value)} />
+                          </div>*/}
+
+                              {/* TABLA */}
+                              <div className="overflow-x-auto border border-gray-200 rounded-lg bg-white">
+                                <Table>
+                                  <TableHeader>
+                                    <TableRow className="bg-gray-50 border-b border-gray-200">
+                                      <TableHead>Estado</TableHead>
+                                      <TableHead>ID Tranasferencia</TableHead>
+                                      <TableHead>Fecha y Hora de Registro</TableHead>
+                                      <TableHead>Fecha y Hora de Procesamiento</TableHead>
+                                      <TableHead>Usuario</TableHead>
+                                      <TableHead>Acciones</TableHead>
+                                    </TableRow>
+                                  </TableHeader>
+                                  <TableBody>
+                                    {filteredVacunas.map((vacuna) => (
+                                      <TableRow key={vacuna.id} className={selectedItems.includes(vacuna.id) ? "bg-primary/10" : ""}>
+                                        <TableCell>{getEstadoBadgeTransfer(vacuna.estado)}</TableCell>
+                                        <TableCell className="font-medium">{vacuna.vacunaId}</TableCell>
+                                        <TableCell>
+                                          <div className="font-medium">{vacuna.fechaReg}</div>
+                                          <div className="text-sm text-gray-500">{vacuna.horaReg}</div>
+                                        </TableCell>
+                                        <TableCell>
+                                          <div className="font-medium">{vacuna.fechaProc}</div>
+                                          <div className="text-sm text-gray-500">{vacuna.horaProc}</div>
+                                        </TableCell>
+                                        <TableCell>{vacuna.usuario}</TableCell>
+                                        <TableCell>
+                                          <div className="flex space-x-2">
+                                            <Button
+                                              title="Procesar Devolución"
+                                              variant="outline"
+                                              className={`h-8 w-10 p-1.5 border-green-600 text-green-600 hover:bg-green-50
+                                          ${vacuna.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
+                                              disabled={vacuna.estado !== "1"}
+                                              onClick={() => {
+                                                if (vacuna.estado === "1") {
+                                                  setDevolucionSelec(vacuna);
+                                                  setOpenModalProcesarDevol(true);
+                                                }
+                                              }}
+                                            >
+                                              <CheckCircle className="w-3 h-3" />
+                                            </Button>
+                                            <Button
+                                              title="Ver detalle"
+                                              variant="outline"
+                                              className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50"
+                                            >
+                                              <Eye className="w-3 h-3" />
+                                            </Button>
+                                            <Button
+                                              title="Editar"
+                                              variant="outline"
+                                              className={`h-8 w-10 p-1.5 border-yellow-600 text-yellow-600 hover:bg-yellow-50
+                                          ${vacuna.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
+                                              disabled={vacuna.estado !== "1"}
+                                            >
+                                              <Edit className="w-3 h-3" />
+                                            </Button>
+                                            <Button
+                                              title="Imprimir"
+                                              variant="outline"
+                                              className="h-8 w-10 p-1.5 border-purple-600 text-purple-600 hover:bg-purple-50"
+                                            >
+                                              <Printer className="w-3 h-3" />
+                                            </Button>
+                                            <Button
+                                              title="Eliminar"
+                                              variant="outline"
+                                              className={`h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50
+                                          ${vacuna.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
+                                              disabled={vacuna.estado !== "1"}
+                                            >
+                                              <Trash2 className="w-3 h-3" />
+                                            </Button>
+                                          </div>
+                                        </TableCell>
+                                      </TableRow>
+                                    ))}
+                                  </TableBody>
+                                </Table>
+                              </div>
+
+                              {/*<Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>ID</TableHead>
+                                <TableHead>Estado</TableHead>
+                                <TableHead>Fecha Registro</TableHead>
+                                <TableHead>Hora</TableHead>
+                                <TableHead>Almacén</TableHead>
+                                <TableHead>Usuario</TableHead>
                               </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </div>
+                            </TableHeader>
 
-                      <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-4">
-                        <div className="space-y-2">
-                          <Label>Observación / Comentario:</Label>
-                          <Input id="observacion" className="border border-gray-700" />
-                        </div>
-                      </div>
+                            <TableBody>
+                              {filteredVacunas.map((v) => (
+                                <TableRow key={v.id}>
+                                  <TableCell>{v.vacunaId}</TableCell>
+                                  <TableCell>{getEstadoBadgeTransfer(v.estado)}</TableCell>
+                                  <TableCell>{v.fechaReg}</TableCell>
+                                  <TableCell>{v.horaReg}</TableCell>
+                                  <TableCell>{v.almacenOrigen}</TableCell>
+                                  <TableCell>{v.usuario}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>*/}
+                            </CardContent>
+                          </Card>
+                        </>
+                      )}
 
-                      <DialogFooter className="mt-4">
-                        <Button variant="outline" onClick={() => setOpenModalDespachar(false)}>
-                          Cancelar
-                        </Button>
-
-                        <Button
-                          onClick={() => {
-                            // Aquí guardarás la solicitud después
-                            setOpenModalConfDespacho(true);
+                      {vistaVacuna === "nuevaVac" && (
+                        <FormularioVacuna
+                          onCancel={() => setVistaVacuna("lista")}
+                          onSave={() => {
+                            // guardar devolución
+                            setVistaVacuna("lista");
                           }}
-                        >
-                          Despachar
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                        />
+                      )}
+
+                    </TabsContent>
+                  </Tabs>
 
                   {/* MODAL DE DETALLE DEL PRERREQUERIMIENTO */}
                   <Dialog open={openModalDetalleDist} onOpenChange={setOpenModalDetalleDist}>
@@ -2159,7 +2453,6 @@ export default function TransferenciasPage() {
                             // Aquí procesas la conformidad luego
                             console.log("Conformidad a ID:", solicitudSeleccionada);
                             setOpenModalConfDespacho(false);
-                            setOpenModalDespachar(false);
                             setOpenModalExitoDespacho(true);
                           }}
                         >
@@ -2212,7 +2505,7 @@ export default function TransferenciasPage() {
                       setOpenModalTransferencia(open);
                     }}
                   >
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" onInteractOutside={(e) => e.preventDefault()}>
+                    <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" onInteractOutside={(e) => e.preventDefault()}>
                       <DialogHeader>
                         <DialogTitle>Nueva Transferencia Interna</DialogTitle>
                         <div className="flex justify-between items-center border border-gray-300 rounded-md p-4">
@@ -2270,14 +2563,38 @@ export default function TransferenciasPage() {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-2">
+                        <div className="grid grid-cols-2 md:grid-cols-2 gap-4 mt-2">
                           <div className="space-y-2">
                             <Label>Producto:</Label>
-                            <Input />
+                            <Select value={prodTransfer} onValueChange={setProdTransfer}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Seleccione producto" />
+                              </SelectTrigger>
+
+                              <SelectContent>
+                                {productosMock.map((p) => (
+                                  <SelectItem key={p.id} value={p.nombre}>
+                                    {p.nombre}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label>Cantidad a transferir:</Label>
+                            <Input
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]"
+                              placeholder="Ingrese cantidad"
+                              value={cantidad}
+                              onChange={(e) => setCantidad(e.target.value)}
+                            />
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
+                        {/*<div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
                           <div className="space-y-2">
                             <Label>Cantidad:</Label>
                             <Input
@@ -2312,12 +2629,13 @@ export default function TransferenciasPage() {
                             <Label>Fecha de vencimiento:</Label>
                             <Input value="01/08/2027" disabled />
                           </div>
-                        </div>
+                        </div>*/}
 
                         {/* BOTÓN AGREGAR */}
                         <div className="mt-4">
                           <Button
                             className="bg-green-600 hover:bg-green-700 text-white"
+                            onClick={handleAgregarProductoTransfer}
                           >
                             Agregar Producto
                           </Button>
@@ -2329,21 +2647,42 @@ export default function TransferenciasPage() {
                             <TableHeader>
                               <TableRow>
                                 <TableHead>Producto</TableHead>
-                                <TableHead>Cantidad</TableHead>
+                                <TableHead>Cantidad a transferir</TableHead>
+                                <TableHead>Cantidad asignada</TableHead>
+                                <TableHead>Precio</TableHead>
+                                <TableHead>Importe</TableHead>
+                                <TableHead>Lote</TableHead>
+                                <TableHead>Registro Sanitario</TableHead>
+                                <TableHead>Fecha de Vencimiento</TableHead>
                                 <TableHead>Acciones</TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              <TableRow>
-                                <TableCell>Metamizol Sodico 1 G 2 ML</TableCell>
-                                <TableCell>2</TableCell>
-                                <TableCell>
-                                  <Button
-                                  >
-                                    Eliminar
-                                  </Button>
-                                </TableCell>
-                              </TableRow>
+                              {productosTransfer.map((p, index) => (
+                                <TableRow key={index}>
+                                  <TableCell>{p.producto}</TableCell>
+                                  <TableCell>{p.cantidadTransferir}</TableCell>
+                                  <TableCell>{p.cantidadAsignada}</TableCell>
+                                  <TableCell>S/ {p.precio.toFixed(2)}</TableCell>
+                                  <TableCell>S/ {p.importe.toFixed(2)}</TableCell>
+                                  <TableCell>{p.lote}</TableCell>
+                                  <TableCell>{p.registroSanitario}</TableCell>
+                                  <TableCell>{p.fechaVencimiento}</TableCell>
+                                  <TableCell>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      title="Eliminar"
+                                      className="border-red-500 text-red-600 hover:bg-red-50"
+                                      onClick={() =>
+                                        setProductosTransfer((prev) => prev.filter((_, i) => i !== index))
+                                      }
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
                             </TableBody>
                           </Table>
                         </div>
@@ -2371,6 +2710,7 @@ export default function TransferenciasPage() {
                               setOpenModalExitoRegTransfer(true);
                             }}
                           >
+                            <Save className="w-4 h-4" />
                             Guardar Transferencia
                           </Button>
                         </DialogFooter>
@@ -2470,177 +2810,6 @@ export default function TransferenciasPage() {
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
-
-                  {/* MODAL REGISTRAR NUEVA DEVOLUCIÓN */}
-                  <Dialog
-                    open={openModalNuevaDevolucion}
-                    onOpenChange={setOpenModalNuevaDevolucion}
-                  >
-                    <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto" onInteractOutside={(e) => e.preventDefault()}>
-                      <DialogHeader>
-                        <DialogTitle>Registrar Devolución</DialogTitle>
-                        <div className="flex justify-between items-center border border-gray-300 rounded-md p-4">
-                          <div className="grid grid-cols-3 gap-4">
-                            <div className="flex items-center gap-2">
-                              <Label htmlFor="id" className="whitespace-nowrap text-sm">ID:</Label>
-                              <Input id="id" value="00000004" disabled className="h-8 w-24" />
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Label htmlFor="fecha" className="whitespace-nowrap text-sm">Fecha:</Label>
-                              <Input id="fecha" value={fechaActualTransfer} disabled className="h-9 w-28" />
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Label htmlFor="hora" className="whitespace-nowrap text-sm">Hora:</Label>
-                              <Input id="hora" value={horaActualTransfer} disabled className="h-8 w-28" />
-                            </div>
-                          </div>
-                        </div>
-                      </DialogHeader>
-
-                      <div className="border border-gray-300 rounded-md p-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                          <div className="space-y-2">
-                            <Label>Farmacia Origen:</Label>
-                            <Select>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Seleccionar" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {farmOrigen.map((c) => (
-                                  <SelectItem key={c.id} value={c.codigo} className="hover:bg-gray-100 focus:bg-gray-100">
-                                    {c.nombre}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-
-                          <div className="space-y-2">
-                            <Label>Almacén Destino:</Label>
-                            <Input value="Almacén General" disabled />
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-2">
-                          <div className="space-y-2">
-                            <Label>Producto:</Label>
-                            <Input />
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
-                          <div className="space-y-2">
-                            <Label>Cantidad:</Label>
-                            <Input
-                              type="number"
-                              value={cantidad}
-                              min="1"
-                              onChange={(e) => setCantidad(e.target.value)}
-                            />
-                          </div>
-
-                          <div className="space-y-2">
-                            <Label>Precio de Operación:</Label>
-                            <Input value="2.7" disabled />
-                          </div>
-
-                          <div className="space-y-2">
-                            <Label>Importe Total:</Label>
-                            <Input value="40.5" disabled />
-                          </div>
-
-                          <div className="space-y-2">
-                            <Label>Lote:</Label>
-                            <Input value="PT14202" disabled />
-                          </div>
-
-                          <div className="space-y-2">
-                            <Label>Registro sanitario:</Label>
-                            <Input value="EE-11024" disabled />
-                          </div>
-
-                          <div className="space-y-2">
-                            <Label>Fecha de vencimiento:</Label>
-                            <Input value="01/08/2027" disabled />
-                          </div>
-                        </div>
-
-                        {/* BOTÓN AGREGAR */}
-                        <div className="mt-4">
-                          <Button
-                            className="bg-green-600 hover:bg-green-700 text-white"
-                          >
-                            Agregar Producto
-                          </Button>
-                        </div>
-
-                        {/* TABLA DE PRODUCTOS */}
-                        <div className="mt-4 border rounded-md overflow-x-auto">
-                          <Table>
-                            <TableHeader>
-                              <TableRow>
-                                <TableHead>Producto</TableHead>
-                                <TableHead>Cantidad</TableHead>
-                                <TableHead>Precio de Operación</TableHead>
-                                <TableHead>Importe Total</TableHead>
-                                <TableHead>Lote</TableHead>
-                                <TableHead>Registro Sanitario</TableHead>
-                                <TableHead>Fecha de vencimiento</TableHead>
-                                <TableHead>Acciones</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              <TableRow>
-                                <TableCell>Metamizol Sodico 1 G 2 ML</TableCell>
-                                <TableCell>2</TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell>
-                                  <Button
-                                  >
-                                    Eliminar
-                                  </Button>
-                                </TableCell>
-                              </TableRow>
-                            </TableBody>
-                          </Table>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-6">
-                          <div className="space-y-2">
-                            <Label>Observación / Comentario:</Label>
-                            <Input id="observacion" />
-                          </div>
-                        </div>
-                      </div>
-
-                      <DialogFooter className="mt-4">
-                        <Button
-                          variant="outline"
-                          onClick={() => setOpenModalNuevaDevolucion(false)}
-                        >
-                          Cancelar
-                        </Button>
-
-                        <Button
-                          onClick={() => {
-                            // Aquí luego conectas backend
-                            console.log("Registrar devolución");
-
-                            setOpenModalNuevaDevolucion(false);
-                            setOpenModalExitoDevolucion(true);
-                          }}
-                        >
-                          Guardar Devolución
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-
 
                   {/* MODAL ÉXITO DEVOLUCIÓN */}
                   <Dialog

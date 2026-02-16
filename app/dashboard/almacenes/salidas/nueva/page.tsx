@@ -553,7 +553,7 @@ export default function NuevaSalidaPage() {
                             </div>
 
                             <div className="md:col-span-2">
-                                <Label>Observación / Comentario:</Label>
+                                <Label>Observación / Comentario: <span className="text-red-500">*</span></Label>
                                 <Input />
                             </div>
 
