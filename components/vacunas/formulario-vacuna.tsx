@@ -187,7 +187,7 @@ export function FormularioVacuna({ onCancel, onSave }: Props) {
                     </Button>
 
                     <Button onClick={onSave}>
-                        Guardar Devolución
+                        Guardar Transferencia
                     </Button>
                 </div>
 
