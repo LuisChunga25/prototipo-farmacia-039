@@ -394,10 +394,40 @@ const lotesMock = [
   },
 ];
 
-const productosMock = [
+const opcionesItemsMock = [
   { id: 1, nombre: "Metamizol Sódico 1g/2ml" },
   { id: 2, nombre: "Paracetamol 500 mg" },
   { id: 3, nombre: "Ibuprofeno 400 mg" },
+];
+
+const productosMock = [
+  {
+    id: "1",
+    nombre: "Paracetamol 500mg",
+    lotes: [
+      {
+        lote: "L003",
+        registroSanitario: "RS-003",
+        fechaVencimiento: "31-01-2026",
+        precio: 2.5,
+        stock: 10,
+      },
+      {
+        lote: "L002",
+        registroSanitario: "RS-002",
+        fechaVencimiento: "15-03-2026",
+        precio: 2,
+        stock: 30,
+      },
+      {
+        lote: "L001",
+        registroSanitario: "RS-001",
+        fechaVencimiento: "30-06-2026",
+        precio: 1.5,
+        stock: 40,
+      },
+    ],
+  },
 ];
 
 
@@ -443,13 +473,17 @@ export default function TransferenciasPage() {
   const [devolucionSelec, setDevolucionSelec] = useState<any>(null);
   const [productosTransfer, setProductosTransfer] = useState<any[]>([]);
   const [almacenSeleccionado, setAlmacenSeleccionado] = useState(farmaciasSolicitantes[0].codigo);
+  const [farmOrigenSeleccionada, setFarmOrigenSeleccionada] = useState<string>("");
+  const [farmDestinoSeleccionada, setFarmDestinoSeleccionada] = useState<string>("");
   const [vistaDistribucion, setVistaDistribucion] = useState<"lista" | "despacho">("lista");
   const [vistaDevolucion, setVistaDevolucion] = useState<"lista" | "nuevaDev">("lista");
   const [vistaVacuna, setVistaVacuna] = useState<"lista" | "nuevaVac">("lista");
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
+  const [detalleTransferencia, setDetalleTransferencia] = useState<any[]>([]);
   const enDespacho = vistaDistribucion === "despacho";
   const enNuevaDev = vistaDevolucion === "nuevaDev";
   const enNuevaVac = vistaVacuna === "nuevaVac";
+  const showCamposTransferencia = farmOrigenSeleccionada !== "" && farmDestinoSeleccionada !== "";
   const now = new Date();
 
   // Tipos de prerrequerimientos
@@ -743,11 +777,14 @@ export default function TransferenciasPage() {
     setProdTransfer("");
     setCantTransfer("");
     setObsTransfer("");
+
+    setFarmOrigenSeleccionada("");
+    setFarmDestinoSeleccionada("");
   }
 
   // FUNCIÓN PARA AGREGAR PRODUCTO
   const handleAgregarProductoTransfer = () => {
-    if (!prodTransfer || !cantTransfer) return;
+    if (!prodTransfer || Number(cantTransfer) <= 0) return;
 
     setProductosTransfer((prev) => [
       ...prev,
@@ -766,42 +803,80 @@ export default function TransferenciasPage() {
     setCantTransfer("");
   };
 
-  /*const handleAgregarProductoTransfer = () => {
-    if (!prodTransfer || !cantTransfer) return;
+  // ASIGNAR LOTES AUTOMATICAMENTE A PRODUCTO
+  const asignarLotes = (producto: any, cantidadSolicitada: number) => {
+    let cantidadRestante = cantidadSolicitada;
+    const detalle = [];
 
-    let cantidadNecesaria = Number(cantTransfer);
-    const registros: any[] = [];
+    for (const lote of producto.lotes) {
+      if (cantidadRestante <= 0) break;
 
-    for (const lote of lotesMock) {
-      if (cantidadNecesaria <= 0) break;
+      const cantidadAsignada =
+        cantidadRestante >= lote.stock ? lote.stock : cantidadRestante;
 
-      const asignado = Math.min(lote.stock, cantidadNecesaria);
-      cantidadNecesaria -= asignado;
-
-      registros.push({
-        producto: prodTransfer,
-        cantidadTransferir: Number(cantTransfer),
-        cantidadAsignada: asignado,
+      detalle.push({
+        producto: producto.nombre,
+        cantidadSolicitada,
+        cantidadAsignada,
         precio: lote.precio,
-        importe: asignado * lote.precio,
+        importe: cantidadAsignada * lote.precio,
         lote: lote.lote,
         registroSanitario: lote.registroSanitario,
         fechaVencimiento: lote.fechaVencimiento,
       });
+
+      cantidadRestante -= cantidadAsignada;
     }
 
-    setProductosTransfer((prev) => [...prev, ...registros]);
-
-    // limpiar campos
-    setProdTransfer("");
-    setCantTransfer("");
-  };*/
-
-  // FUNCIÓN ELIMINAR PRODUCTO
-  const handleEliminarProductoTransfer = (index: number) => {
-    setProductosTransfer((prev) => prev.filter((_, i) => i !== index));
+    return detalle;
   };
 
+  // AGREGAR PRODUCTO EN LA TABLA COMO PARTE DE LA TRANSFERENCIA INTERNA (SIMULACION)
+  const handleAgregarProducto = () => {
+    if (!prodTransfer || Number(cantTransfer) <= 0) return;
+
+    const productoSeleccionado = productosMock.find(
+      (p) => p.nombre === prodTransfer
+    );
+
+    if (!productoSeleccionado) return;
+
+    let cantidadRestante = Number(cantTransfer);
+
+    const nuevosRegistros: any[] = [];
+
+    for (const lote of productoSeleccionado.lotes) {
+      if (cantidadRestante <= 0) break;
+
+      const cantidadAsignada =
+        cantidadRestante >= lote.stock ? lote.stock : cantidadRestante;
+
+      nuevosRegistros.push({
+        producto: productoSeleccionado.nombre,
+        cantidadTransferir: Number(cantTransfer),
+        cantidadAsignada,
+        precio: lote.precio,
+        importe: cantidadAsignada * lote.precio,
+        lote: lote.lote,
+        registroSanitario: lote.registroSanitario,
+        fechaVencimiento: lote.fechaVencimiento,
+      });
+
+      cantidadRestante -= cantidadAsignada;
+    }
+
+    setProductosTransfer((prev) => [...prev, ...nuevosRegistros]);
+
+    setProdTransfer("");
+    setCantTransfer("");
+  };
+
+  // ELIMINAR PRODUCTO  DENTRO DE LA TRANSFERENCIA INTERNA (SIMULACION)
+  const handleEliminar = (index: number) => {
+    setDetalleTransferencia((prev) =>
+      prev.filter((_, i) => i !== index)
+    );
+  };
 
 
   return (
@@ -2532,7 +2607,17 @@ export default function TransferenciasPage() {
 
                           <div className="space-y-2">
                             <Label>Farmacia Origen:</Label>
-                            <Select>
+                            <Select
+                              value={farmOrigenSeleccionada}
+                              onValueChange={(value) => {
+                                setFarmOrigenSeleccionada(value);
+
+                                // Si estaba seleccionada como destino, la limpiamos
+                                if (value === farmDestinoSeleccionada) {
+                                  setFarmDestinoSeleccionada("");
+                                }
+                              }}
+                            >
                               <SelectTrigger>
                                 <SelectValue placeholder="Seleccionar" />
                               </SelectTrigger>
@@ -2548,12 +2633,15 @@ export default function TransferenciasPage() {
 
                           <div className="space-y-2">
                             <Label>Farmacia Destino:</Label>
-                            <Select>
+                            <Select
+                              value={farmDestinoSeleccionada}
+                              onValueChange={(value) => setFarmDestinoSeleccionada(value)}
+                            >
                               <SelectTrigger>
                                 <SelectValue placeholder="Seleccionar" />
                               </SelectTrigger>
                               <SelectContent>
-                                {farmDestino.map((c) => (
+                                {farmDestino.filter((c) => c.codigo !== farmOrigenSeleccionada).map((c) => (
                                   <SelectItem key={c.id} value={c.codigo} className="hover:bg-gray-100 focus:bg-gray-100">
                                     {c.nombre}
                                   </SelectItem>
@@ -2563,157 +2651,124 @@ export default function TransferenciasPage() {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-2 gap-4 mt-2">
-                          <div className="space-y-2">
-                            <Label>Producto:</Label>
-                            <Select value={prodTransfer} onValueChange={setProdTransfer}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Seleccione producto" />
-                              </SelectTrigger>
+                        {showCamposTransferencia && (
+                          <>
+                            <div className="grid grid-cols-2 md:grid-cols-2 gap-4 mt-2">
+                              <div className="space-y-2">
+                                <Label>Producto:</Label>
+                                <Select value={prodTransfer} onValueChange={setProdTransfer}>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Seleccione producto" />
+                                  </SelectTrigger>
 
-                              <SelectContent>
-                                {productosMock.map((p) => (
-                                  <SelectItem key={p.id} value={p.nombre}>
-                                    {p.nombre}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
+                                  <SelectContent>
+                                    {opcionesItemsMock.map((p) => (
+                                      <SelectItem key={p.id} value={p.nombre}>
+                                        {p.nombre}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
 
-                          <div className="space-y-2">
-                            <Label>Cantidad a transferir:</Label>
-                            <Input
-                              type="text"
-                              inputMode="numeric"
-                              pattern="[0-9]"
-                              placeholder="Ingrese cantidad"
-                              value={cantidad}
-                              onChange={(e) => setCantidad(e.target.value)}
-                            />
-                          </div>
-                        </div>
+                              <div className="space-y-2">
+                                <Label>Cantidad a transferir:</Label>
+                                <Input
+                                  type="text"
+                                  inputMode="numeric"
+                                  pattern="[0-9]"
+                                  placeholder="Ingrese cantidad"
+                                  value={cantidad}
+                                  onChange={(e) => setCantidad(e.target.value)}
+                                />
+                              </div>
+                            </div>
 
-                        {/*<div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
-                          <div className="space-y-2">
-                            <Label>Cantidad:</Label>
-                            <Input
-                              type="number"
-                              value={cantidad}
-                              min="1"
-                              onChange={(e) => setCantidad(e.target.value)}
-                            />
-                          </div>
+                            {/* BOTÓN AGREGAR */}
+                            <div className="mt-4">
+                              <Button
+                                className="bg-green-600 hover:bg-green-700 text-white"
+                                onClick={handleAgregarProducto}
+                              >
+                                Agregar Producto
+                              </Button>
+                            </div>
 
-                          <div className="space-y-2">
-                            <Label>Precio de Operación:</Label>
-                            <Input value="2.7" disabled />
-                          </div>
+                            {/* TABLA DE PRODUCTOS */}
+                            <div className="mt-4 border rounded-md overflow-x-auto">
+                              <Table>
+                                <TableHeader>
+                                  <TableRow>
+                                    <TableHead>Producto</TableHead>
+                                    <TableHead>Cantidad a transferir</TableHead>
+                                    <TableHead>Cantidad asignada</TableHead>
+                                    <TableHead>Precio</TableHead>
+                                    <TableHead>Importe</TableHead>
+                                    <TableHead>Lote</TableHead>
+                                    <TableHead>Registro Sanitario</TableHead>
+                                    <TableHead>Fecha de Vencimiento</TableHead>
+                                    <TableHead>Acciones</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {productosTransfer.map((p, index) => (
+                                    <TableRow key={index}>
+                                      <TableCell>{p.producto}</TableCell>
+                                      <TableCell>{p.cantidadTransferir}</TableCell>
+                                      <TableCell>{p.cantidadAsignada}</TableCell>
+                                      <TableCell>S/ {p.precio.toFixed(2)}</TableCell>
+                                      <TableCell>S/ {p.importe.toFixed(2)}</TableCell>
+                                      <TableCell>{p.lote}</TableCell>
+                                      <TableCell>{p.registroSanitario}</TableCell>
+                                      <TableCell>{p.fechaVencimiento}</TableCell>
+                                      <TableCell>
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          title="Eliminar"
+                                          className="border-red-500 text-red-600 hover:bg-red-50"
+                                          onClick={() =>
+                                            setProductosTransfer((prev) => prev.filter((_, i) => i !== index))
+                                          }
+                                        >
+                                          <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
 
-                          <div className="space-y-2">
-                            <Label>Importe Total:</Label>
-                            <Input value="40.5" disabled />
-                          </div>
+                            <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-6">
+                              <div className="space-y-2">
+                                <Label>Observación / Comentario:</Label>
+                                <Input id="observacion" />
+                              </div>
+                            </div>
 
-                          <div className="space-y-2">
-                            <Label>Lote:</Label>
-                            <Input value="PT14202" disabled />
-                          </div>
+                            {/* FOOTER */}
+                            <DialogFooter className="mt-6">
+                              <Button variant="outline" onClick={() => {
+                                resetModalTransfInt();
+                                setOpenModalTransferencia(false);
+                              }}>
+                                Cancelar
+                              </Button>
 
-                          <div className="space-y-2">
-                            <Label>Registro sanitario:</Label>
-                            <Input value="EE-11024" disabled />
-                          </div>
-
-                          <div className="space-y-2">
-                            <Label>Fecha de vencimiento:</Label>
-                            <Input value="01/08/2027" disabled />
-                          </div>
-                        </div>*/}
-
-                        {/* BOTÓN AGREGAR */}
-                        <div className="mt-4">
-                          <Button
-                            className="bg-green-600 hover:bg-green-700 text-white"
-                            onClick={handleAgregarProductoTransfer}
-                          >
-                            Agregar Producto
-                          </Button>
-                        </div>
-
-                        {/* TABLA DE PRODUCTOS */}
-                        <div className="mt-4 border rounded-md overflow-x-auto">
-                          <Table>
-                            <TableHeader>
-                              <TableRow>
-                                <TableHead>Producto</TableHead>
-                                <TableHead>Cantidad a transferir</TableHead>
-                                <TableHead>Cantidad asignada</TableHead>
-                                <TableHead>Precio</TableHead>
-                                <TableHead>Importe</TableHead>
-                                <TableHead>Lote</TableHead>
-                                <TableHead>Registro Sanitario</TableHead>
-                                <TableHead>Fecha de Vencimiento</TableHead>
-                                <TableHead>Acciones</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {productosTransfer.map((p, index) => (
-                                <TableRow key={index}>
-                                  <TableCell>{p.producto}</TableCell>
-                                  <TableCell>{p.cantidadTransferir}</TableCell>
-                                  <TableCell>{p.cantidadAsignada}</TableCell>
-                                  <TableCell>S/ {p.precio.toFixed(2)}</TableCell>
-                                  <TableCell>S/ {p.importe.toFixed(2)}</TableCell>
-                                  <TableCell>{p.lote}</TableCell>
-                                  <TableCell>{p.registroSanitario}</TableCell>
-                                  <TableCell>{p.fechaVencimiento}</TableCell>
-                                  <TableCell>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      title="Eliminar"
-                                      className="border-red-500 text-red-600 hover:bg-red-50"
-                                      onClick={() =>
-                                        setProductosTransfer((prev) => prev.filter((_, i) => i !== index))
-                                      }
-                                    >
-                                      <Trash2 className="w-4 h-4" />
-                                    </Button>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-6">
-                          <div className="space-y-2">
-                            <Label>Observación / Comentario:</Label>
-                            <Input id="observacion" />
-                          </div>
-                        </div>
-
-                        {/* FOOTER */}
-                        <DialogFooter className="mt-6">
-                          <Button variant="outline" onClick={() => {
-                            resetModalTransfInt();
-                            setOpenModalTransferencia(false);
-                          }}>
-                            Cancelar
-                          </Button>
-
-                          <Button
-                            onClick={() => {
-                              // Aquí guardarás la solicitud después
-                              setOpenModalTransferencia(false);
-                              setOpenModalExitoRegTransfer(true);
-                            }}
-                          >
-                            <Save className="w-4 h-4" />
-                            Guardar Transferencia
-                          </Button>
-                        </DialogFooter>
+                              <Button
+                                onClick={() => {
+                                  // Aquí guardarás la solicitud después
+                                  setOpenModalTransferencia(false);
+                                  setOpenModalExitoRegTransfer(true);
+                                }}
+                              >
+                                <Save className="w-4 h-4" />
+                                Guardar Transferencia
+                              </Button>
+                            </DialogFooter>
+                          </>
+                        )}
                       </div>
                     </DialogContent>
                   </Dialog>

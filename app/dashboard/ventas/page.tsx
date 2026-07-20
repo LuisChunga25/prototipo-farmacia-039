@@ -54,6 +54,20 @@ export default function VentasPage() {
       {/* No info bar needed here as it's already in the footer */}
 
       <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
+        <Link href="/dashboard/ventas/proformas" className="block">
+          <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
+            <CardHeader className="p-4">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <ShoppingCart className="h-5 w-5 text-primary" />
+                Proformas
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0">
+              <CardDescription className="text-xs">Registro y gestión de las proformas de ventas en Farmacia</CardDescription>
+            </CardContent>
+          </Card>
+        </Link>
+
         <Link href="/dashboard/ventas/proformas-contado" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
             <CardHeader className="p-4">
