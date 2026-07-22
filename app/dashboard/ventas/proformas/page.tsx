@@ -26,17 +26,56 @@ import {
     X,
     History,
     FileText,
+    RefreshCcw,
+    CirclePlus,
+    User,
+    Stethoscope,
+    HelpCircle,
+    BadgeCheck,
+    ClipboardCheck,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
+// Define la interfaz
+interface Proforma {
+    id: number;
+    estado: string;
+    ordenId: string;
+    numReceta: string;
+    cuentaId: string;
+    fecha: string;
+    hora: string;
+    fecha_proceso: string;
+    hora_proceso: string;
+    numPaciente: string;
+    historia: string;
+    nombrePaciente: string;
+    tipoSeguro: string;
+    medico: string;
+    nombreAlmacen: string;
+    nombreConsultorio: string;
+    tipoPago: string;
+    total: number;
+    usuario: string;
+    medicamentos: {
+        producto: string;
+        cantSolicitada: number;
+        cantAsignada: number;
+        precio: string;
+        importe: string;
+        lote: string;
+        fechaVenc: string;
+    }[];
+}
+
 // DATOS DE EJEMPLO PARA LA TABLA
 const proformasData = [
     {
         id: 1,
-        estado: "1",
+        estado: "2",
         ordenId: "1726126012",
         numReceta: "260363091",
         cuentaId: "3010196",
@@ -48,15 +87,36 @@ const proformasData = [
         historia: "09846541",
         nombrePaciente: "HERNANDEZ TORRES KIMBERLY ARMIDA",
         tipoSeguro: "SIS",
+        medico: "ABANTO ARDILES YAZMIN ANDREA",
         nombreAlmacen: "CONSULTORIOS EXTERNOS",
         nombreConsultorio: "MEDICINA INTERNA 1",
         tipoPago: "R",
         total: 67.4,
         usuario: "40532847",
+        medicamentos: [
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR22222",
+                fechaVenc: "31/10/2026",
+            },
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR33333",
+                fechaVenc: "31/12/2026",
+            },
+        ],
     },
     {
         id: 2,
-        estado: "1",
+        estado: "2",
         ordenId: "1726126011",
         numReceta: "260363090",
         cuentaId: "3010195",
@@ -68,15 +128,36 @@ const proformasData = [
         historia: "48952215",
         nombrePaciente: "SUAREZ ORTEGA GABRIEL OCTAVIO",
         tipoSeguro: "SIS",
+        medico: "DIONICIO IBAÑEZ LUIS FELIPE",
         nombreAlmacen: "CONSULTORIOS EXTERNOS",
         nombreConsultorio: "MEDICINA INTERNA 1",
         tipoPago: "R",
         total: 15.8,
         usuario: "40532847",
+        medicamentos: [
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR22222",
+                fechaVenc: "31/10/2026",
+            },
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR33333",
+                fechaVenc: "31/12/2026",
+            },
+        ],
     },
     {
         id: 3,
-        estado: "1",
+        estado: "2",
         ordenId: "1726126010",
         numReceta: "260363089",
         cuentaId: "3010194",
@@ -88,15 +169,36 @@ const proformasData = [
         historia: "47515642",
         nombrePaciente: "REYES SALCEDO JOSE ANTONIO",
         tipoSeguro: "PAGANTE",
+        medico: "DIONICIO IBAÑEZ LUIS FELIPE",
         nombreAlmacen: "CONSULTORIOS EXTERNOS",
         nombreConsultorio: "MEDICINA INTERNA 1",
         tipoPago: "R",
         total: 26.5,
         usuario: "40532847",
+        medicamentos: [
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR22222",
+                fechaVenc: "31/10/2026",
+            },
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR33333",
+                fechaVenc: "31/12/2026",
+            },
+        ],
     },
     {
         id: 4,
-        estado: "1",
+        estado: "2",
         ordenId: "1726126009",
         numReceta: "260363088",
         cuentaId: "3010193",
@@ -108,15 +210,36 @@ const proformasData = [
         historia: "75486512",
         nombrePaciente: "RAMOS OJEDA ALBERTO FEDERICO",
         tipoSeguro: "SIS",
+        medico: "BASOMBRIO VELAQUEZ JORGE",
         nombreAlmacen: "CONSULTORIOS EXTERNOS",
-        nombreConsultorio: "MEDICINA INTERNA 1",
+        nombreConsultorio: "CIRUGIA GENERAL",
         tipoPago: "R",
         total: 16.1,
         usuario: "40532847",
+        medicamentos: [
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR22222",
+                fechaVenc: "31/10/2026",
+            },
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR33333",
+                fechaVenc: "31/12/2026",
+            },
+        ],
     },
     {
         id: 5,
-        estado: "1",
+        estado: "2",
         ordenId: "1726126008",
         numReceta: "260363087",
         cuentaId: "3010192",
@@ -126,59 +249,43 @@ const proformasData = [
         hora_proceso: "18:12",
         numPaciente: "2011345165",
         historia: "73542141",
-        nombrePaciente: "TORRES MENDOZA CAROLINA LUCIA",
+        nombrePaciente: "BASOMBRIO VELASQUEZ JORGE",
         tipoSeguro: "PAGANTE",
         nombreAlmacen: "CONSULTORIOS EXTERNOS",
-        nombreConsultorio: "MEDICINA INTERNA 1",
+        nombreConsultorio: "CIRUGIA GENERAL",
         tipoPago: "R",
         total: 8.6,
         usuario: "40532847",
+        medicamentos: [
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR22222",
+                fechaVenc: "31/10/2026",
+            },
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR33333",
+                fechaVenc: "31/12/2026",
+            },
+        ],
     },
 ]
-
-// DATOS DE PRUEBA PARA PRODUCTOS
-const productosMock = [
-    {
-        id: 1,
-        codigo: "00070",
-        nombre: "ACETILCISTEINA 100 MG SOB",
-        regSan: "RS001",
-        lote: "LR12345",
-        fechaVenc: "02/02/2027",
-        precio: 0.9,
-        cantidad: 100,
-    },
-    {
-        id: 2,
-        codigo: "00132",
-        nombre: "ACICLOVIR 250 MG INY X 10 ML",
-        regSan: "RS002",
-        lote: "H1477",
-        fechaVenc: "15/06/2028",
-        precio: 14.79,
-        cantidad: 150,
-    },
-];
 
 export default function SalidasPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchBy, setSearchBy] = useState("ordenId");
-    const [selectedSalida, setSelectedSalida] = useState(null);
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [selectAll, setSelectAll] = useState(false);
-    const [fechaInicio, setFechaInicio] = useState("");
-    const [fechaFin, setFechaFin] = useState("");
-    const [nuevaSalida, setNuevaSalida] = useState(false);
-    const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-    const [showSuccessDelete, setShowSuccessDelete] = useState(false);
-    const [salidaToDelete, setSalidaToDelete] = useState<any>(null);
     const [proformasVisibles, setProformasVisibles] = useState<any[]>([]);
-    const [showConfirmProcesar, setShowConfirmProcesar] = useState(false);
-    const [showSuccessProcesar, setShowSuccessProcesar] = useState(false);
-    const [salidaToProcesar, setSalidaToProcesar] = useState<any>(null);
-    const [showDetalleModal, setShowDetalleModal] = useState(false);
     const [modalNuevaProforma, setModalNuevaProforma] = useState(false);
-    const [salidaDetalle, setSalidaDetalle] = useState<any>(null);
     const [dni, setDni] = useState("");
     const [dniValidado, setDniValidado] = useState(false);
     const [error, setError] = useState("");
@@ -186,6 +293,43 @@ export default function SalidasPage() {
     const [modalEditarCantidad, setModalEditarCantidad] = useState(false);
     const [medicamentoSeleccionado, setMedicamentoSeleccionado] = useState<any>(null);
     const router = useRouter();
+    const hoy = new Date();
+    const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+    const [fechaActual, setFechaActual] = useState("");
+    const [horaActual, setHoraActual] = useState("");
+    const [pacienteExterno, setPacienteExterno] = useState(false);
+    const [producto, setProducto] = useState("");
+    const [cantidad, setCantidad] = useState("");
+    const [medicamentos, setMedicamentos] = useState<
+        { producto: string; cantidad: string }[]
+    >([]);
+    const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+    const [mostrarExito, setMostrarExito] = useState(false);
+    const [mostrarDetalle, setMostrarDetalle] = useState(false);
+    const [proformaSeleccionada, setProformaSeleccionada] = useState<Proforma | null>(null);
+
+    // Formatear a yyyy-MM-dd para que el input type="date" lo acepte
+    const formatoISO = (fecha: Date) => fecha.toISOString().split("T")[0];
+    const [fechaInicio, setFechaInicio] = useState(formatoISO(primerDiaMes));
+    const [fechaFin, setFechaFin] = useState(formatoISO(hoy));
+
+    // Al montar el componente, inicializa fecha y hora
+    useEffect(() => {
+        const ahora = new Date();
+        const opcionesFecha: Intl.DateTimeFormatOptions = { day: "2-digit", month: "2-digit", year: "numeric" };
+        const opcionesHora: Intl.DateTimeFormatOptions = { hour: "2-digit", minute: "2-digit", second: "2-digit" };
+
+        setFechaActual(ahora.toLocaleDateString("es-PE", opcionesFecha));
+        setHoraActual(ahora.toLocaleTimeString("es-PE", opcionesHora));
+
+        // Actualizar hora cada segundo
+        const intervalo = setInterval(() => {
+            const ahora = new Date();
+            setHoraActual(ahora.toLocaleTimeString("es-PE", opcionesHora));
+        }, 1000);
+
+        return () => clearInterval(intervalo);
+    }, []);
 
     const opcionesBusqueda = [
         { value: "ordenId", label: "Orden ID" },
@@ -256,43 +400,6 @@ export default function SalidasPage() {
         }
     }
 
-    // ELIMINAR DOCUMENTO DE SALIDA
-    const handleDeleteClick = (salida: any) => {
-        setSalidaToDelete(salida);
-        setShowConfirmDelete(true);
-    };
-
-    const confirmDelete = () => {
-        setShowConfirmDelete(false);
-
-        // Ocultamiento visual
-        setProformasVisibles((prev) =>
-            prev.filter((s) => s.id !== salidaToDelete.id)
-        );
-
-        setTimeout(() => {
-            setShowSuccessDelete(true);
-        }, 200);
-    };
-
-    // SIMULAR PROCESAMIENTO DE UN DOCUMENTO DE SALIDA
-    const confirmProcesar = () => {
-        setShowConfirmProcesar(false);
-
-        // Simulación de cambio de estado
-        setProformasVisibles((prev) =>
-            prev.map((s) =>
-                s.id === salidaToProcesar.id
-                    ? { ...s, estado: "2" }
-                    : s
-            )
-        );
-
-        setTimeout(() => {
-            setShowSuccessProcesar(true);
-        }, 200);
-    };
-
     // VERIFICAR SI HAY ELEMENTOS SELECCIONADOS
     const hasSelection = selectedItems.length > 0
 
@@ -332,7 +439,7 @@ export default function SalidasPage() {
                     Regresar
                 </Button>
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Módulo de Proformas</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">Módulo de Proformas de Consulta Externa</h1>
                     <p className="text-muted-foreground">Gestione la emisión de proformas con el detalle y costo estimado de los medicamentos solicitados por el paciente antes de la venta</p>
                 </div>
             </div>
@@ -411,7 +518,7 @@ export default function SalidasPage() {
                     </Button>
 
                     <Button
-                        className="bg-green-600 hover:bg-green-700 text-white gap-2 font-semibold"
+                        className="bg-teal-600 hover:bg-teal-700 text-white gap-2 font-semibold"
                         size="sm"
                         onClick={() => setModalNuevaProforma(true)}
                     >
@@ -462,23 +569,20 @@ export default function SalidasPage() {
                                         <Button
                                             title="Ver detalle"
                                             variant="outline"
-                                            className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50"
+                                            className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50 flex items-center justify-center"
                                             onClick={() => {
-                                                setSalidaDetalle(proforma);
-                                                setShowDetalleModal(true);
+                                                setProformaSeleccionada(proforma);
+                                                setMostrarDetalle(true);
                                             }}
                                         >
-                                            <Eye className="w-3 h-3" />
+                                            <Eye className="w-4 h-4" />
                                         </Button>
                                         <Button
                                             title="Anular documento"
                                             variant="outline"
-                                            className={`h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50
-                        ${proforma.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
-                                            disabled={proforma.estado !== "1"}
-                                            onClick={() => handleDeleteClick(proforma)}
+                                            className="h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50 flex items-center justify-center"
                                         >
-                                            <X className="w-3 h-3" />
+                                            <X className="w-4 h-4" />
                                         </Button>
                                     </div>
                                 </TableCell>
@@ -488,18 +592,94 @@ export default function SalidasPage() {
                 </Table>
             </div>
 
+            {mostrarDetalle && proformaSeleccionada && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+                    <div className="bg-white rounded-md shadow-lg p-6 max-w-7xl w-full">
+                        {/* Encabezado con título y botón X */}
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-lg font-semibold">Detalle de Proforma</h2>
+                            <button
+                                onClick={() => setMostrarDetalle(false)}
+                                className="text-gray-500 hover:text-gray-700"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
+
+                        {/* Datos del paciente */}
+                        <div className="mb-4">
+                            <p><strong>Paciente:</strong> {proformaSeleccionada.nombrePaciente}</p>
+                            <p><strong>Historia:</strong> {proformaSeleccionada.historia}</p>
+                            <p><strong>Seguro:</strong> {proformaSeleccionada.tipoSeguro}</p>
+                            <p><strong>Médico:</strong> {proformaSeleccionada.medico}</p>
+                        </div>
+
+                        {/* Botón historial */}
+                        <Button variant="outline" className="mb-4">Ver historial de recetas</Button>
+
+                        {/* Tabla de medicamentos */}
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full border-collapse border border-gray-300">
+                                <thead className="bg-blue-900 text-white">
+                                    <tr>
+                                        <th className="border px-3 py-2">Producto</th>
+                                        <th className="border px-3 py-2">Cant. Solicitada</th>
+                                        <th className="border px-3 py-2">Cant. Asignada</th>
+                                        <th className="border px-3 py-2">Precio</th>
+                                        <th className="border px-3 py-2">Importe</th>
+                                        <th className="border px-3 py-2">Lote</th>
+                                        <th className="border px-3 py-2">F. Venc.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {proformaSeleccionada.medicamentos.map((med, idx) => (
+                                        <tr key={idx}>
+                                            <td className="border px-3 py-2">{med.producto}</td>
+                                            <td className="border px-3 py-2">{med.cantSolicitada}</td>
+                                            <td className="border px-3 py-2">{med.cantAsignada}</td>
+                                            <td className="border px-3 py-2">{med.precio}</td>
+                                            <td className="border px-3 py-2">{med.importe}</td>
+                                            <td className="border px-3 py-2">{med.lote}</td>
+                                            <td className="border px-3 py-2">{med.fechaVenc}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Botón cerrar */}
+                        <div className="flex justify-end mt-4">
+                            <Button variant="outline" onClick={() => setMostrarDetalle(false)}>Cerrar</Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* MODAL DE REGISTRO DE NUEVA PROFORMA DE VENTA */}
             {modalNuevaProforma && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/50">
                     <div className="bg-white rounded-md shadow-lg p-6 max-w-7xl w-full max-h-[90vh] overflow-y-auto relative">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-lg font-semibold mb-4">Registrar Proforma</h2>
+                            <h2 className="text-lg font-semibold">Registrar Proforma</h2>
+
+                            {/* Bloque de fecha y hora */}
+                            <div className="text-right text-sm flex gap-4">
+                                <div className="bg-blue-100 text-blue-900 font-semibold px-3 py-1 rounded">
+                                    Fecha: {fechaActual}
+                                </div>
+                                <div className="bg-blue-100 text-blue-900 font-semibold px-3 py-1 rounded">
+                                    Hora: {horaActual}
+                                </div>
+                            </div>
+
                             <button
                                 onClick={() => {
                                     setModalNuevaProforma(false);
                                     setDniValidado(false); // reinicia validación
                                     setDni(""); // limpia input
                                     setError(""); // limpia mensaje de error
+                                    setPacienteExterno(false);
+                                    setMedicamentos([]); // limpia la tabla al cerrar
                                 }}
                                 className="text-gray-500 hover:text-red-600"
                             >
@@ -520,12 +700,14 @@ export default function SalidasPage() {
                                         id="documento"
                                         type="text"
                                         placeholder="Ingrese DNI"
+                                        autoComplete="off"
                                         className={`border p-2 h-10 w-40 ${error ? "border-red-500" : ""}`}
                                         value={dni}
                                         onChange={(e) => {
                                             setDni(e.target.value);
                                             setError(""); // limpia error al escribir
                                         }}
+                                        disabled={pacienteExterno}
                                     />
                                 </div>
 
@@ -544,6 +726,7 @@ export default function SalidasPage() {
                                             setDniValidado(true); // despliega datos solo si cumple
                                         }
                                     }}
+                                    disabled={pacienteExterno}
                                 >
                                     Validar
                                 </Button>
@@ -553,12 +736,46 @@ export default function SalidasPage() {
                                     <input
                                         id="pacienteExterno"
                                         type="checkbox"
-                                        className="h-4 w-4"
+                                        className={`h-4 w-4 ${dniValidado ? "cursor-not-allowed opacity-50" : ""}`}
+                                        checked={pacienteExterno}
+                                        onChange={(e) => {
+                                            setPacienteExterno(e.target.checked);
+                                            if (!e.target.checked) {
+                                                setMedicamentos([]); // limpia la tabla al desmarcar
+                                            }
+                                        }}
+                                        disabled={dniValidado}
+                                        title={dniValidado ? "Deshabilitado porque ya se validó un DNI" : ""}
                                     />
-                                    <Label htmlFor="pacienteExterno" className="text-sm">
+                                    <Label
+                                        htmlFor="pacienteExterno"
+                                        className={`text-sm ${dniValidado ? "text-gray-400" : ""}`}
+                                        title={dniValidado ? "Deshabilitado porque ya se validó un DNI" : ""}
+                                    >
                                         Paciente Externo
                                     </Label>
                                 </div>
+
+                                {/* Botón Resetear: visible si el DNI fue validado o si es paciente externo */}
+                                {(dniValidado || pacienteExterno) && (
+                                    <div className="ml-auto">
+                                        <Button
+                                            type="button"
+                                            className="bg-gray-500 hover:bg-gray-600 text-white h-10 px-4 flex items-center gap-2"
+                                            onClick={() => {
+                                                setDni("");
+                                                setError("");
+                                                setDniValidado(false);
+                                                setPacienteExterno(false);
+                                                setMedicamentos([]);   // limpia la tabla también
+                                            }}
+                                        >
+                                            <RefreshCcw className="h-4 w-4" />
+                                            Resetear
+                                        </Button>
+                                    </div>
+                                )}
+
                             </div>
 
                             {/* Contenedor de error debajo de los campos iniciales */}
@@ -609,11 +826,15 @@ export default function SalidasPage() {
                                             </div>
                                             <div>
                                                 <Label className="block mb-1">Transacción:</Label>
-                                                <p className="text-gray-700 font-medium">VC - CONTADO</p>
+                                                <p className="text-gray-700 font-medium">VRS - SIS</p>
                                             </div>
                                             <div>
                                                 <Label className="block mb-1">N° Receta:</Label>
                                                 <p className="text-gray-700 font-medium">270065000</p>
+                                            </div>
+                                            <div>
+                                                <Label className="block mb-1">Cuenta:</Label>
+                                                <p className="text-gray-700 font-medium">3013144</p>
                                             </div>
                                             {/* Comentario ocupa toda la fila */}
                                             <div className="col-span-3">
@@ -640,73 +861,96 @@ export default function SalidasPage() {
 
                                     {/* Tabla de medicamentos */}
                                     <div className="border rounded-md p-4 mb-4 bg-white">
-                                        <h3 className="text-md font-semibold mb-3">Medicamentos registrados</h3>
+                                        <h3 className="text-md font-semibold">Medicamentos registrados</h3>
+                                        <div className="flex items-center text-sm text-gray-600 mb-3 gap-2">
+                                            <Stethoscope className="h-4 w-4 text-gray-500" />
+                                            <span>Médico: DIONICIO IBAÑEZ LUIS FELIPE</span>
+                                        </div>
 
                                         <div className="overflow-x-auto">
                                             <table className="min-w-full border-collapse border border-gray-300">
                                                 <thead className="bg-blue-900 text-white">
                                                     <tr>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Item</th>
-                                                        <th className="border border-gray-300 px-3 py-2 text-left">Nombre</th>
-                                                        <th className="border border-gray-300 px-3 py-2 text-left">Presentación</th>
+                                                        <th className="border border-gray-300 px-3 py-2 text-left">Producto</th>
+                                                        <th className="border border-gray-300 px-3 py-2 text-left">SISMED / SIGA</th>
+                                                        <th className="border border-gray-300 px-3 py-2 text-left">Cant. Solicitada</th>
+                                                        <th className="border border-gray-300 px-3 py-2 text-left">Cant. Asignada</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Precio</th>
-                                                        <th className="border border-gray-300 px-3 py-2 text-left">Cantidad</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Importe</th>
-                                                        <th className="border border-gray-300 px-3 py-2 text-left">Médico</th>
-                                                        <th className="border border-gray-300 px-3 py-2 text-center">Acción</th>
+                                                        <th className="border border-gray-300 px-3 py-2 text-left">Lote</th>
+                                                        <th className="border border-gray-300 px-3 py-2 text-left">F. Venc.</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {/* Datos de prueba estáticos */}
                                                     <tr>
-                                                        <td className="border border-gray-300 px-3 py-2">1</td>
-                                                        <td className="border border-gray-300 px-3 py-2">Paracetamol</td>
-                                                        <td className="border border-gray-300 px-3 py-2">Tabletas 500mg</td>
-                                                        <td className="border border-gray-300 px-3 py-2">S/ 2.00</td>
-                                                        <td className="border border-gray-300 px-3 py-2">10</td>
-                                                        <td className="border border-gray-300 px-3 py-2">S/ 20.00</td>
-                                                        <td className="border border-gray-300 px-3 py-2">DIONICIO IBAÑEZ LUIS FELIPE</td>
-                                                        <td className="border border-gray-300 px-3 py-2 text-center">
-                                                            <button
-                                                                type="button"
-                                                                className="p-1 border border-yellow-600 text-yellow-600 rounded hover:bg-yellow-50"
-                                                                title="Editar cantidad"
-                                                                onClick={() => {
-                                                                    setMedicamentoSeleccionado({
-                                                                        nombre: "Paracetamol",
-                                                                        cantidad: 10
-                                                                    });
-                                                                    setModalEditarCantidad(true);
-                                                                }}
-                                                            >
-                                                                <Edit className="w-4 h-4" />
-                                                            </button>
+                                                        <td className="border border-gray-300 px-3 py-2" rowSpan={2}>1</td>
+                                                        <td className="border border-gray-300 px-3 py-2" rowSpan={2}>
+                                                            PARACETAMOL 500 MG
+                                                            <div className="font-bold text-gray-700">TAB</div>
                                                         </td>
+                                                        <td className="border border-gray-300 px-3 py-2" rowSpan={2}>
+                                                            <div><span className="font-semibold">SISMED:</span> 05335</div>
+                                                            <div><span className="font-semibold">SIGA:</span> 580200460011</div>
+                                                        </td>
+                                                        <td className="border border-gray-300 px-3 py-2" rowSpan={2}>10</td>
+
+                                                        {/* Subfila 1 */}
+                                                        <td className="border border-gray-300 px-3 py-2">
+                                                            <span className="bg-green-100 text-green-700 font-semibold px-2 py-1 rounded">
+                                                                5
+                                                            </span>
+                                                        </td>
+                                                        <td className="border border-gray-300 px-3 py-2">S/ 2.00</td>
+                                                        <td className="border border-gray-300 px-3 py-2">S/ 10.00</td>
+                                                        <td className="border border-gray-300 px-3 py-2">
+                                                            <span className="bg-blue-100 text-blue-700 font-medium px-2 py-1 rounded">
+                                                                LTPAR22222
+                                                            </span>
+                                                        </td>
+                                                        <td className="border border-gray-300 px-3 py-2">31/10/2026</td>
+                                                    </tr>
+                                                    <tr>
+                                                        {/* Subfila 2 */}
+                                                        <td className="border border-gray-300 px-3 py-2">
+                                                            <span className="bg-green-100 text-green-700 font-semibold px-2 py-1 rounded">
+                                                                5
+                                                            </span>
+                                                        </td>
+                                                        <td className="border border-gray-300 px-3 py-2">S/ 2.00</td>
+                                                        <td className="border border-gray-300 px-3 py-2">S/ 10.00</td>
+                                                        <td className="border border-gray-300 px-3 py-2">
+                                                            <span className="bg-blue-100 text-blue-700 font-medium px-2 py-1 rounded">
+                                                                LTPAR33333
+                                                            </span>
+                                                        </td>
+                                                        <td className="border border-gray-300 px-3 py-2">31/12/2026</td>
                                                     </tr>
                                                     <tr>
                                                         <td className="border border-gray-300 px-3 py-2">2</td>
-                                                        <td className="border border-gray-300 px-3 py-2">Amoxicilina</td>
-                                                        <td className="border border-gray-300 px-3 py-2">Cápsulas 500mg</td>
-                                                        <td className="border border-gray-300 px-3 py-2">S/ 3.50</td>
-                                                        <td className="border border-gray-300 px-3 py-2">7</td>
-                                                        <td className="border border-gray-300 px-3 py-2">S/ 24.50</td>
-                                                        <td className="border border-gray-300 px-3 py-2">DIONICIO IBAÑEZ LUIS FELIPE</td>
-                                                        <td className="border border-gray-300 px-3 py-2 text-center">
-                                                            <button
-                                                                type="button"
-                                                                className="p-1 border border-yellow-600 text-yellow-600 rounded hover:bg-yellow-50"
-                                                                title="Editar cantidad"
-                                                                onClick={() => {
-                                                                    setMedicamentoSeleccionado({
-                                                                        nombre: "Amoxicilina",
-                                                                        cantidad: 7
-                                                                    });
-                                                                    setModalEditarCantidad(true);
-                                                                }}
-                                                            >
-                                                                <Edit className="w-4 h-4" />
-                                                            </button>
+                                                        <td className="border border-gray-300 px-3 py-2">
+                                                            AMOXICILINA 500 MG
+                                                            <div className="font-bold text-gray-700">TAB</div>
                                                         </td>
+                                                        <td className="border border-gray-300 px-3 py-2">
+                                                            <div><span className="font-semibold">SISMED:</span> 00808</div>
+                                                            <div><span className="font-semibold">SIGA:</span> 580700100007</div>
+                                                        </td>
+                                                        <td className="border border-gray-300 px-3 py-2">7</td>
+                                                        <td className="border border-gray-300 px-3 py-2">
+                                                            <span className="bg-green-100 text-green-700 font-semibold px-2 py-1 rounded">
+                                                                7
+                                                            </span>
+                                                        </td>
+                                                        <td className="border border-gray-300 px-3 py-2">S/ 3.50</td>
+                                                        <td className="border border-gray-300 px-3 py-2">S/ 24.50</td>
+                                                        <td className="border border-gray-300 px-3 py-2">
+                                                            <span className="bg-blue-100 text-blue-700 font-medium px-2 py-1 rounded">
+                                                                LTAMOX210702
+                                                            </span>
+                                                        </td>
+                                                        <td className="border border-gray-300 px-3 py-2">30/09/2026</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -806,8 +1050,13 @@ export default function SalidasPage() {
                                                             <tr>
                                                                 <td className="border border-gray-300 px-3 py-2">15/07/2026</td>
                                                                 <td className="border border-gray-300 px-3 py-2">SIS</td>
-                                                                <td className="border border-gray-300 px-3 py-2">Consulta Externa</td>
-                                                                <td className="border border-gray-300 px-3 py-2">Paracetamol</td>
+                                                                <td className="border border-gray-300 px-3 py-2">CE</td>
+                                                                <td className="border border-gray-300 px-3 py-2">
+                                                                    <div>PARACETAMOL 500 MG</div>
+                                                                    <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mt-1">
+                                                                        TAB
+                                                                    </span>
+                                                                </td>
                                                                 <td className="border border-gray-300 px-3 py-2">28</td>
                                                                 <td className="border border-gray-300 px-3 py-2">1 cada 6 hrs por 7 días</td>
                                                                 <td className="border border-gray-300 px-3 py-2">Oral</td>
@@ -817,12 +1066,49 @@ export default function SalidasPage() {
                                                             <tr>
                                                                 <td className="border border-gray-300 px-3 py-2">10/07/2026</td>
                                                                 <td className="border border-gray-300 px-3 py-2">SIS</td>
-                                                                <td className="border border-gray-300 px-3 py-2">Emergencia</td>
-                                                                <td className="border border-gray-300 px-3 py-2">Amoxicilina</td>
+                                                                <td className="border border-gray-300 px-3 py-2">EM</td>
+                                                                <td className="border border-gray-300 px-3 py-2">
+                                                                    <div>AMOXICILINA 500 MG</div>
+                                                                    <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mt-1">
+                                                                        TAB
+                                                                    </span>
+                                                                </td>
                                                                 <td className="border border-gray-300 px-3 py-2">12</td>
                                                                 <td className="border border-gray-300 px-3 py-2">1 cada 3 hrs por 4 días</td>
                                                                 <td className="border border-gray-300 px-3 py-2">Oral</td>
                                                                 <td className="border border-gray-300 px-3 py-2">J209 - Bronquitis Aguda, no Especificada</td>
+                                                                <td className="border border-gray-300 px-3 py-2">BASOMBRIO VELASQUEZ JORGE</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td className="border border-gray-300 px-3 py-2">08/07/2026</td>
+                                                                <td className="border border-gray-300 px-3 py-2">SIS</td>
+                                                                <td className="border border-gray-300 px-3 py-2">EM</td>
+                                                                <td className="border border-gray-300 px-3 py-2">
+                                                                    <div>NAPROXENO 500 MG</div>
+                                                                    <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mt-1">
+                                                                        TAB
+                                                                    </span>
+                                                                </td>
+                                                                <td className="border border-gray-300 px-3 py-2">14</td>
+                                                                <td className="border border-gray-300 px-3 py-2">1 cada 12 hrs por 7 días</td>
+                                                                <td className="border border-gray-300 px-3 py-2">Oral</td>
+                                                                <td className="border border-gray-300 px-3 py-2">J410 - Bronquitis Cronica Simple</td>
+                                                                <td className="border border-gray-300 px-3 py-2">BASOMBRIO VELASQUEZ JORGE</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td className="border border-gray-300 px-3 py-2">05/07/2026</td>
+                                                                <td className="border border-gray-300 px-3 py-2">SIS</td>
+                                                                <td className="border border-gray-300 px-3 py-2">CE</td>
+                                                                <td className="border border-gray-300 px-3 py-2">
+                                                                    <div>TRAMADOL 50 MG TAB (S)</div>
+                                                                    <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mt-1">
+                                                                        TAB
+                                                                    </span>
+                                                                </td>
+                                                                <td className="border border-gray-300 px-3 py-2">30</td>
+                                                                <td className="border border-gray-300 px-3 py-2">1 cada 24 hrs por 30 días</td>
+                                                                <td className="border border-gray-300 px-3 py-2">Oral</td>
+                                                                <td className="border border-gray-300 px-3 py-2">J40X - Bronquiti, no Especificada como Aguda o Cronica</td>
                                                                 <td className="border border-gray-300 px-3 py-2">BASOMBRIO VELASQUEZ JORGE</td>
                                                             </tr>
                                                         </tbody>
@@ -834,6 +1120,137 @@ export default function SalidasPage() {
                                 </>
                             )}
 
+                            {pacienteExterno && (
+                                <>
+                                    <div className="border rounded-md p-4 mb-4 bg-yellow-100">
+                                        <p className="text-yellow-900 font-semibold">
+                                            Debe registrar manualmente los datos de la venta de medicamentos para el paciente externo.
+                                        </p>
+                                    </div>
+
+                                    {/* Sección de datos del paciente */}
+                                    <div className="border rounded-md p-4 mb-4 bg-gray-50">
+                                        <h3 className="text-md font-semibold mb-3">Datos del paciente</h3>
+
+                                        <div className="grid grid-cols-3 gap-4">
+                                            <div>
+                                                <Label>Paciente:</Label>
+                                                <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese nombre completo" />
+                                            </div>
+                                            <div>
+                                                <Label>Historia/DNI:</Label>
+                                                <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese DNI" />
+                                            </div>
+                                            <div>
+                                                <Label>Seguro:</Label>
+                                                <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese seguro" />
+                                            </div>
+                                            <div>
+                                                <Label>Tipo de Atención:</Label>
+                                                <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese tipo de atención" />
+                                            </div>
+                                            <div>
+                                                <Label>Especialidad:</Label>
+                                                <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese especialidad" />
+                                            </div>
+                                            <div>
+                                                <Label>Médico:</Label>
+                                                <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese médico" />
+                                            </div>
+                                            <div>
+                                                <Label>Transacción:</Label>
+                                                <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese transacción" />
+                                            </div>
+                                            <div>
+                                                <Label>N° Receta:</Label>
+                                                <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese número de receta" />
+                                            </div>
+                                            <div className="col-span-3">
+                                                <Label className="block mb-1">Comentario:</Label>
+                                                <input
+                                                    className="border-2 border-gray-500 rounded-md p-2 w-full"
+                                                    placeholder="Ingrese comentario..."
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Sección Registrar medicamentos */}
+                                    <div className="border rounded-md p-4 mb-4 bg-gray-50">
+                                        <h3 className="text-md font-semibold mb-3">Registrar medicamentos</h3>
+
+                                        <div className="flex items-end gap-4 mb-4">
+                                            <div>
+                                                <Label>Producto:</Label>
+                                                <Input
+                                                    className="border-2 border-gray-500"
+                                                    type="text"
+                                                    placeholder="Ingrese producto"
+                                                    value={producto}
+                                                    onChange={(e) => setProducto(e.target.value)}
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label>Cantidad:</Label>
+                                                <Input
+                                                    className="border-2 border-gray-500"
+                                                    type="number"
+                                                    placeholder="Ingrese cantidad"
+                                                    value={cantidad}
+                                                    onChange={(e) => setCantidad(e.target.value)}
+                                                />
+                                            </div>
+                                            <Button
+                                                type="button"
+                                                className="bg-green-600 hover:bg-green-700 text-white h-10 px-4"
+                                                onClick={() => {
+                                                    if (producto.trim() && cantidad.trim()) {
+                                                        setMedicamentos([...medicamentos, { producto, cantidad }]);
+                                                        setProducto("");
+                                                        setCantidad("");
+                                                    }
+                                                }}
+                                            >
+                                                <CirclePlus className="h-4 w-4" />
+                                                Agregar
+                                            </Button>
+                                        </div>
+
+                                        {/* Tabla de medicamentos registrados */}
+                                        <table className="w-full border-collapse border border-gray-300">
+                                            <thead className="bg-blue-100">
+                                                <tr>
+                                                    <th className="border border-gray-300 px-2 py-1">Item</th>
+                                                    <th className="border border-gray-300 px-2 py-1">Nombre</th>
+                                                    <th className="border border-gray-300 px-2 py-1">Cantidad</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {medicamentos.length > 0 ? (
+                                                    medicamentos.map((med, index) => (
+                                                        <tr key={index}>
+                                                            <td className="border border-gray-300 px-2 py-1">{index + 1}</td>
+                                                            <td className="border border-gray-300 px-2 py-1">{med.producto}</td>
+                                                            <td className="border border-gray-300 px-2 py-1">{med.cantidad}</td>
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td
+                                                            colSpan={3}
+                                                            className="border border-gray-300 px-2 py-2 text-center text-gray-500"
+                                                        >
+                                                            No hay medicamentos registrados
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </>
+                            )}
+
                             <div className="flex justify-end gap-2 mt-4">
                                 <Button
                                     variant="outline"
@@ -842,262 +1259,90 @@ export default function SalidasPage() {
                                         setDniValidado(false);
                                         setDni("");
                                         setError("");
+                                        setPacienteExterno(false);
+                                        setMedicamentos([]); // limpia la tabla al cancelar
                                     }}
                                 >
                                     Cancelar
                                 </Button>
-                                <Button className="bg-green-600 text-white">Guardar</Button>
+
+                                {(dniValidado || pacienteExterno) && (
+                                    <Button
+                                        type="button"
+                                        className="bg-cyan-600 hover:bg-cyan-700 text-white"
+                                        onClick={() => setMostrarConfirmacion(true)}
+                                    >
+                                        <FilePlus className="h-4 w-4" />
+                                        Generar Proforma
+                                    </Button>
+                                )}
                             </div>
+
+                            {mostrarConfirmacion && (
+                                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+                                    <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <HelpCircle className="h-6 w-6 text-yellow-600" />
+                                            <h2 className="text-lg font-semibold">Confirmar acción</h2>
+                                        </div>
+                                        <p className="mb-4 text-gray-700">
+                                            ¿Está seguro de generar la proforma? Esta acción no se podrá deshacer.
+                                        </p>
+                                        <div className="flex justify-end gap-2">
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => setMostrarConfirmacion(false)}
+                                            >
+                                                Cancelar
+                                            </Button>
+                                            <Button
+                                                className="bg-green-600 hover:bg-green-700 text-white"
+                                                onClick={() => {
+                                                    setMostrarConfirmacion(false);
+                                                    setMostrarExito(true);
+                                                }}
+                                            >
+                                                Confirmar
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {mostrarExito && (
+                                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+                                    <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <BadgeCheck className="h-6 w-6 text-green-600" />
+                                            <h2 className="text-lg font-semibold">Proforma generada</h2>
+                                        </div>
+                                        <p className="mb-4 text-gray-700">
+                                            La proforma se generó con éxito.
+                                        </p>
+                                        <div className="flex justify-end">
+                                            <Button
+                                                className="bg-blue-600 hover:bg-blue-700 text-white"
+                                                onClick={() => {
+                                                    setMostrarExito(false);
+                                                    setModalNuevaProforma(false); // cierra modal principal
+                                                    // aquí puedes añadir lógica para redirigir a pantalla principal
+                                                    setDniValidado(false);
+                                                    setDni("");
+                                                    setError("");
+                                                    setPacienteExterno(false);
+                                                    setMedicamentos([]);
+                                                }}
+                                            >
+                                                Finalizar
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </form>
                     </div>
                 </div>
             )}
-
-            {/* MODAL DE CONFIRMACIÓN DE ELIMINAR DOCUMENTO DE SALIDA */}
-            {showConfirmDelete && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-                    <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-                        <h2 className="text-lg font-semibold mb-2">Confirmar eliminación</h2>
-                        <p className="text-sm text-gray-600 mb-4">
-                            ¿Está seguro de eliminar el documento{" "}
-                            <span className="font-semibold">{salidaToDelete?.documento}</span>?
-                        </p>
-
-                        <div className="flex justify-end gap-2">
-                            <Button
-                                variant="outline"
-                                onClick={() => setShowConfirmDelete(false)}
-                            >
-                                Cancelar
-                            </Button>
-                            <Button
-                                className="bg-red-600 hover:bg-red-700 text-white"
-                                onClick={confirmDelete}
-                            >
-                                Eliminar
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* MODAL DE ÉXITO DE ELIMINACIÓN DE DOCUMENTO DE SALIDA */}
-            {showSuccessDelete && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-                    <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-center">
-                        <CheckCircle className="mx-auto h-12 w-12 text-green-600 mb-3" />
-                        <h2 className="text-lg font-semibold mb-2">Eliminado con éxito</h2>
-                        <p className="text-sm text-gray-600 mb-4">
-                            El documento fue eliminado correctamente.
-                        </p>
-
-                        <Button
-                            className="bg-green-600 hover:bg-green-700 text-white"
-                            onClick={() => setShowSuccessDelete(false)}
-                        >
-                            Aceptar
-                        </Button>
-                    </div>
-                </div>
-            )}
-
-            {/* MODAL DE CONFIRMACIÓN DE PROCESAR DOCUMENTO DE SALIDA */}
-            {showConfirmProcesar && (
-                <Dialog open={showConfirmProcesar} onOpenChange={setShowConfirmProcesar}>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Confirmar procesamiento</DialogTitle>
-                            <DialogDescription>
-                                ¿Está seguro de procesar este documento?
-                                <br />
-                                <span className="text-red-500 font-medium">
-                                    Esta acción no podrá deshacerse.
-                                </span>
-                            </DialogDescription>
-                        </DialogHeader>
-
-                        <div className="flex justify-end gap-3 mt-4">
-                            <Button
-                                variant="outline"
-                                onClick={() => setShowConfirmProcesar(false)}
-                            >
-                                Cancelar
-                            </Button>
-
-                            <Button
-                                className="bg-blue-600 hover:bg-blue-700 text-white"
-                                onClick={confirmProcesar}
-                            >
-                                Confirmar
-                            </Button>
-                        </div>
-                    </DialogContent>
-                </Dialog>
-            )}
-
-            {/* MODAL DE ÉXITO DE PROCESAMIENTO DE DOCUMENTO DE SALIDA */}
-            {showSuccessProcesar && (
-                <Dialog open={showSuccessProcesar} onOpenChange={setShowSuccessProcesar}>
-                    <DialogContent>
-                        <DialogHeader>
-                            <CheckCircle className="mx-auto h-12 w-12 text-green-600 mb-3" />
-                            <DialogTitle className="text-center">Documento procesado</DialogTitle>
-                            <DialogDescription className="text-center">
-                                El documento de salida ha sido procesado con éxito.
-                            </DialogDescription>
-                        </DialogHeader>
-
-                        <div className="flex justify-end mt-4">
-                            <Button
-                                className="bg-green-600 hover:bg-green-700 text-white"
-                                onClick={() => setShowSuccessProcesar(false)}
-                            >
-                                Aceptar
-                            </Button>
-                        </div>
-                    </DialogContent>
-                </Dialog>
-            )}
-
-            {/* MODAL DE VER DETALLE (SOLO LECTURA) */}
-            {showDetalleModal && salidaDetalle && (
-                <Dialog open={showDetalleModal} onOpenChange={setShowDetalleModal}>
-                    <DialogContent className="max-w-6xl" onInteractOutside={(e) => e.preventDefault()}>
-                        <DialogHeader>
-                            <DialogTitle>Detalle de Documento de Salida</DialogTitle>
-                            <DialogDescription>
-                                Información del documento de salida (solo lectura)
-                            </DialogDescription>
-                        </DialogHeader>
-
-                        {/* CONTENIDO */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-
-                            <div>
-                                <Label>Estado</Label>
-                                <div className="mt-1">
-                                    {getEstadoBadge(salidaDetalle.estado)}
-                                </div>
-                            </div>
-
-                            <div>
-                                <Label>Salida ID</Label>
-                                <Input disabled value={salidaDetalle.salidaId} />
-                            </div>
-
-                            <div>
-                                <Label>Documento</Label>
-                                <Input disabled value={salidaDetalle.documento} />
-                            </div>
-
-                            <div>
-                                <Label>Tipo de Transacción</Label>
-                                <Input disabled value={`${salidaDetalle.tipo_transaccion} - ${salidaDetalle.nombre_transaccion}`} />
-                            </div>
-
-                            <div>
-                                <Label>Fecha Registro</Label>
-                                <Input
-                                    disabled
-                                    value={`${salidaDetalle.fecha} ${salidaDetalle.hora}`}
-                                />
-                            </div>
-
-                            <div>
-                                <Label>Fecha Proceso</Label>
-                                <Input
-                                    disabled
-                                    value={`${salidaDetalle.fecha_proceso} ${salidaDetalle.hora_proceso}`}
-                                />
-                            </div>
-
-                            <div>
-                                <Label>Total (S/.)</Label>
-                                <Input disabled value={salidaDetalle.total.toFixed(2)} />
-                            </div>
-
-                            <div>
-                                <Label>Usuario</Label>
-                                <Input disabled value={salidaDetalle.usuario} />
-                            </div>
-
-                            <div className="md:col-span-2">
-                                <Label>Observación</Label>
-                                <Input disabled value={salidaDetalle.observacion || "-"} />
-                            </div>
-
-                        </div>
-
-                        <div className="mt-6">
-                            <h3 className="text-base font-semibold mb-3">
-                                Detalle de Productos
-                            </h3>
-
-                            <div className="border rounded-lg overflow-x-auto">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>N°</TableHead>
-                                            <TableHead>Item</TableHead>
-                                            <TableHead>Nombre</TableHead>
-                                            <TableHead>Registro Sanitario</TableHead>
-                                            <TableHead>Lote</TableHead>
-                                            <TableHead>F. Venc.</TableHead>
-                                            <TableHead className="text-right">Precio</TableHead>
-                                            <TableHead className="text-right">Cantidad</TableHead>
-                                            <TableHead className="text-right">Importe</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-
-                                    <TableBody>
-                                        {productosMock.map((prod, index) => {
-                                            const importe = prod.precio * prod.cantidad;
-
-                                            return (
-                                                <TableRow key={prod.id}>
-                                                    <TableCell>{index + 1}</TableCell>
-                                                    <TableCell>{prod.codigo}</TableCell>
-                                                    <TableCell>{prod.nombre}</TableCell>
-                                                    <TableCell>{prod.regSan}</TableCell>
-                                                    <TableCell>{prod.lote}</TableCell>
-                                                    <TableCell>{prod.fechaVenc}</TableCell>
-                                                    <TableCell className="text-right">
-                                                        {prod.precio.toFixed(2)}
-                                                    </TableCell>
-                                                    <TableCell className="text-right">
-                                                        {prod.cantidad}
-                                                    </TableCell>
-                                                    <TableCell className="text-right">
-                                                        {(importe).toFixed(2)}
-                                                    </TableCell>
-                                                </TableRow>
-                                            );
-                                        })}
-                                    </TableBody>
-                                </Table>
-                            </div>
-
-                            <div className="flex justify-end mt-4 font-semibold">
-                                Total: S/{" "}
-                                {productosMock
-                                    .reduce((sum, p) => sum + p.precio * p.cantidad, 0)
-                                    .toFixed(2)}
-                            </div>
-                        </div>
-
-
-                        {/* FOOTER */}
-                        <div className="flex justify-end mt-6">
-                            <Button variant="outline" onClick={() => setShowDetalleModal(false)}>
-                                Cerrar
-                            </Button>
-                        </div>
-
-                    </DialogContent>
-                </Dialog>
-            )}
-
-
         </div>
     )
 }

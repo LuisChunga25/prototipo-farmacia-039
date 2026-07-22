@@ -59,7 +59,7 @@ export default function VentasPage() {
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">
                 <ShoppingCart className="h-5 w-5 text-primary" />
-                Proformas
+                Proformas de Consulta Externa
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-0">
