@@ -282,9 +282,9 @@ const proformasData = [
 ]
 
 const pacientesPrueba: Record<string, any> = {
-  "76516872": {
-    nombre: "2025352638 - CHUNGA HUAYLINOS LUIS DIEGO",
-    historia: "76516872",
+  "12345678": {
+    nombre: "2025001122 - CHUNGA HUAYLINOS LUIS DIEGO",
+    historia: "123456878",
     seguro: "SIS",
     tipoAtencion: "CE - CONSULTA EXTERNA",
     especialidad: "1011 - MEDICINA INTERNA 1",
