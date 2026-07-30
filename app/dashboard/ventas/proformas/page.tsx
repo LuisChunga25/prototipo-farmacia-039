@@ -72,6 +72,24 @@ interface Proforma {
     }[];
 }
 
+interface Subfila {
+    cantAsignada: number;
+    precio: string;
+    importe: string;
+    lote: string;
+    venc: string;
+}
+
+interface Medicamento {
+    item: number;
+    producto: string;
+    presentacion: string;
+    sisMed: string;
+    siga: string;
+    cantSolicitada: number;
+    subfilas: Subfila[];
+}
+
 // DATOS DE EJEMPLO PARA LA TABLA
 const proformasData = [
     {
@@ -282,29 +300,71 @@ const proformasData = [
 ]
 
 const pacientesPrueba: Record<string, any> = {
-  "12345678": {
-    nombre: "2025001122 - CHUNGA HUAYLINOS LUIS DIEGO",
-    historia: "123456878",
-    seguro: "SIS",
-    tipoAtencion: "CE - CONSULTA EXTERNA",
-    especialidad: "1011 - MEDICINA INTERNA 1",
-    medico: "DIL - DIONICIO IBAÑEZ LUIS FELIPE",
-    transaccion: "VRS - SIS",
-    receta: "270065000",
-    cuenta: "3013144",
-  },
-  "41877141": {
-    nombre: "2012345678 - HILARIO GARCIA MIGUEL ANGEL",
-    historia: "41877141",
-    seguro: "PAGANTE",
-    tipoAtencion: "CE - CONSULTA EXTERNA",
-    especialidad: "2021 - CIRUGÍA GENERAL",
-    medico: "BVJ - BASOMBRIO VELASQUEZ JORGE",
-    transaccion: "VC - CONTADO",
-    receta: "270065100",
-    cuenta: "3013145",
-  },
+    "12345678": {
+        nombre: "2025001122 - CHUNGA HUAYLINOS LUIS DIEGO",
+        historia: "123456878",
+        seguro: "SIS",
+        tipoAtencion: "CE - CONSULTA EXTERNA",
+        especialidad: "1011 - MEDICINA INTERNA 1",
+        medico: "DIL - DIONICIO IBAÑEZ LUIS FELIPE",
+        transaccion: "VRS - SIS",
+        receta: "270065000",
+        cuenta: "3013144",
+    },
+    "87654321": {
+        nombre: "2025334455 - HILARIO GARCIA MIGUEL ANGEL",
+        historia: "87654321",
+        seguro: "PAGANTE",
+        tipoAtencion: "CE - CONSULTA EXTERNA",
+        especialidad: "2021 - CIRUGÍA GENERAL",
+        medico: "BVJ - BASOMBRIO VELASQUEZ JORGE",
+        transaccion: "VC - CONTADO",
+        receta: "270065100",
+        cuenta: "3013145",
+    },
 };
+
+const medicamentosPrueba: Record<string, any[]> = {
+    "12345678": [
+        {
+            item: 1,
+            producto: "PARACETAMOL 500 MG",
+            presentacion: "TAB",
+            sisMed: "05335",
+            siga: "580200460011",
+            cantSolicitada: 10,
+            subfilas: [
+                { cantAsignada: 5, precio: "S/ 2.00", importe: "S/ 10.00", lote: "LTPAR22222", venc: "31/10/2026" },
+                { cantAsignada: 5, precio: "S/ 2.00", importe: "S/ 10.00", lote: "LTPAR33333", venc: "31/12/2026" },
+            ],
+        },
+        {
+            item: 2,
+            producto: "AMOXICILINA 500 MG",
+            presentacion: "TAB",
+            sisMed: "00808",
+            siga: "580700100007",
+            cantSolicitada: 7,
+            subfilas: [
+                { cantAsignada: 7, precio: "S/ 3.50", importe: "S/ 24.50", lote: "LTAMOX210702", venc: "30/09/2026" },
+            ],
+        },
+    ],
+    "87654321": [
+        {
+            item: 1,
+            producto: "IBUPROFENO 400 MG",
+            presentacion: "TAB",
+            sisMed: "01234",
+            siga: "580900100099",
+            cantSolicitada: 12,
+            subfilas: [
+                { cantAsignada: 12, precio: "S/ 1.80", importe: "S/ 21.60", lote: "LTIBU2026", venc: "30/11/2026" },
+            ],
+        },
+    ],
+};
+
 
 
 export default function SalidasPage() {
@@ -338,6 +398,8 @@ export default function SalidasPage() {
     const [mostrarExitoAnular, setMostrarExitoAnular] = useState(false);
     const [motivoAnulacion, setMotivoAnulacion] = useState("");
     const [pacienteData, setPacienteData] = useState<any | null>(null);
+    const [medicamentosData, setMedicamentosData] = useState<Medicamento[]>([]);
+    const [medicoReceta, setMedicoReceta] = useState("");
 
     // Formatear a yyyy-MM-dd para que el input type="date" lo acepte
     const formatoISO = (fecha: Date) => fecha.toISOString().split("T")[0];
@@ -715,7 +777,7 @@ export default function SalidasPage() {
                         </div>
 
                         <div className="flex justify-end gap-2">
-                            <Button 
+                            <Button
                                 variant="outline"
                                 onClick={() => {
                                     setMostrarConfirmacionAnular(false);
@@ -840,6 +902,8 @@ export default function SalidasPage() {
                                         } else {
                                             setError("");
                                             setPacienteData(pacientesPrueba[dni.trim()]);
+                                            setMedicamentosData(medicamentosPrueba[dni.trim()] || []);
+                                            setMedicoReceta(pacientesPrueba[dni.trim()].medico);
                                             setDniValidado(true); // despliega datos solo si cumple
                                         }
                                     }}
@@ -981,7 +1045,7 @@ export default function SalidasPage() {
                                         <h3 className="text-md font-semibold">Medicamentos registrados</h3>
                                         <div className="flex items-center text-sm text-gray-600 mb-3 gap-2">
                                             <Stethoscope className="h-4 w-4 text-gray-500" />
-                                            <span>Médico: DIONICIO IBAÑEZ LUIS FELIPE</span>
+                                            <span>Médico: {medicoReceta}</span>
                                         </div>
 
                                         <div className="overflow-x-auto">
@@ -1000,76 +1064,41 @@ export default function SalidasPage() {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {/* Datos de prueba estáticos */}
-                                                    <tr>
-                                                        <td className="border border-gray-300 px-3 py-2" rowSpan={2}>1</td>
-                                                        <td className="border border-gray-300 px-3 py-2" rowSpan={2}>
-                                                            PARACETAMOL 500 MG
-                                                            <div className="font-bold text-gray-700">TAB</div>
-                                                        </td>
-                                                        <td className="border border-gray-300 px-3 py-2" rowSpan={2}>
-                                                            <div><span className="font-semibold">SISMED:</span> 05335</div>
-                                                            <div><span className="font-semibold">SIGA:</span> 580200460011</div>
-                                                        </td>
-                                                        <td className="border border-gray-300 px-3 py-2" rowSpan={2}>10</td>
-
-                                                        {/* Subfila 1 */}
-                                                        <td className="border border-gray-300 px-3 py-2">
-                                                            <span className="bg-green-100 text-green-700 font-semibold px-2 py-1 rounded">
-                                                                5
-                                                            </span>
-                                                        </td>
-                                                        <td className="border border-gray-300 px-3 py-2">S/ 2.00</td>
-                                                        <td className="border border-gray-300 px-3 py-2">S/ 10.00</td>
-                                                        <td className="border border-gray-300 px-3 py-2">
-                                                            <span className="bg-blue-100 text-blue-700 font-medium px-2 py-1 rounded">
-                                                                LTPAR22222
-                                                            </span>
-                                                        </td>
-                                                        <td className="border border-gray-300 px-3 py-2">31/10/2026</td>
-                                                    </tr>
-                                                    <tr>
-                                                        {/* Subfila 2 */}
-                                                        <td className="border border-gray-300 px-3 py-2">
-                                                            <span className="bg-green-100 text-green-700 font-semibold px-2 py-1 rounded">
-                                                                5
-                                                            </span>
-                                                        </td>
-                                                        <td className="border border-gray-300 px-3 py-2">S/ 2.00</td>
-                                                        <td className="border border-gray-300 px-3 py-2">S/ 10.00</td>
-                                                        <td className="border border-gray-300 px-3 py-2">
-                                                            <span className="bg-blue-100 text-blue-700 font-medium px-2 py-1 rounded">
-                                                                LTPAR33333
-                                                            </span>
-                                                        </td>
-                                                        <td className="border border-gray-300 px-3 py-2">31/12/2026</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td className="border border-gray-300 px-3 py-2">2</td>
-                                                        <td className="border border-gray-300 px-3 py-2">
-                                                            AMOXICILINA 500 MG
-                                                            <div className="font-bold text-gray-700">TAB</div>
-                                                        </td>
-                                                        <td className="border border-gray-300 px-3 py-2">
-                                                            <div><span className="font-semibold">SISMED:</span> 00808</div>
-                                                            <div><span className="font-semibold">SIGA:</span> 580700100007</div>
-                                                        </td>
-                                                        <td className="border border-gray-300 px-3 py-2">7</td>
-                                                        <td className="border border-gray-300 px-3 py-2">
-                                                            <span className="bg-green-100 text-green-700 font-semibold px-2 py-1 rounded">
-                                                                7
-                                                            </span>
-                                                        </td>
-                                                        <td className="border border-gray-300 px-3 py-2">S/ 3.50</td>
-                                                        <td className="border border-gray-300 px-3 py-2">S/ 24.50</td>
-                                                        <td className="border border-gray-300 px-3 py-2">
-                                                            <span className="bg-blue-100 text-blue-700 font-medium px-2 py-1 rounded">
-                                                                LTAMOX210702
-                                                            </span>
-                                                        </td>
-                                                        <td className="border border-gray-300 px-3 py-2">30/09/2026</td>
-                                                    </tr>
+                                                    {medicamentosData.map((med) =>
+                                                        med.subfilas.map((subfila, idx) => (
+                                                            <tr key={`${med.item}-${idx}`}>
+                                                                {idx === 0 && (
+                                                                    <>
+                                                                        <td className="border px-3 py-2" rowSpan={med.subfilas.length}>{med.item}</td>
+                                                                        <td className="border px-3 py-2" rowSpan={med.subfilas.length}>
+                                                                            {med.producto}
+                                                                            <div className="font-bold text-gray-700">{med.presentacion}</div>
+                                                                        </td>
+                                                                        <td className="border px-3 py-2" rowSpan={med.subfilas.length}>
+                                                                            <div><span className="font-semibold">SISMED:</span> {med.sisMed}</div>
+                                                                            <div><span className="font-semibold">SIGA:</span> {med.siga}</div>
+                                                                        </td>
+                                                                        <td className="border px-3 py-2" rowSpan={med.subfilas.length}>{med.cantSolicitada}</td>
+                                                                    </>
+                                                                )}
+                                                                <td className="border px-3 py-2">
+                                                                    <span className="bg-green-100 text-green-700 font-semibold px-2 py-1 rounded">
+                                                                        {subfila.cantAsignada}
+                                                                    </span>
+                                                                </td>
+                                                                <td className="border px-3 py-2">{subfila.precio}</td>
+                                                                <td className="border px-3 py-2">{subfila.importe}</td>
+                                                                <td className="border px-3 py-2">
+                                                                    <span className="bg-blue-100 text-blue-700 font-medium px-2 py-1 rounded">
+                                                                        {subfila.lote}
+                                                                    </span>
+                                                                </td>
+                                                                <td className="border px-3 py-2">{subfila.venc}</td>
+                                                            </tr>
+                                                        ))
+                                                    )}
                                                 </tbody>
+
                                             </table>
                                         </div>
                                     </div>
