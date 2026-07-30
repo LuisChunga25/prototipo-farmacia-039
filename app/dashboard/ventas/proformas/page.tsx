@@ -33,6 +33,7 @@ import {
     HelpCircle,
     BadgeCheck,
     ClipboardCheck,
+    AlertTriangle,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Label } from "@/components/ui/label"
@@ -249,8 +250,9 @@ const proformasData = [
         hora_proceso: "18:12",
         numPaciente: "2011345165",
         historia: "73542141",
-        nombrePaciente: "BASOMBRIO VELASQUEZ JORGE",
+        nombrePaciente: "SANCHEZ FLORES BEATRIZ ALBERTINA",
         tipoSeguro: "PAGANTE",
+        medico: "BASOMBRIO VELASQUEZ JORGE",
         nombreAlmacen: "CONSULTORIOS EXTERNOS",
         nombreConsultorio: "CIRUGIA GENERAL",
         tipoPago: "R",
@@ -279,11 +281,36 @@ const proformasData = [
     },
 ]
 
+const pacientesPrueba: Record<string, any> = {
+  "76516872": {
+    nombre: "2025352638 - CHUNGA HUAYLINOS LUIS DIEGO",
+    historia: "76516872",
+    seguro: "SIS",
+    tipoAtencion: "CE - CONSULTA EXTERNA",
+    especialidad: "1011 - MEDICINA INTERNA 1",
+    medico: "DIL - DIONICIO IBAÑEZ LUIS FELIPE",
+    transaccion: "VRS - SIS",
+    receta: "270065000",
+    cuenta: "3013144",
+  },
+  "41877141": {
+    nombre: "2012345678 - HILARIO GARCIA MIGUEL ANGEL",
+    historia: "41877141",
+    seguro: "PAGANTE",
+    tipoAtencion: "CE - CONSULTA EXTERNA",
+    especialidad: "2021 - CIRUGÍA GENERAL",
+    medico: "BVJ - BASOMBRIO VELASQUEZ JORGE",
+    transaccion: "VC - CONTADO",
+    receta: "270065100",
+    cuenta: "3013145",
+  },
+};
+
+
 export default function SalidasPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchBy, setSearchBy] = useState("ordenId");
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
-    const [selectAll, setSelectAll] = useState(false);
     const [proformasVisibles, setProformasVisibles] = useState<any[]>([]);
     const [modalNuevaProforma, setModalNuevaProforma] = useState(false);
     const [dni, setDni] = useState("");
@@ -307,6 +334,10 @@ export default function SalidasPage() {
     const [mostrarExito, setMostrarExito] = useState(false);
     const [mostrarDetalle, setMostrarDetalle] = useState(false);
     const [proformaSeleccionada, setProformaSeleccionada] = useState<Proforma | null>(null);
+    const [mostrarConfirmacionAnular, setMostrarConfirmacionAnular] = useState(false);
+    const [mostrarExitoAnular, setMostrarExitoAnular] = useState(false);
+    const [motivoAnulacion, setMotivoAnulacion] = useState("");
+    const [pacienteData, setPacienteData] = useState<any | null>(null);
 
     // Formatear a yyyy-MM-dd para que el input type="date" lo acepte
     const formatoISO = (fecha: Date) => fecha.toISOString().split("T")[0];
@@ -338,91 +369,81 @@ export default function SalidasPage() {
         { value: "paciente", label: "Paciente" },
     ];
 
-    const almacenes = [
-        { value: "A", label: "A - ALMACEN GENERAL (MEDICAMENTOS)" },
-        { value: "AI", label: "AI - ALMACEN INSUMOS" },
-        { value: "CE", label: "CE - CONSULTORIOS EXTERNOS" },
-        { value: "DU", label: "DU - FARMACIA DOSIS UNITARIA" },
-        { value: "F", label: "F - FARMACIA EMERGENCIA" },
-    ];
-
-    // FILTRAR DATOS SEGÚN TÉRMINO DE BÚSQUEDA
-    const filteredData = proformasData.filter(
-        (proforma) =>
-            proforma.ordenId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            proforma.numReceta.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            proforma.nombrePaciente.toLowerCase().includes(searchTerm.toLowerCase()),
-    )
-
-    const filteredSalidas = proformasData.filter((salida) => {
-        const matchesSearch =
-            salida.ordenId.toString().includes(searchTerm.toLowerCase()) ||
-            salida.numReceta.toLowerCase().includes(searchTerm.toLowerCase());
-
-        const fecha = new Date(salida.fecha);
-
-        const matchesFechaInicio = fechaInicio
-            ? fecha >= new Date(fechaInicio)
-            : true;
-
-        const matchesFechaFin = fechaFin
-            ? fecha <= new Date(fechaFin)
-            : true;
-
-        return matchesSearch && matchesFechaInicio && matchesFechaFin;
-    });
-
     // INICIALIZAR CUANDO CARGUE LA PÁGINA
     useEffect(() => {
         setProformasVisibles(proformasData);
     }, [proformasData]);
 
-    // MANEJAR SELECCIÓN DE TODOS LOS ÍTEMS
-    const handleSelectAll = () => {
-        if (selectAll) {
-            setSelectedItems([])
-        } else {
-            setSelectedItems(filteredData.map((item) => item.id))
-        }
-        setSelectAll(!selectAll)
-    }
-
-    // MANEJAR SELECCIÓN INDIVIDUAL
-    const handleSelectItem = (id: number) => {
-        if (selectedItems.includes(id)) {
-            setSelectedItems(selectedItems.filter((itemId) => itemId !== id))
-            setSelectAll(false)
-        } else {
-            setSelectedItems([...selectedItems, id])
-            if (selectedItems.length + 1 === filteredData.length) {
-                setSelectAll(true)
-            }
-        }
-    }
-
-    // VERIFICAR SI HAY ELEMENTOS SELECCIONADOS
-    const hasSelection = selectedItems.length > 0
-
     const getEstadoBadge = (estado: string) => {
         const variants = {
             "1": "bg-yellow-100 text-yellow-800 border-yellow-300",
             "2": "bg-green-100 text-green-800 border-green-300",
+            "3": "bg-red-100 text-red-800 border-red-300",
         }
 
         const nombreEstado = {
             "1": "REGISTRADO",
             "2": "PROCESADO",
+            "3": "ANULADO",
         }
 
         return <Badge className={`${variants[estado as keyof typeof variants]}`}>{nombreEstado[estado as keyof typeof nombreEstado]}</Badge>
     }
 
+    const filtrarProformas = () => {
+        return proformasData.filter((proforma) => {
+            // convertir fecha del registro (ej. "16/07/2026") a Date
+            // --- FILTRO POR FECHA ---
+            const [dia, mes, anio] = proforma.fecha.split("/");
+            const fechaRegistro = new Date(`${anio}-${mes}-${dia}`);
+            const inicio = fechaInicio ? new Date(fechaInicio) : null; // ya es ISO
+            const fin = fechaFin ? new Date(fechaFin) : null;          // ya es ISO
+
+            if (inicio && fechaRegistro < inicio) return false;
+            if (fin && fechaRegistro > fin) return false;
+
+            // --- FILTRO POR BÚSQUEDA ---
+            if (searchTerm) {
+                let campo = "";
+                switch (searchBy) {
+                    case "ordenId":
+                        campo = proforma.ordenId;
+                        break;
+                    case "receta":
+                        campo = proforma.numReceta;
+                        break;
+                    case "historia":
+                        campo = proforma.historia;
+                        break;
+                    case "paciente":
+                        campo = proforma.nombrePaciente;
+                        break;
+                    default:
+                        campo = "";
+                }
+
+                if (!campo.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+    };
+
     // LIMPIAR FILTROS DE BÚSQUEDA
     const limpiarFiltros = () => {
-        setSearchTerm("");
-        setFechaInicio("");
-        setFechaFin("");
-    }
+        // resetear búsqueda
+        setSearchBy("ordenId"); // valor inicial del combobox
+        setSearchTerm(""); // limpiar input de búsqueda
+
+        // resetear fechas
+        setFechaInicio(formatoISO(primerDiaMes)); // fecha inicial (primer día del mes)
+        setFechaFin(formatoISO(hoy)); // fecha final (hoy)
+
+        // si manejas selección de filas
+        setSelectedItems([]);
+    };
 
 
     return (
@@ -546,7 +567,7 @@ export default function SalidasPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {proformasVisibles.map((proforma) => (
+                        {filtrarProformas().map((proforma) => (
                             <TableRow key={proforma.id} className={selectedItems.includes(proforma.id) ? "bg-primary/10" : ""}>
                                 <TableCell>{getEstadoBadge(proforma.estado)}</TableCell>
                                 <TableCell className="font-medium">{proforma.ordenId}</TableCell>
@@ -581,6 +602,11 @@ export default function SalidasPage() {
                                             title="Anular documento"
                                             variant="outline"
                                             className="h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50 flex items-center justify-center"
+                                            onClick={() => {
+                                                setProformaSeleccionada(proforma);
+                                                setMostrarConfirmacionAnular(true);
+                                            }}
+                                            disabled={proforma.estado === "3"}
                                         >
                                             <X className="w-4 h-4" />
                                         </Button>
@@ -592,6 +618,7 @@ export default function SalidasPage() {
                 </Table>
             </div>
 
+            {/* MODAL DE DETALLE DE LA PROFORMA GENERADA */}
             {mostrarDetalle && proformaSeleccionada && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/50">
                     <div className="bg-white rounded-md shadow-lg p-6 max-w-7xl w-full">
@@ -650,6 +677,92 @@ export default function SalidasPage() {
                         {/* Botón cerrar */}
                         <div className="flex justify-end mt-4">
                             <Button variant="outline" onClick={() => setMostrarDetalle(false)}>Cerrar</Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* MODAL DE CONFIRMACIÓN DE ANULACIÓN DE PROFORMA */}
+            {mostrarConfirmacionAnular && proformaSeleccionada && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+                    <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
+                        <div className="flex items-center gap-2 mb-4">
+                            <AlertTriangle className="h-6 w-6 text-yellow-600" />
+                            <h2 className="text-lg font-semibold">Confirmar anulación</h2>
+                        </div>
+                        <p className="mb-4 text-gray-700">
+                            ¿Está seguro de anular la proforma? Esta acción no se podrá deshacer.
+                        </p>
+
+                        <div className="mb-4">
+                            <Label htmlFor="motivo" className="block mb-1 text-sm font-medium text-gray-700">
+                                Escriba el motivo de la anulación:
+                            </Label>
+                            <textarea
+                                id="motivo"
+                                className="w-full border rounded-md p-2 text-sm"
+                                rows={3}
+                                value={motivoAnulacion}
+                                onChange={(e) => setMotivoAnulacion(e.target.value)}
+                                placeholder="Ingrese motivo..."
+                            />
+
+                            {motivoAnulacion.length > 0 && motivoAnulacion.length < 10 && (
+                                <p className="text-red-600 text-sm mt-1">
+                                    El motivo debe tener al menos 10 caracteres.
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="flex justify-end gap-2">
+                            <Button 
+                                variant="outline"
+                                onClick={() => {
+                                    setMostrarConfirmacionAnular(false);
+                                    setMotivoAnulacion("");
+                                }}
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                className="bg-red-600 hover:bg-red-700 text-white"
+                                disabled={motivoAnulacion.trim().length < 10}
+                                onClick={() => {
+                                    setMostrarConfirmacionAnular(false);
+                                    setMostrarExitoAnular(true);
+                                }}
+                            >
+                                Confirmar
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* MODAL DE ÉXITO DE ANULACIÓN */}
+            {mostrarExitoAnular && proformaSeleccionada && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+                    <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
+                        <div className="flex items-center gap-2 mb-4">
+                            <CheckCircle className="h-6 w-6 text-green-600" />
+                            <h2 className="text-lg font-semibold">Proforma anulada</h2>
+                        </div>
+                        <p className="mb-4 text-gray-700">
+                            La proforma se anuló con éxito.
+                        </p>
+                        <div className="flex justify-end">
+                            <Button
+                                className="bg-blue-600 hover:bg-blue-700 text-white"
+                                onClick={() => {
+                                    setMostrarExitoAnular(false);
+                                    // Simulación: cambiar estado a "ANULADO"
+                                    if (proformaSeleccionada) {
+                                        proformaSeleccionada.estado = "3"; // nuevo estado
+                                    }
+                                }}
+                            >
+                                Finalizar
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -721,8 +834,12 @@ export default function SalidasPage() {
                                         } else if (dni.trim().length < 8) {
                                             setError("El documento debe tener al menos 8 caracteres");
                                             setDniValidado(false);
+                                        } else if (!pacientesPrueba[dni.trim()]) {
+                                            setError("No se encontró paciente con ese DNI en la data de prueba");
+                                            setDniValidado(false);
                                         } else {
                                             setError("");
+                                            setPacienteData(pacientesPrueba[dni.trim()]);
                                             setDniValidado(true); // despliega datos solo si cumple
                                         }
                                     }}
@@ -786,7 +903,7 @@ export default function SalidasPage() {
                             )}
 
                             {/* Campos condicionales: aparecen solo si se validó el DNI */}
-                            {dniValidado && (
+                            {dniValidado && pacienteData && (
                                 <>
                                     {/* Contenedor de mensaje de receta */}
                                     <div className="border rounded-md p-4 mb-4 bg-green-100">
@@ -802,39 +919,39 @@ export default function SalidasPage() {
                                         <div className="grid grid-cols-3 gap-4">
                                             <div>
                                                 <Label className="block mb-1">Paciente:</Label>
-                                                <p className="text-gray-700 font-medium">2025352638 - LUIS DIEGO CHUNGA HUAYLINOS</p>
+                                                <p className="text-gray-700 font-medium">{pacienteData.nombre}</p>
                                             </div>
                                             <div>
                                                 <Label className="block mb-1">Historia/DNI:</Label>
-                                                <p className="text-gray-700 font-medium">76516872</p>
+                                                <p className="text-gray-700 font-medium">{pacienteData.historia}</p>
                                             </div>
                                             <div>
                                                 <Label className="block mb-1">Seguro:</Label>
-                                                <p className="text-gray-700 font-medium">SIS</p>
+                                                <p className="text-gray-700 font-medium">{pacienteData.seguro}</p>
                                             </div>
                                             <div>
                                                 <Label className="block mb-1">Tipo de Atención:</Label>
-                                                <p className="text-gray-700 font-medium">CE - CONSULTA EXTERNA</p>
+                                                <p className="text-gray-700 font-medium">{pacienteData.seguro}</p>
                                             </div>
                                             <div>
                                                 <Label className="block mb-1">Especialidad:</Label>
-                                                <p className="text-gray-700 font-medium">1011 - MEDICINA INTERNA 1</p>
+                                                <p className="text-gray-700 font-medium">{pacienteData.tipoAtencion}</p>
                                             </div>
                                             <div>
                                                 <Label className="block mb-1">Médico:</Label>
-                                                <p className="text-gray-700 font-medium">DIL - DIONICIO IBAÑEZ LUIS FELIPE</p>
+                                                <p className="text-gray-700 font-medium">{pacienteData.medico}</p>
                                             </div>
                                             <div>
                                                 <Label className="block mb-1">Transacción:</Label>
-                                                <p className="text-gray-700 font-medium">VRS - SIS</p>
+                                                <p className="text-gray-700 font-medium">{pacienteData.transaccion}</p>
                                             </div>
                                             <div>
                                                 <Label className="block mb-1">N° Receta:</Label>
-                                                <p className="text-gray-700 font-medium">270065000</p>
+                                                <p className="text-gray-700 font-medium">{pacienteData.receta}</p>
                                             </div>
                                             <div>
                                                 <Label className="block mb-1">Cuenta:</Label>
-                                                <p className="text-gray-700 font-medium">3013144</p>
+                                                <p className="text-gray-700 font-medium">{pacienteData.cuenta}</p>
                                             </div>
                                             {/* Comentario ocupa toda la fila */}
                                             <div className="col-span-3">
