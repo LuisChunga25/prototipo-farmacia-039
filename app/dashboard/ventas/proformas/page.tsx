@@ -90,6 +90,19 @@ interface Medicamento {
     subfilas: Subfila[];
 }
 
+interface Receta {
+    fecha: string;
+    seguro: string;
+    servicio: string;
+    farmaco: string;
+    presentacion: string;
+    cantidad: number;
+    indicacion: string;
+    via: string;
+    diagnostico: string;
+    medico: string;
+}
+
 // DATOS DE EJEMPLO PARA LA TABLA
 const proformasData = [
     {
@@ -365,7 +378,72 @@ const medicamentosPrueba: Record<string, any[]> = {
     ],
 };
 
-
+const historialPrueba: Record<string, Receta[]> = {
+    "12345678": [
+        {
+            fecha: "15/07/2026",
+            seguro: "SIS",
+            servicio: "CE",
+            farmaco: "PARACETAMOL 500 MG",
+            presentacion: "TAB",
+            cantidad: 28,
+            indicacion: "1 cada 6 hrs por 7 días",
+            via: "Oral",
+            diagnostico: "J110 - Influenza con Neumonía, Virus no Identificado",
+            medico: "DIONICIO IBAÑEZ LUIS FELIPE",
+        },
+        {
+            fecha: "10/07/2026",
+            seguro: "SIS",
+            servicio: "EM",
+            farmaco: "AMOXICILINA 500 MG",
+            presentacion: "TAB",
+            cantidad: 12,
+            indicacion: "1 cada 3 hrs por 4 días",
+            via: "Oral",
+            diagnostico: "J209 - Bronquitis Aguda, no Especificada",
+            medico: "BASOMBRIO VELASQUEZ JORGE",
+        },
+        {
+            fecha: "08/07/2026",
+            seguro: "SIS",
+            servicio: "CE",
+            farmaco: "NAPROXENO 500 MG TAB",
+            presentacion: "TAB",
+            cantidad: 20,
+            indicacion: "1 cada 12 hrs por 10 días",
+            via: "Oral",
+            diagnostico: "J040 - Laringitis Aguda",
+            medico: "BASOMBRIO VELASQUEZ JORGE",
+        },
+    ],
+    "87654321": [
+        {
+            fecha: "13/07/2026",
+            seguro: "PAGANTE",
+            servicio: "CE",
+            farmaco: "IBUPROFENO 400 MG",
+            presentacion: "TAB",
+            cantidad: 20,
+            indicacion: "1 cada 12 hrs por 10 días",
+            via: "Oral",
+            diagnostico: "M151 - Artritis",
+            medico: "BASOMBRIO VELASQUEZ JORGE",
+        },
+        {
+            fecha: "13/07/2026", // 👈 mismo día, otro medicamento
+            seguro: "PAGANTE",
+            servicio: "CE",
+            farmaco: "ORFENADRINA CITRATO 100 MG",
+            presentacion: "TAB",
+            cantidad: 7,
+            indicacion: "1 cada 24 hrs por 7 días",
+            via: "Oral",
+            diagnostico: "M151 - Artritis",
+            medico: "BASOMBRIO VELASQUEZ JORGE",
+        },
+    ],
+};
 
 export default function SalidasPage() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -400,6 +478,16 @@ export default function SalidasPage() {
     const [pacienteData, setPacienteData] = useState<any | null>(null);
     const [medicamentosData, setMedicamentosData] = useState<Medicamento[]>([]);
     const [medicoReceta, setMedicoReceta] = useState("");
+    const [historialData, setHistorialData] = useState<Receta[]>([]);
+    const [paciente, setPaciente] = useState("");
+    const [historia, setHistoria] = useState("");
+    const [seguro, setSeguro] = useState("");
+    const [tipoAtencion, setTipoAtencion] = useState("");
+    const [especialidad, setEspecialidad] = useState("");
+    const [medico, setMedico] = useState("");
+
+    // Estados de error
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
     // Formatear a yyyy-MM-dd para que el input type="date" lo acepte
     const formatoISO = (fecha: Date) => fecha.toISOString().split("T")[0];
@@ -855,6 +943,15 @@ export default function SalidasPage() {
                                     setError(""); // limpia mensaje de error
                                     setPacienteExterno(false);
                                     setMedicamentos([]); // limpia la tabla al cerrar
+                                    setPaciente("");
+                                    setHistoria("");
+                                    setSeguro("");
+                                    setTipoAtencion("");
+                                    setEspecialidad("");
+                                    setMedico("");
+                                    setErrors({});
+                                    setProducto("");
+                                    setCantidad("");
                                 }}
                                 className="text-gray-500 hover:text-red-600"
                             >
@@ -904,6 +1001,7 @@ export default function SalidasPage() {
                                             setPacienteData(pacientesPrueba[dni.trim()]);
                                             setMedicamentosData(medicamentosPrueba[dni.trim()] || []);
                                             setMedicoReceta(pacientesPrueba[dni.trim()].medico);
+                                            setHistorialData(historialPrueba[dni.trim()] || []);
                                             setDniValidado(true); // despliega datos solo si cumple
                                         }
                                     }}
@@ -949,6 +1047,15 @@ export default function SalidasPage() {
                                                 setDniValidado(false);
                                                 setPacienteExterno(false);
                                                 setMedicamentos([]);   // limpia la tabla también
+                                                setPaciente("");
+                                                setHistoria("");
+                                                setSeguro("");
+                                                setTipoAtencion("");
+                                                setEspecialidad("");
+                                                setMedico("");
+                                                setErrors({});
+                                                setProducto("");
+                                                setCantidad("");
                                             }}
                                         >
                                             <RefreshCcw className="h-4 w-4" />
@@ -1192,71 +1299,24 @@ export default function SalidasPage() {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {/* Datos de prueba estáticos */}
-                                                            <tr>
-                                                                <td className="border border-gray-300 px-3 py-2">15/07/2026</td>
-                                                                <td className="border border-gray-300 px-3 py-2">SIS</td>
-                                                                <td className="border border-gray-300 px-3 py-2">CE</td>
-                                                                <td className="border border-gray-300 px-3 py-2">
-                                                                    <div>PARACETAMOL 500 MG</div>
-                                                                    <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mt-1">
-                                                                        TAB
-                                                                    </span>
-                                                                </td>
-                                                                <td className="border border-gray-300 px-3 py-2">28</td>
-                                                                <td className="border border-gray-300 px-3 py-2">1 cada 6 hrs por 7 días</td>
-                                                                <td className="border border-gray-300 px-3 py-2">Oral</td>
-                                                                <td className="border border-gray-300 px-3 py-2">J110 - Influenza con Neumonía, Virus no Identificado</td>
-                                                                <td className="border border-gray-300 px-3 py-2">DIONICIO IBAÑEZ LUIS FELIPE</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td className="border border-gray-300 px-3 py-2">10/07/2026</td>
-                                                                <td className="border border-gray-300 px-3 py-2">SIS</td>
-                                                                <td className="border border-gray-300 px-3 py-2">EM</td>
-                                                                <td className="border border-gray-300 px-3 py-2">
-                                                                    <div>AMOXICILINA 500 MG</div>
-                                                                    <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mt-1">
-                                                                        TAB
-                                                                    </span>
-                                                                </td>
-                                                                <td className="border border-gray-300 px-3 py-2">12</td>
-                                                                <td className="border border-gray-300 px-3 py-2">1 cada 3 hrs por 4 días</td>
-                                                                <td className="border border-gray-300 px-3 py-2">Oral</td>
-                                                                <td className="border border-gray-300 px-3 py-2">J209 - Bronquitis Aguda, no Especificada</td>
-                                                                <td className="border border-gray-300 px-3 py-2">BASOMBRIO VELASQUEZ JORGE</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td className="border border-gray-300 px-3 py-2">08/07/2026</td>
-                                                                <td className="border border-gray-300 px-3 py-2">SIS</td>
-                                                                <td className="border border-gray-300 px-3 py-2">EM</td>
-                                                                <td className="border border-gray-300 px-3 py-2">
-                                                                    <div>NAPROXENO 500 MG</div>
-                                                                    <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mt-1">
-                                                                        TAB
-                                                                    </span>
-                                                                </td>
-                                                                <td className="border border-gray-300 px-3 py-2">14</td>
-                                                                <td className="border border-gray-300 px-3 py-2">1 cada 12 hrs por 7 días</td>
-                                                                <td className="border border-gray-300 px-3 py-2">Oral</td>
-                                                                <td className="border border-gray-300 px-3 py-2">J410 - Bronquitis Cronica Simple</td>
-                                                                <td className="border border-gray-300 px-3 py-2">BASOMBRIO VELASQUEZ JORGE</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td className="border border-gray-300 px-3 py-2">05/07/2026</td>
-                                                                <td className="border border-gray-300 px-3 py-2">SIS</td>
-                                                                <td className="border border-gray-300 px-3 py-2">CE</td>
-                                                                <td className="border border-gray-300 px-3 py-2">
-                                                                    <div>TRAMADOL 50 MG TAB (S)</div>
-                                                                    <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mt-1">
-                                                                        TAB
-                                                                    </span>
-                                                                </td>
-                                                                <td className="border border-gray-300 px-3 py-2">30</td>
-                                                                <td className="border border-gray-300 px-3 py-2">1 cada 24 hrs por 30 días</td>
-                                                                <td className="border border-gray-300 px-3 py-2">Oral</td>
-                                                                <td className="border border-gray-300 px-3 py-2">J40X - Bronquiti, no Especificada como Aguda o Cronica</td>
-                                                                <td className="border border-gray-300 px-3 py-2">BASOMBRIO VELASQUEZ JORGE</td>
-                                                            </tr>
+                                                            {historialData.map((receta, idx) => (
+                                                                <tr key={`${receta.fecha}-${receta.farmaco}-${idx}`}>
+                                                                    <td className="border px-3 py-2">{receta.fecha}</td>
+                                                                    <td className="border px-3 py-2">{receta.seguro}</td>
+                                                                    <td className="border px-3 py-2">{receta.servicio}</td>
+                                                                    <td className="border px-3 py-2">
+                                                                        <div>{receta.farmaco}</div>
+                                                                        <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mt-1">
+                                                                            {receta.presentacion}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="border px-3 py-2">{receta.cantidad}</td>
+                                                                    <td className="border px-3 py-2">{receta.indicacion}</td>
+                                                                    <td className="border px-3 py-2">{receta.via}</td>
+                                                                    <td className="border px-3 py-2">{receta.diagnostico}</td>
+                                                                    <td className="border px-3 py-2">{receta.medico}</td>
+                                                                </tr>
+                                                            ))}
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -1281,27 +1341,69 @@ export default function SalidasPage() {
                                         <div className="grid grid-cols-3 gap-4">
                                             <div>
                                                 <Label>Paciente:</Label>
-                                                <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese nombre completo" />
+                                                <Input
+                                                    className="border-2 border-gray-500"
+                                                    type="text"
+                                                    placeholder="Ingrese nombre completo"
+                                                    value={paciente}
+                                                    onChange={(e) => setPaciente(e.target.value)}
+                                                />
+                                                {errors.paciente && <p className="text-red-600 text-sm">{errors.paciente}</p>}
                                             </div>
                                             <div>
                                                 <Label>Historia/DNI:</Label>
-                                                <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese DNI" />
+                                                <Input
+                                                    className="border-2 border-gray-500"
+                                                    type="text"
+                                                    placeholder="Ingrese DNI"
+                                                    value={historia}
+                                                    onChange={(e) => setHistoria(e.target.value)}
+                                                />
+                                                {errors.historia && <p className="text-red-600 text-sm">{errors.historia}</p>}
                                             </div>
                                             <div>
                                                 <Label>Seguro:</Label>
-                                                <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese seguro" />
+                                                <Input
+                                                    className="border-2 border-gray-500"
+                                                    type="text"
+                                                    placeholder="Ingrese seguro"
+                                                    value={seguro}
+                                                    onChange={(e) => setSeguro(e.target.value)}
+                                                />
+                                                {errors.seguro && <p className="text-red-600 text-sm">{errors.seguro}</p>}
                                             </div>
                                             <div>
                                                 <Label>Tipo de Atención:</Label>
-                                                <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese tipo de atención" />
+                                                <Input
+                                                    className="border-2 border-gray-500"
+                                                    type="text"
+                                                    placeholder="Ingrese tipo de atención"
+                                                    value={tipoAtencion}
+                                                    onChange={(e) => setTipoAtencion(e.target.value)}
+                                                />
+                                                {errors.tipoAtencion && <p className="text-red-600 text-sm">{errors.tipoAtencion}</p>}
                                             </div>
                                             <div>
                                                 <Label>Especialidad:</Label>
-                                                <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese especialidad" />
+                                                <Input
+                                                    className="border-2 border-gray-500"
+                                                    type="text"
+                                                    placeholder="Ingrese especialidad"
+                                                    value={especialidad}
+                                                    onChange={(e) => setEspecialidad(e.target.value)}
+                                                />
+                                                {errors.especialidad && <p className="text-red-600 text-sm">{errors.especialidad}</p>}
                                             </div>
                                             <div>
                                                 <Label>Médico:</Label>
-                                                <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese médico" />
+                                                <Input
+                                                    className="border-2 border-gray-500"
+                                                    type="text"
+                                                    placeholder="Ingrese médico"
+                                                    value={medico}
+                                                    onChange={(e) => setMedico(e.target.value)}
+                                                />
+                                                {errors.medico && <p className="text-red-600 text-sm">{errors.medico}</p>}
                                             </div>
                                             <div>
                                                 <Label>Transacción:</Label>
@@ -1348,7 +1450,7 @@ export default function SalidasPage() {
                                             </div>
                                             <Button
                                                 type="button"
-                                                className="bg-green-600 hover:bg-green-700 text-white h-10 px-4"
+                                                className="bg-green-600 hover:bg-green-700 text-white h-10 px-4 disabled:opacity-50 disabled:cursor-not-allowed"
                                                 onClick={() => {
                                                     if (producto.trim() && cantidad.trim()) {
                                                         setMedicamentos([...medicamentos, { producto, cantidad }]);
@@ -1356,6 +1458,7 @@ export default function SalidasPage() {
                                                         setCantidad("");
                                                     }
                                                 }}
+                                                disabled={!producto.trim() || !cantidad.trim()}
                                             >
                                                 <CirclePlus className="h-4 w-4" />
                                                 Agregar
@@ -1407,6 +1510,15 @@ export default function SalidasPage() {
                                         setError("");
                                         setPacienteExterno(false);
                                         setMedicamentos([]); // limpia la tabla al cancelar
+                                        setPaciente("");
+                                        setHistoria("");
+                                        setSeguro("");
+                                        setTipoAtencion("");
+                                        setEspecialidad("");
+                                        setMedico("");
+                                        setErrors({});
+                                        setProducto("");
+                                        setCantidad("");
                                     }}
                                 >
                                     Cancelar
@@ -1416,7 +1528,26 @@ export default function SalidasPage() {
                                     <Button
                                         type="button"
                                         className="bg-cyan-600 hover:bg-cyan-700 text-white"
-                                        onClick={() => setMostrarConfirmacion(true)}
+                                        onClick={() => {
+                                            if (pacienteExterno) {
+                                                const newErrors: Record<string, string> = {};
+
+                                                if (!paciente.trim()) newErrors.paciente = "El campo Paciente es obligatorio";
+                                                if (!historia.trim()) newErrors.historia = "El campo Historia/DNI es obligatorio";
+                                                if (!seguro.trim()) newErrors.seguro = "El campo Seguro es obligatorio";
+                                                if (!tipoAtencion.trim()) newErrors.tipoAtencion = "El campo Tipo de Atención es obligatorio";
+                                                if (!especialidad.trim()) newErrors.especialidad = "El campo Especialidad es obligatorio";
+                                                if (!medico.trim()) newErrors.medico = "El campo Médico es obligatorio";
+
+                                                setErrors(newErrors);
+
+                                                if (Object.keys(newErrors).length === 0) {
+                                                    setMostrarConfirmacion(true); // solo si no hay errores
+                                                }
+                                            } else {
+                                                setMostrarConfirmacion(true); // caso DNI validado normal
+                                            }
+                                        }}
                                     >
                                         <FilePlus className="h-4 w-4" />
                                         Generar Proforma
