@@ -535,6 +535,7 @@ export default function SalidasPage() {
 
     // Estados de error
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [errorMedicamentos, setErrorMedicamentos] = useState("");
 
     // Formatear a yyyy-MM-dd para que el input type="date" lo acepte
     const formatoISO = (fecha: Date) => fecha.toISOString().split("T")[0];
@@ -570,6 +571,11 @@ export default function SalidasPage() {
     useEffect(() => {
         setProformasVisibles(proformasData);
     }, [proformasData]);
+
+    const stockTotal = sugerencias.length === 0 && producto
+        ? medicamentosDisponibles.find(m => m.producto === producto)?.lotes
+            .reduce((acc, lote) => acc + lote.cantAsignada, 0)
+        : null;
 
     const getEstadoBadge = (estado: string) => {
         const variants = {
@@ -1000,6 +1006,7 @@ export default function SalidasPage() {
                                     setProducto("");
                                     setCantidad("");
                                     setSugerencias([]);
+                                    setErrorMedicamentos("");
                                 }}
                                 className="text-gray-500 hover:text-red-600"
                             >
@@ -1105,6 +1112,7 @@ export default function SalidasPage() {
                                                 setProducto("");
                                                 setCantidad("");
                                                 setSugerencias([]);
+                                                setErrorMedicamentos("");
                                             }}
                                         >
                                             <RefreshCcw className="h-4 w-4" />
@@ -1395,7 +1403,12 @@ export default function SalidasPage() {
                                                     type="text"
                                                     placeholder="Ingrese nombre completo"
                                                     value={paciente}
-                                                    onChange={(e) => setPaciente(e.target.value)}
+                                                    onChange={(e) => {
+                                                        setPaciente(e.target.value);
+                                                        if (errors.paciente) {
+                                                            setErrors(prev => ({ ...prev, paciente: "" }));
+                                                        }
+                                                    }}
                                                 />
                                                 {errors.paciente && <p className="text-red-600 text-sm">{errors.paciente}</p>}
                                             </div>
@@ -1406,7 +1419,12 @@ export default function SalidasPage() {
                                                     type="text"
                                                     placeholder="Ingrese DNI"
                                                     value={historia}
-                                                    onChange={(e) => setHistoria(e.target.value)}
+                                                    onChange={(e) => {
+                                                        setHistoria(e.target.value);
+                                                        if (errors.historia) {
+                                                            setErrors(prev => ({ ...prev, historia: "" }));
+                                                        }
+                                                    }}
                                                 />
                                                 {errors.historia && <p className="text-red-600 text-sm">{errors.historia}</p>}
                                             </div>
@@ -1417,7 +1435,12 @@ export default function SalidasPage() {
                                                     type="text"
                                                     placeholder="Ingrese seguro"
                                                     value={seguro}
-                                                    onChange={(e) => setSeguro(e.target.value)}
+                                                    onChange={(e) => {
+                                                        setSeguro(e.target.value);
+                                                        if (errors.seguro) {
+                                                            setErrors(prev => ({ ...prev, seguro: "" }));
+                                                        }
+                                                    }}
                                                 />
                                                 {errors.seguro && <p className="text-red-600 text-sm">{errors.seguro}</p>}
                                             </div>
@@ -1428,7 +1451,12 @@ export default function SalidasPage() {
                                                     type="text"
                                                     placeholder="Ingrese tipo de atención"
                                                     value={tipoAtencion}
-                                                    onChange={(e) => setTipoAtencion(e.target.value)}
+                                                    onChange={(e) => {
+                                                        setTipoAtencion(e.target.value);
+                                                        if (errors.tipoAtencion) {
+                                                            setErrors(prev => ({ ...prev, tipoAtencion: "" }));
+                                                        }
+                                                    }}
                                                 />
                                                 {errors.tipoAtencion && <p className="text-red-600 text-sm">{errors.tipoAtencion}</p>}
                                             </div>
@@ -1439,7 +1467,12 @@ export default function SalidasPage() {
                                                     type="text"
                                                     placeholder="Ingrese especialidad"
                                                     value={especialidad}
-                                                    onChange={(e) => setEspecialidad(e.target.value)}
+                                                    onChange={(e) => {
+                                                        setEspecialidad(e.target.value);
+                                                        if (errors.especialidad) {
+                                                            setErrors(prev => ({ ...prev, especialidad: "" }));
+                                                        }
+                                                    }}
                                                 />
                                                 {errors.especialidad && <p className="text-red-600 text-sm">{errors.especialidad}</p>}
                                             </div>
@@ -1450,7 +1483,12 @@ export default function SalidasPage() {
                                                     type="text"
                                                     placeholder="Ingrese médico"
                                                     value={medico}
-                                                    onChange={(e) => setMedico(e.target.value)}
+                                                    onChange={(e) => {
+                                                        setMedico(e.target.value);
+                                                        if (errors.medico) {
+                                                            setErrors(prev => ({ ...prev, medico: "" }));
+                                                        }
+                                                    }}
                                                 />
                                                 {errors.medico && <p className="text-red-600 text-sm">{errors.medico}</p>}
                                             </div>
@@ -1476,11 +1514,11 @@ export default function SalidasPage() {
                                     <div className="border rounded-md p-4 mb-4 bg-gray-50">
                                         <h3 className="text-md font-semibold mb-3">Registrar medicamentos</h3>
 
-                                        <div className="flex items-end gap-4 mb-4">
+                                        <div className="flex items-start gap-4 mb-4">
                                             <div className="relative">
                                                 <Label>Producto:</Label>
                                                 <Input
-                                                    className="border-2 border-gray-500"
+                                                    className="border-2 border-gray-500 w-[600px]"
                                                     type="text"
                                                     placeholder="Ingrese producto"
                                                     value={producto}
@@ -1514,6 +1552,16 @@ export default function SalidasPage() {
                                                         ))}
                                                     </ul>
                                                 )}
+                                                <div className="min-h-[24px] mt-1">
+                                                    {producto && (
+                                                        <span className="text-green-600 font-semibold">
+                                                            Stock total: {
+                                                                medicamentosDisponibles.find(m => m.producto === producto)
+                                                                    ?.lotes.reduce((acc, lote) => acc + lote.cantAsignada, 0)
+                                                            }
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
                                             <div>
                                                 <Label>Cantidad:</Label>
@@ -1525,43 +1573,48 @@ export default function SalidasPage() {
                                                     onChange={(e) => setCantidad(e.target.value)}
                                                 />
                                             </div>
-                                            <Button
-                                                type="button"
-                                                className="bg-green-600 hover:bg-green-700 text-white h-10 px-4 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                onClick={() => {
-                                                    const medBase = medicamentosDisponibles.find(
-                                                        m => m.producto.toLowerCase() === producto.toLowerCase()
-                                                    );
-                                                    if (medBase && cantidad.trim()) {
-                                                        let cantidadSolicitada = parseInt(cantidad, 10);
-                                                        let lotesDistribuidos: Lote[] = [];
+                                            <div>
+                                                <Label className="invisible">Acción</Label>
+                                                <Button
+                                                    type="button"
+                                                    className="bg-green-600 hover:bg-green-700 text-white h-10 px-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                                    onClick={() => {
+                                                        const medBase = medicamentosDisponibles.find(
+                                                            m => m.producto.toLowerCase() === producto.toLowerCase()
+                                                        );
+                                                        if (medBase && cantidad.trim()) {
+                                                            let cantidadSolicitada = parseInt(cantidad, 10);
+                                                            let lotesDistribuidos: Lote[] = [];
 
-                                                        for (const lote of medBase.lotes) {
-                                                            if (cantidadSolicitada <= 0) break;
+                                                            for (const lote of medBase.lotes) {
+                                                                if (cantidadSolicitada <= 0) break;
 
-                                                            const asignar = Math.min(lote.cantAsignada, cantidadSolicitada);
-                                                            lotesDistribuidos.push({
-                                                                ...lote,
-                                                                cantAsignada: asignar, // 👈 ajustar según lo solicitado
-                                                                importe: `S/ ${(asignar * parseFloat(lote.precio.replace("S/ ", ""))).toFixed(2)}`
-                                                            });
-                                                            cantidadSolicitada -= asignar;
+                                                                const asignar = Math.min(lote.cantAsignada, cantidadSolicitada);
+                                                                lotesDistribuidos.push({
+                                                                    ...lote,
+                                                                    cantAsignada: asignar,
+                                                                    importe: `S/ ${(asignar * parseFloat(lote.precio.replace("S/ ", ""))).toFixed(2)}`
+                                                                });
+                                                                cantidadSolicitada -= asignar;
+                                                            }
+
+                                                            setMedicamentos([
+                                                                ...medicamentos,
+                                                                { ...medBase, cantidadSolicitada: parseInt(cantidad, 10), lotes: lotesDistribuidos }
+                                                            ]);
+
+                                                            setErrorMedicamentos("");
+
+                                                            setProducto("");
+                                                            setCantidad("");
                                                         }
-
-                                                        setMedicamentos([
-                                                            ...medicamentos,
-                                                            { ...medBase, cantidadSolicitada: parseInt(cantidad, 10), lotes: lotesDistribuidos }
-                                                        ]);
-
-                                                        setProducto("");
-                                                        setCantidad("");
-                                                    }
-                                                }}
-                                                disabled={!producto.trim() || !cantidad.trim()}
-                                            >
-                                                <CirclePlus className="h-4 w-4" />
-                                                Agregar
-                                            </Button>
+                                                    }}
+                                                    disabled={!producto.trim() || !cantidad.trim()}
+                                                >
+                                                    <CirclePlus className="h-4 w-4" />
+                                                    Agregar
+                                                </Button>
+                                            </div>
                                         </div>
 
                                         {/* Tabla de medicamentos registrados */}
@@ -1577,46 +1630,71 @@ export default function SalidasPage() {
                                                     <th className="border border-gray-300 px-2 py-1">Importe</th>
                                                     <th className="border border-gray-300 px-2 py-1">Lote</th>
                                                     <th className="border border-gray-300 px-2 py-1">F. Venc.</th>
+                                                    <th className="border border-gray-300 px-2 py-1">Acción</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {medicamentos.map((med, index) => (
-                                                    <React.Fragment key={med.producto + index}>
-                                                        {med.lotes.map((lote, idx) => (
-                                                            <tr key={`${med.producto}-${lote.lote}-${idx}`}>
-                                                                {idx === 0 && (
-                                                                    <>
-                                                                        <td className="border px-3 py-2" rowSpan={med.lotes.length}>{index + 1}</td>
-                                                                        <td className="border px-3 py-2" rowSpan={med.lotes.length}>
-                                                                            {med.producto}
-                                                                            <div className="font-bold text-gray-700">{med.presentacion}</div>
+                                                {medicamentos.length === 0 ? (
+                                                    <tr>
+                                                        <td colSpan={10} className="border px-3 py-2 text-center text-gray-500 italic">
+                                                            No hay medicamentos registrados
+                                                        </td>
+                                                    </tr>
+                                                ) : (
+                                                    medicamentos.map((med, index) => (
+                                                        <React.Fragment key={med.producto + index}>
+                                                            {med.lotes.map((lote, idx) => (
+                                                                <tr key={`${med.producto}-${lote.lote}-${idx}`}>
+                                                                    {idx === 0 && (
+                                                                        <>
+                                                                            <td className="border px-3 py-2" rowSpan={med.lotes.length}>{index + 1}</td>
+                                                                            <td className="border px-3 py-2" rowSpan={med.lotes.length}>
+                                                                                {med.producto}
+                                                                                <div className="font-bold text-gray-700">{med.presentacion}</div>
+                                                                            </td>
+                                                                            <td className="border px-3 py-2" rowSpan={med.lotes.length}>
+                                                                                <div><span className="font-semibold">SISMED:</span> {med.sisMed}</div>
+                                                                                <div><span className="font-semibold">SIGA:</span> {med.siga}</div>
+                                                                            </td>
+                                                                            <td className="border px-3 py-2" rowSpan={med.lotes.length}>{med.cantidadSolicitada}</td>
+                                                                        </>
+                                                                    )}
+                                                                    <td className="border px-3 py-2">
+                                                                        <span className="bg-green-100 text-green-700 font-semibold px-2 py-1 rounded">
+                                                                            {lote.cantAsignada}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="border px-3 py-2">{lote.precio}</td>
+                                                                    <td className="border px-3 py-2">{lote.importe}</td>
+                                                                    <td className="border px-3 py-2">
+                                                                        <span className="bg-blue-100 text-blue-700 font-medium px-2 py-1 rounded">
+                                                                            {lote.lote}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="border px-3 py-2">{lote.venc}</td>
+                                                                    {idx === 0 && (
+                                                                        <td className="border px-3 py-2 text-center" rowSpan={med.lotes.length}>
+                                                                            <button
+                                                                                onClick={() => {
+                                                                                    setMedicamentos(medicamentos.filter((_, i) => i !== index));
+                                                                                }}
+                                                                                className="border border-red-600 rounded-md p-2 text-red-600 hover:bg-red-50"
+                                                                                title="Eliminar registro"
+                                                                            >
+                                                                                <Trash2 className="h-5 w-5" />
+                                                                            </button>
                                                                         </td>
-                                                                        <td className="border px-3 py-2" rowSpan={med.lotes.length}>
-                                                                            <div><span className="font-semibold">SISMED:</span> {med.sisMed}</div>
-                                                                            <div><span className="font-semibold">SIGA:</span> {med.siga}</div>
-                                                                        </td>
-                                                                        <td className="border px-3 py-2" rowSpan={med.lotes.length}>{med.cantidadSolicitada}</td>
-                                                                    </>
-                                                                )}
-                                                                <td className="border px-3 py-2">
-                                                                    <span className="bg-green-100 text-green-700 font-semibold px-2 py-1 rounded">
-                                                                        {lote.cantAsignada}
-                                                                    </span>
-                                                                </td>
-                                                                <td className="border px-3 py-2">{lote.precio}</td>
-                                                                <td className="border px-3 py-2">{lote.importe}</td>
-                                                                <td className="border px-3 py-2">
-                                                                    <span className="bg-blue-100 text-blue-700 font-medium px-2 py-1 rounded">
-                                                                        {lote.lote}
-                                                                    </span>
-                                                                </td>
-                                                                <td className="border px-3 py-2">{lote.venc}</td>
-                                                            </tr>
-                                                        ))}
-                                                    </React.Fragment>
-                                                ))}
+                                                                    )}
+                                                                </tr>
+                                                            ))}
+                                                        </React.Fragment>
+                                                    ))
+                                                )}
                                             </tbody>
                                         </table>
+                                        {errorMedicamentos && (
+                                            <p className="text-red-600 text-sm mt-2">{errorMedicamentos}</p>
+                                        )}
                                     </div>
 
                                 </>
@@ -1642,6 +1720,7 @@ export default function SalidasPage() {
                                         setProducto("");
                                         setCantidad("");
                                         setSugerencias([]);
+                                        setErrorMedicamentos("");
                                     }}
                                 >
                                     Cancelar
@@ -1664,8 +1743,14 @@ export default function SalidasPage() {
 
                                                 setErrors(newErrors);
 
-                                                if (Object.keys(newErrors).length === 0) {
-                                                    setMostrarConfirmacion(true); // solo si no hay errores
+                                                if (medicamentos.length === 0) {
+                                                    setErrorMedicamentos("Debe registrar al menos un medicamento");
+                                                } else {
+                                                    setErrorMedicamentos("");
+                                                }
+
+                                                if (Object.keys(newErrors).length === 0 && medicamentos.length > 0) {
+                                                    setMostrarConfirmacion(true);
                                                 }
                                             } else {
                                                 setMostrarConfirmacion(true); // caso DNI validado normal
@@ -1731,6 +1816,17 @@ export default function SalidasPage() {
                                                     setError("");
                                                     setPacienteExterno(false);
                                                     setMedicamentos([]);
+                                                    setPaciente("");
+                                                    setHistoria("");
+                                                    setSeguro("");
+                                                    setTipoAtencion("");
+                                                    setEspecialidad("");
+                                                    setMedico("");
+                                                    setErrors({});
+                                                    setProducto("");
+                                                    setCantidad("");
+                                                    setSugerencias([]);
+                                                    setErrorMedicamentos("");
                                                 }}
                                             >
                                                 Finalizar
