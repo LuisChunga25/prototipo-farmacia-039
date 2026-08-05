@@ -128,10 +128,10 @@ const proformasData = [
         ordenId: "1726126012",
         numReceta: "260363091",
         cuentaId: "3010196",
-        fecha: "03/08/2026",
+        fecha: "05/08/2026",
         hora: "11:12:07",
-        fecha_proceso: "16/07/2026",
-        hora_proceso: "18:12",
+        fecha_proceso: "05/08/2026",
+        hora_proceso: "11:12",
         numPaciente: "2008352165",
         historia: "09846541",
         nombrePaciente: "HERNANDEZ TORRES KIMBERLY ARMIDA",
@@ -169,20 +169,20 @@ const proformasData = [
         ordenId: "1726126011",
         numReceta: "260363090",
         cuentaId: "3010195",
-        fecha: "03/08/2026",
+        fecha: "05/08/2026",
         hora: "11:10:25",
-        fecha_proceso: "16/07/2026",
-        hora_proceso: "18:12",
+        fecha_proceso: "05/08/2026",
+        hora_proceso: "11:10",
         numPaciente: "2008126535",
         historia: "48952215",
         nombrePaciente: "SUAREZ ORTEGA GABRIEL OCTAVIO",
         tipoSeguro: "SIS",
         medico: "DIONICIO IBAÑEZ LUIS FELIPE",
-        nombreAlmacen: "CONSULTORIOS EXTERNOS",
-        nombreConsultorio: "MEDICINA INTERNA 1",
+        nombreAlmacen: "FARMACIA EMERGENCIA",
+        nombreConsultorio: "MEDICINA EMERGENCIA",
         tipoPago: "R",
         total: 15.8,
-        usuario: "40532847",
+        usuario: "07651840",
         medicamentos: [
             {
                 producto: "PARACETAMOL 500 MG TAB",
@@ -210,20 +210,20 @@ const proformasData = [
         ordenId: "1726126010",
         numReceta: "260363089",
         cuentaId: "3010194",
-        fecha: "02/08/2026",
+        fecha: "04/08/2026",
         hora: "11:09:35",
-        fecha_proceso: "16/07/2026",
-        hora_proceso: "18:12",
+        fecha_proceso: "04/08/2026",
+        hora_proceso: "11:09",
         numPaciente: "2008115424",
         historia: "47515642",
         nombrePaciente: "REYES SALCEDO JOSE ANTONIO",
         tipoSeguro: "PAGANTE",
         medico: "DIONICIO IBAÑEZ LUIS FELIPE",
-        nombreAlmacen: "CONSULTORIOS EXTERNOS",
-        nombreConsultorio: "MEDICINA INTERNA 1",
+        nombreAlmacen: "FARMACIA EMERGENCIA",
+        nombreConsultorio: "MEDICINA EMERGENCIA",
         tipoPago: "R",
         total: 26.5,
-        usuario: "40532847",
+        usuario: "07651840",
         medicamentos: [
             {
                 producto: "PARACETAMOL 500 MG TAB",
@@ -251,20 +251,20 @@ const proformasData = [
         ordenId: "1726126009",
         numReceta: "260363088",
         cuentaId: "3010193",
-        fecha: "02/08/2026",
+        fecha: "04/08/2026",
         hora: "11:08:46",
-        fecha_proceso: "16/07/2026",
-        hora_proceso: "18:12",
+        fecha_proceso: "04/08/2026",
+        hora_proceso: "11:08",
         numPaciente: "2025451316",
         historia: "75486512",
         nombrePaciente: "RAMOS OJEDA ALBERTO FEDERICO",
         tipoSeguro: "SIS",
         medico: "BASOMBRIO VELAQUEZ JORGE",
-        nombreAlmacen: "CONSULTORIOS EXTERNOS",
-        nombreConsultorio: "CIRUGIA GENERAL",
+        nombreAlmacen: "FARMACIA DOSIS UNITARIA",
+        nombreConsultorio: "CIRUGIA HOSPITALIZACION",
         tipoPago: "R",
         total: 16.1,
-        usuario: "40532847",
+        usuario: "07672070",
         medicamentos: [
             {
                 producto: "PARACETAMOL 500 MG TAB",
@@ -292,10 +292,10 @@ const proformasData = [
         ordenId: "1726126008",
         numReceta: "260363087",
         cuentaId: "3010192",
-        fecha: "01/08/2026",
+        fecha: "04/08/2026",
         hora: "11:06:29",
-        fecha_proceso: "16/07/2026",
-        hora_proceso: "18:12",
+        fecha_proceso: "04/08/2026",
+        hora_proceso: "11:06",
         numPaciente: "2011345165",
         historia: "73542141",
         nombrePaciente: "SANCHEZ FLORES BEATRIZ ALBERTINA",
@@ -305,6 +305,211 @@ const proformasData = [
         nombreConsultorio: "CIRUGIA GENERAL",
         tipoPago: "R",
         total: 8.6,
+        usuario: "40532847",
+        medicamentos: [
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR22222",
+                fechaVenc: "31/10/2026",
+            },
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR33333",
+                fechaVenc: "31/12/2026",
+            },
+        ],
+    },
+    {
+        id: 6,
+        estado: "2",
+        ordenId: "1726126007",
+        numReceta: "260363086",
+        cuentaId: "3010191",
+        fecha: "03/08/2026",
+        hora: "10:55:29",
+        fecha_proceso: "03/08/2026",
+        hora_proceso: "10:55",
+        numPaciente: "2024112233",
+        historia: "46518494",
+        nombrePaciente: "GONZALEZ LOPEZ PEDRO",
+        tipoSeguro: "SIS",
+        medico: "BASOMBRIO VELASQUEZ JORGE",
+        nombreAlmacen: "FARMACIA DOSIS UNITARIA",
+        nombreConsultorio: "CIRUGIA HOSPITALIZACION",
+        tipoPago: "R",
+        total: 13.20,
+        usuario: "07672070",
+        medicamentos: [
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR22222",
+                fechaVenc: "31/10/2026",
+            },
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR33333",
+                fechaVenc: "31/12/2026",
+            },
+        ],
+    },
+    {
+        id: 7,
+        estado: "2",
+        ordenId: "1726126006",
+        numReceta: "260363085",
+        cuentaId: "3010190",
+        fecha: "03/08/2026",
+        hora: "10:52:35",
+        fecha_proceso: "03/08/2026",
+        hora_proceso: "10:52",
+        numPaciente: "2024998877",
+        historia: "09845165",
+        nombrePaciente: "DEL BOSQUE GONZALEZ VICENTE",
+        tipoSeguro: "SIS",
+        medico: "PINADO MICHUE EISEL",
+        nombreAlmacen: "FARMACIA EMERGENCIA",
+        nombreConsultorio: "MEDICINA EMERGENCIA",
+        tipoPago: "R",
+        total: 23.5,
+        usuario: "07651840",
+        medicamentos: [
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR22222",
+                fechaVenc: "31/10/2026",
+            },
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR33333",
+                fechaVenc: "31/12/2026",
+            },
+        ],
+    },
+    {
+        id: 8,
+        estado: "2",
+        ordenId: "1726126005",
+        numReceta: "260363084",
+        cuentaId: "3010189",
+        fecha: "03/08/2026",
+        hora: "10:48:35",
+        fecha_proceso: "03/08/2026",
+        hora_proceso: "10:48",
+        numPaciente: "2026112233",
+        historia: "79745121",
+        nombrePaciente: "PACHECO MENDOZA XIMENA GABRIELA",
+        tipoSeguro: "SIS",
+        medico: "SOTO ESCALANTE MARIA EUGENIA",
+        nombreAlmacen: "CONSULTORIOS EXTERNOS",
+        nombreConsultorio: "MEDICINA INTERNA",
+        tipoPago: "R",
+        total: 7.90,
+        usuario: "40532847",
+        medicamentos: [
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR22222",
+                fechaVenc: "31/10/2026",
+            },
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR33333",
+                fechaVenc: "31/12/2026",
+            },
+        ],
+    },
+    {
+        id: 9,
+        estado: "2",
+        ordenId: "1726126004",
+        numReceta: "260363083",
+        cuentaId: "3010188",
+        fecha: "03/08/2026",
+        hora: "10:40:35",
+        fecha_proceso: "03/08/2026",
+        hora_proceso: "10:40",
+        numPaciente: "2026445566",
+        historia: "70105410",
+        nombrePaciente: "CASAS GARCIA SUSANA LETICIA",
+        tipoSeguro: "SIS",
+        medico: "DIONICIO IBAÑEZ LUIS FELIPE",
+        nombreAlmacen: "CONSULTORIOS EXTERNOS",
+        nombreConsultorio: "MEDICINA INTERNA",
+        tipoPago: "R",
+        total: 8.20,
+        usuario: "40532847",
+        medicamentos: [
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR22222",
+                fechaVenc: "31/10/2026",
+            },
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 10,
+                cantAsignada: 5,
+                precio: "S/ 2.00",
+                importe: "S/ 10.00",
+                lote: "LTPAR33333",
+                fechaVenc: "31/12/2026",
+            },
+        ],
+    },
+    {
+        id: 10,
+        estado: "2",
+        ordenId: "1726126003",
+        numReceta: "260363082",
+        cuentaId: "3010187",
+        fecha: "03/08/2026",
+        hora: "10:36:23",
+        fecha_proceso: "03/08/2026",
+        hora_proceso: "10:36",
+        numPaciente: "2026778899",
+        historia: "73212154",
+        nombrePaciente: "ORTIGOSA GUTIERREZ REBECA MARIANA",
+        tipoSeguro: "SIS",
+        medico: "BASOMBRIO VELASQUEZ JORGE",
+        nombreAlmacen: "CONSULTORIOS EXTERNOS",
+        nombreConsultorio: "CIRUGIA GENERAL",
+        tipoPago: "R",
+        total: 4.10,
         usuario: "40532847",
         medicamentos: [
             {
@@ -345,12 +550,23 @@ const pacientesPrueba: Record<string, any> = {
         nombre: "2025334455 - HILARIO GARCIA MIGUEL ANGEL",
         historia: "87654321",
         seguro: "PAGANTE",
-        tipoAtencion: "CE - CONSULTA EXTERNA",
+        tipoAtencion: "EM - EMERGENCIA",
         especialidad: "2021 - CIRUGÍA GENERAL",
         medico: "BVJ - BASOMBRIO VELASQUEZ JORGE",
         transaccion: "VC - CONTADO",
         receta: "270065100",
         cuenta: "3013145",
+    },
+    "11223344": {
+        nombre: "2025667788 - PRADO DAVILA CARLOS ENRIQUE ALBERTO",
+        historia: "11223344",
+        seguro: "SIS",
+        tipoAtencion: "HO - HOSPITALIZACON",
+        especialidad: "1097 - UCI UNIDAD DE CUIDADOS INTENSIVOS",
+        medico: "TVA - TOMANGUILLO VASQUEZ MIGUEL ALEJANDRO",
+        transaccion: "VRD - SIS (DOSIS UNITARIA)",
+        receta: "270065200",
+        cuenta: "3013146",
     },
 };
 
@@ -383,13 +599,27 @@ const medicamentosPrueba: Record<string, any[]> = {
     "87654321": [
         {
             item: 1,
-            producto: "IBUPROFENO 400 MG",
+            producto: "IBUPROFENO 400 MG TAB",
             presentacion: "TAB",
-            sisMed: "01234",
-            siga: "580900100099",
+            sisMed: "04034",
+            siga: "580200430010",
             cantSolicitada: 12,
             subfilas: [
                 { cantAsignada: 12, precio: "S/ 1.80", importe: "S/ 21.60", lote: "LTIBU2026", venc: "30/11/2026" },
+            ],
+        },
+    ],
+    "11223344": [
+        {
+            item: 1,
+            producto: "TRAMADOL 50 MG",
+            presentacion: "TAB",
+            sisMed: "07654",
+            siga: "580900100099",
+            cantSolicitada: 12,
+            subfilas: [
+                { cantAsignada: 6, precio: "S/ 1.80", importe: "S/ 10.80", lote: "LTTRAM202601", venc: "30/11/2026" },
+                { cantAsignada: 6, precio: "S/ 2.00", importe: "S/ 12.00", lote: "LTTRAM202602", venc: "31/03/2027" },
             ],
         },
     ],
@@ -448,7 +678,7 @@ const historialPrueba: Record<string, Receta[]> = {
             medico: "BASOMBRIO VELASQUEZ JORGE",
         },
         {
-            fecha: "13/07/2026", // 👈 mismo día, otro medicamento
+            fecha: "13/07/2026",
             seguro: "PAGANTE",
             servicio: "CE",
             farmaco: "ORFENADRINA CITRATO 100 MG",
@@ -458,6 +688,44 @@ const historialPrueba: Record<string, Receta[]> = {
             via: "Oral",
             diagnostico: "M151 - Artritis",
             medico: "BASOMBRIO VELASQUEZ JORGE",
+        },
+    ],
+    "11223344": [
+        {
+            fecha: "13/07/2026",
+            seguro: "SIS",
+            servicio: "CE",
+            farmaco: "IBUPROFENO 400 MG",
+            presentacion: "TAB",
+            cantidad: 20,
+            indicacion: "1 cada 12 hrs por 10 días",
+            via: "Oral",
+            diagnostico: "M151 - Artritis",
+            medico: "APAZA ARAUJO BERIOSKA PAMELA",
+        },
+        {
+            fecha: "13/07/2026",
+            seguro: "SIS",
+            servicio: "CE",
+            farmaco: "ORFENADRINA CITRATO 100 MG",
+            presentacion: "TAB",
+            cantidad: 7,
+            indicacion: "1 cada 24 hrs por 7 días",
+            via: "Oral",
+            diagnostico: "M151 - Artritis",
+            medico: "APAZA ARAUJO BERIOSKA PAMELA",
+        },
+        {
+            fecha: "12/07/2026",
+            seguro: "SIS",
+            servicio: "CE",
+            farmaco: "LORATADINA 10MG TABLETA",
+            presentacion: "TAB",
+            cantidad: 14,
+            indicacion: "1 cada 1 hrs por 14 días",
+            via: "Oral",
+            diagnostico: "H609 - Otitis Externa, sin otra Especificacion",
+            medico: "PACHAS CABREJOS MIGUEL ROLANDO",
         },
     ],
 };
@@ -532,6 +800,8 @@ export default function SalidasPage() {
     const [tipoAtencion, setTipoAtencion] = useState("");
     const [especialidad, setEspecialidad] = useState("");
     const [medico, setMedico] = useState("");
+    const [activarRecetaEspecial, setActivarRecetaEspecial] = useState(false);
+    const [recetaEspecial, setRecetaEspecial] = useState("");
 
     // Estados de error
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -541,6 +811,27 @@ export default function SalidasPage() {
     const formatoISO = (fecha: Date) => fecha.toISOString().split("T")[0];
     const [fechaInicio, setFechaInicio] = useState(formatoISO(primerDiaMes));
     const [fechaFin, setFechaFin] = useState(formatoISO(hoy));
+
+    // Función validar DNI
+    const validarDni = () => {
+        if (dni.trim().length === 0) {
+            setError("Debe ingresar un número de documento.");
+            setDniValidado(false);
+        } else if (dni.trim().length < 8) {
+            setError("El documento debe tener al menos 8 caracteres");
+            setDniValidado(false);
+        } else if (!pacientesPrueba[dni.trim()]) {
+            setError("No se encontró paciente con ese DNI en la data de prueba");
+            setDniValidado(false);
+        } else {
+            setError("");
+            setPacienteData(pacientesPrueba[dni.trim()]);
+            setMedicamentosData(medicamentosPrueba[dni.trim()] || []);
+            setMedicoReceta(pacientesPrueba[dni.trim()].medico);
+            setHistorialData(historialPrueba[dni.trim()] || []);
+            setDniValidado(true); // despliega datos solo si cumple
+        }
+    }
 
     // Al montar el componente, inicializa fecha y hora
     useEffect(() => {
@@ -565,6 +856,7 @@ export default function SalidasPage() {
         { value: "receta", label: "N° Receta" },
         { value: "historia", label: "Historia Clínica" },
         { value: "paciente", label: "Paciente" },
+        { value: "almacen", label: "Almacén" },
     ];
 
     // INICIALIZAR CUANDO CARGUE LA PÁGINA
@@ -621,6 +913,9 @@ export default function SalidasPage() {
                     case "paciente":
                         campo = proforma.nombrePaciente;
                         break;
+                    case "almacen":
+                        campo = proforma.nombreAlmacen;
+                        break;
                     default:
                         campo = "";
                 }
@@ -663,7 +958,7 @@ export default function SalidasPage() {
                     Regresar
                 </Button>
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Módulo de Proformas de Consulta Externa</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">Módulo de Proformas Web</h1>
                     <p className="text-muted-foreground">Gestione la emisión de proformas con el detalle y costo estimado de los medicamentos solicitados por el paciente antes de la venta</p>
                 </div>
             </div>
@@ -1007,6 +1302,8 @@ export default function SalidasPage() {
                                     setCantidad("");
                                     setSugerencias([]);
                                     setErrorMedicamentos("");
+                                    setActivarRecetaEspecial(false);
+                                    setRecetaEspecial("");
                                 }}
                                 className="text-gray-500 hover:text-red-600"
                             >
@@ -1034,6 +1331,12 @@ export default function SalidasPage() {
                                             setDni(e.target.value);
                                             setError(""); // limpia error al escribir
                                         }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                e.preventDefault();
+                                                validarDni();
+                                            }
+                                        }}
                                         disabled={pacienteExterno}
                                     />
                                 </div>
@@ -1041,25 +1344,7 @@ export default function SalidasPage() {
                                 <Button
                                     type="button"
                                     className="bg-blue-600 hover:bg-blue-700 text-white h-10 px-4"
-                                    onClick={() => {
-                                        if (dni.trim().length === 0) {
-                                            setError("Debe ingresar un número de documento.");
-                                            setDniValidado(false);
-                                        } else if (dni.trim().length < 8) {
-                                            setError("El documento debe tener al menos 8 caracteres");
-                                            setDniValidado(false);
-                                        } else if (!pacientesPrueba[dni.trim()]) {
-                                            setError("No se encontró paciente con ese DNI en la data de prueba");
-                                            setDniValidado(false);
-                                        } else {
-                                            setError("");
-                                            setPacienteData(pacientesPrueba[dni.trim()]);
-                                            setMedicamentosData(medicamentosPrueba[dni.trim()] || []);
-                                            setMedicoReceta(pacientesPrueba[dni.trim()].medico);
-                                            setHistorialData(historialPrueba[dni.trim()] || []);
-                                            setDniValidado(true); // despliega datos solo si cumple
-                                        }
-                                    }}
+                                    onClick={validarDni}
                                     disabled={pacienteExterno}
                                 >
                                     Validar
@@ -1113,6 +1398,8 @@ export default function SalidasPage() {
                                                 setCantidad("");
                                                 setSugerencias([]);
                                                 setErrorMedicamentos("");
+                                                setActivarRecetaEspecial(false);
+                                                setRecetaEspecial("");
                                             }}
                                         >
                                             <RefreshCcw className="h-4 w-4" />
@@ -1159,11 +1446,11 @@ export default function SalidasPage() {
                                             </div>
                                             <div>
                                                 <Label className="block mb-1">Tipo de Atención:</Label>
-                                                <p className="text-gray-700 font-medium">{pacienteData.seguro}</p>
+                                                <p className="text-gray-700 font-medium">{pacienteData.tipoAtencion}</p>
                                             </div>
                                             <div>
                                                 <Label className="block mb-1">Especialidad:</Label>
-                                                <p className="text-gray-700 font-medium">{pacienteData.tipoAtencion}</p>
+                                                <p className="text-gray-700 font-medium">{pacienteData.especialidad}</p>
                                             </div>
                                             <div>
                                                 <Label className="block mb-1">Médico:</Label>
@@ -1181,12 +1468,44 @@ export default function SalidasPage() {
                                                 <Label className="block mb-1">Cuenta:</Label>
                                                 <p className="text-gray-700 font-medium">{pacienteData.cuenta}</p>
                                             </div>
+                                            <div className="col-span-3 flex items-center gap-6">
+                                                <div className="flex items-center gap-2">
+                                                    <input
+                                                        id="activarRecetaEspecial"
+                                                        type="checkbox"
+                                                        checked={activarRecetaEspecial}
+                                                        onChange={(e) => {
+                                                            const checked = e.target.checked;
+                                                            setActivarRecetaEspecial(checked);
+                                                            if (!checked) {
+                                                                setRecetaEspecial("");
+                                                            }
+                                                        }}
+                                                        className="w-5 h-5"
+                                                    />
+                                                    <Label htmlFor="activarRecetaEspecial" className="mb-0">
+                                                        Activar Receta Especial
+                                                    </Label>
+                                                </div>
+
+                                                <div className="flex items-center gap-2 flex-1">
+                                                    <Label className="mb-0">N° Receta Especial:</Label>
+                                                    <input
+                                                        type="text"
+                                                        className={`border-2 rounded-md p-2 flex-1 ${activarRecetaEspecial
+                                                            ? "border-gray-500 bg-white text-black"
+                                                            : "border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed"}`}
+                                                        value={recetaEspecial}
+                                                        onChange={(e) => setRecetaEspecial(e.target.value)}
+                                                        disabled={!activarRecetaEspecial}
+                                                    />
+                                                </div>
+                                            </div>
                                             {/* Comentario ocupa toda la fila */}
                                             <div className="col-span-3">
                                                 <Label className="block mb-1">Comentario:</Label>
                                                 <input
                                                     className="border-2 border-gray-500 rounded-md p-2 w-full"
-                                                    placeholder="Ingrese comentario..."
                                                 />
                                             </div>
                                         </div>
@@ -1721,6 +2040,8 @@ export default function SalidasPage() {
                                         setCantidad("");
                                         setSugerencias([]);
                                         setErrorMedicamentos("");
+                                        setActivarRecetaEspecial(false);
+                                        setRecetaEspecial("");
                                     }}
                                 >
                                     Cancelar

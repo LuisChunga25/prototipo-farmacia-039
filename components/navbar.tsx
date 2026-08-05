@@ -176,7 +176,7 @@ export default function Navbar() {
       href: "/dashboard/ventas",
       icon: <DollarSign className="h-5 w-5" />,
       subItems: [
-        { name: "Proformas de Consulta Externa", href: "/dashboard/ventas/proformas" },
+        { name: "Proformas Web", href: "/dashboard/ventas/proformas" },
         { name: "Proformas Contado", href: "/dashboard/ventas/proformas-contado" },
         { name: "Proformas Crédito", href: "/dashboard/ventas/proformas-credito" },
         { name: "Proformas Exoneradas", href: "/dashboard/ventas/proformas-exoneradas" },
