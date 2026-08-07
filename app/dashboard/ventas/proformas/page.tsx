@@ -34,6 +34,8 @@ import {
     BadgeCheck,
     ClipboardCheck,
     AlertTriangle,
+    CheckCircleIcon,
+    ClipboardList,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Label } from "@/components/ui/label"
@@ -119,6 +121,22 @@ interface MedicamentoBase {
     cantidadSolicitada?: number;
     lotes: Lote[];
 }
+
+interface Paciente {
+  dni: string;
+  historia: string;
+  nombre: string;
+  sexo: string;
+  fechaNac: string;
+  medico: string;
+  seguro?: string;
+  tipoAtencion?: string;
+  especialidad?: string;
+  transaccion?: string;
+  receta?: string;
+  cuenta?: string;
+}
+
 
 // DATOS DE EJEMPLO PARA LA TABLA
 const proformasData = [
@@ -536,8 +554,10 @@ const proformasData = [
 
 const pacientesPrueba: Record<string, any> = {
     "12345678": {
-        nombre: "2025001122 - CHUNGA HUAYLINOS LUIS DIEGO",
-        historia: "123456878",
+        nombre: "CHUNGA HUAYLINOS LUIS DIEGO",
+        historia: "12345678",
+        sexo: "M",
+        fechaNac: "08/03/1996",
         seguro: "SIS",
         tipoAtencion: "CE - CONSULTA EXTERNA",
         especialidad: "1011 - MEDICINA INTERNA 1",
@@ -547,8 +567,10 @@ const pacientesPrueba: Record<string, any> = {
         cuenta: "3013144",
     },
     "87654321": {
-        nombre: "2025334455 - HILARIO GARCIA MIGUEL ANGEL",
+        nombre: "HILARIO GARCIA MIGUEL ANGEL",
         historia: "87654321",
+        sexo: "M",
+        fechaNac: "16/02/1983",
         seguro: "PAGANTE",
         tipoAtencion: "EM - EMERGENCIA",
         especialidad: "2021 - CIRUGÍA GENERAL",
@@ -558,8 +580,10 @@ const pacientesPrueba: Record<string, any> = {
         cuenta: "3013145",
     },
     "11223344": {
-        nombre: "2025667788 - PRADO DAVILA CARLOS ENRIQUE ALBERTO",
+        nombre: "PRADO DAVILA CARLOS ENRIQUE ALBERTO",
         historia: "11223344",
+        sexo: "M",
+        fechaNac: "12/04/1997",
         seguro: "SIS",
         tipoAtencion: "HO - HOSPITALIZACON",
         especialidad: "1097 - UCI UNIDAD DE CUIDADOS INTENSIVOS",
@@ -767,6 +791,7 @@ export default function SalidasPage() {
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [proformasVisibles, setProformasVisibles] = useState<any[]>([]);
     const [modalNuevaProforma, setModalNuevaProforma] = useState(false);
+    const [modalDetallePaciente, setModalDetallePaciente] = useState(false);
     const [dni, setDni] = useState("");
     const [dniValidado, setDniValidado] = useState(false);
     const [error, setError] = useState("");
@@ -783,6 +808,7 @@ export default function SalidasPage() {
     const [sugerencias, setSugerencias] = useState<MedicamentoBase[]>([]);
     const [cantidad, setCantidad] = useState("");
     const [medicamentos, setMedicamentos] = useState<MedicamentoBase[]>([]);
+    const [medicamentosData, setMedicamentosData] = useState<Medicamento[]>([]);
     const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
     const [mostrarExito, setMostrarExito] = useState(false);
     const [mostrarDetalle, setMostrarDetalle] = useState(false);
@@ -791,7 +817,6 @@ export default function SalidasPage() {
     const [mostrarExitoAnular, setMostrarExitoAnular] = useState(false);
     const [motivoAnulacion, setMotivoAnulacion] = useState("");
     const [pacienteData, setPacienteData] = useState<any | null>(null);
-    const [medicamentosData, setMedicamentosData] = useState<Medicamento[]>([]);
     const [medicoReceta, setMedicoReceta] = useState("");
     const [historialData, setHistorialData] = useState<Receta[]>([]);
     const [paciente, setPaciente] = useState("");
@@ -802,6 +827,8 @@ export default function SalidasPage() {
     const [medico, setMedico] = useState("");
     const [activarRecetaEspecial, setActivarRecetaEspecial] = useState(false);
     const [recetaEspecial, setRecetaEspecial] = useState("");
+    const [tipoBusqueda, setTipoBusqueda] = useState("documento");
+    const [resultadosBusqueda, setResultadosBusqueda] = useState<any[]>([]);
 
     // Estados de error
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -927,6 +954,112 @@ export default function SalidasPage() {
 
             return true;
         });
+    };
+
+    // FUNCION DE VALIDACION GENERICA
+    const validarBusqueda = () => {
+        if (dni.trim().length === 0) {
+            setError("Debe ingresar un valor de búsqueda.");
+            setDniValidado(false);
+            return;
+        }
+
+        if (tipoBusqueda === "documento") {
+            const paciente = pacientesPrueba[dni.trim()];
+            if (!paciente) {
+                setError("No se encontró paciente con ese DNI en la data de prueba");
+                setResultadosBusqueda([]);
+                return;
+            }
+            setError("");
+            setResultadosBusqueda([paciente]); // tabla con un resultado
+        } else {
+            const coincidencias = Object.values(pacientesPrueba).filter((p) =>
+                p.nombre.toLowerCase().includes(dni.trim().toLowerCase())
+            );
+            if (coincidencias.length === 0) {
+                setError("No se encontró paciente con esos apellidos y nombres");
+                setResultadosBusqueda([]);
+                return;
+            }
+            setError("");
+            setResultadosBusqueda(coincidencias);
+        }
+
+        /*if (tipoBusqueda === "documento") {
+            if (dni.trim().length < 8) {
+                setError("El documento debe tener al menos 8 caracteres");
+                setDniValidado(false);
+                return;
+            }
+            if (!pacientesPrueba[dni.trim()]) {
+                setError("No se encontró paciente con ese DNI en la data de prueba");
+                setDniValidado(false);
+                return;
+            }
+            // éxito por documento
+            setError("");
+            setPacienteData(pacientesPrueba[dni.trim()]);
+            setMedicamentosData(medicamentosPrueba[dni.trim()] || []);
+            setMedicoReceta(pacientesPrueba[dni.trim()].medico);
+            setHistorialData(historialPrueba[dni.trim()] || []);
+            setDniValidado(true);
+
+        } else if (tipoBusqueda === "nombres") {
+            // ejemplo básico: búsqueda por nombres
+            const pacienteEncontrado = Object.values(pacientesPrueba).find(
+                (p) => p.nombre.toLowerCase().includes(dni.trim().toLowerCase())
+            );
+
+            if (!pacienteEncontrado) {
+                setError("No se encontró paciente con esos apellidos y nombres");
+                setDniValidado(false);
+                return;
+            }
+            // éxito por nombres
+            setError("");
+            setPacienteData(pacienteEncontrado);
+            setMedicamentosData(medicamentosPrueba[pacienteEncontrado.dni] || []);
+            setMedicoReceta(pacienteEncontrado.medico);
+            setHistorialData(historialPrueba[pacienteEncontrado.dni] || []);
+            setDniValidado(true);
+        }*/
+    };
+
+    // RESETEAR MODAL
+    const resetForm = () => {
+        setModalNuevaProforma(false);
+        setDniValidado(false);
+        setDni("");
+        setError("");
+        setPacienteExterno(false);
+        setMedicamentos([]); // limpia la tabla al cancelar
+        setPaciente("");
+        setHistoria("");
+        setSeguro("");
+        setTipoAtencion("");
+        setEspecialidad("");
+        setMedico("");
+        setErrors({});
+        setProducto("");
+        setCantidad("");
+        setSugerencias([]);
+        setErrorMedicamentos("");
+        setActivarRecetaEspecial(false);
+        setRecetaEspecial("");
+        setResultadosBusqueda([]);
+        setTipoBusqueda("documento");
+    };
+
+    // FUNCION PARA ABRIR DETALLE Y CERRAR BUSQUEDA
+    const abrirDetallePaciente = (paciente: Paciente) => {
+        setPacienteData(paciente);
+        setMedicamentosData(medicamentosPrueba[paciente.dni] || []);
+        setMedicoReceta(paciente.medico);
+        setHistorialData(historialPrueba[paciente.dni] || []);
+        setDniValidado(true);
+        setModalNuevaProforma(false);
+        setModalDetallePaciente(true);
     };
 
     // LIMPIAR FILTROS DE BÚSQUEDA
@@ -1269,6 +1402,161 @@ export default function SalidasPage() {
             {/* MODAL DE REGISTRO DE NUEVA PROFORMA DE VENTA */}
             {modalNuevaProforma && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+                    <div className="bg-white rounded-md shadow-lg p-6 max-w-5xl w-full max-h-[90vh] overflow-y-auto relative">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-lg font-semibold">Registrar Proforma</h2>
+
+                            <button
+                                type="button"
+                                onClick={resetForm}
+                                className="text-gray-500 hover:text-red-600"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
+
+                        {/* Aquí va tu formulario */}
+                        <form>
+                            <div className="mb-6 mt-6 flex justify-between items-center">
+                                <h3 className="text-md font-semibold">Buscar Paciente</h3>
+
+                                {resultadosBusqueda.length > 0 && (
+                                    <Button
+                                        type="button"
+                                        className="bg-gray-500 hover:bg-gray-600 text-white h-9 px-3"
+                                        onClick={() => {
+                                            setDni("");
+                                            setError("");
+                                            setResultadosBusqueda([]);
+                                            setPacienteData(null);
+                                            setMedicamentosData([]);
+                                            setHistorialData([]);
+                                            setDniValidado(false);
+                                            setPacienteExterno(false);
+                                            setTipoBusqueda("documento");
+                                        }}
+                                    >
+                                        Nueva Búsqueda
+                                    </Button>
+                                )}
+                            </div>
+                            <div className="flex items-center gap-4 mb-4">
+                                <select
+                                    value={tipoBusqueda}
+                                    onChange={(e) => setTipoBusqueda(e.target.value)}
+                                    className="border p-2 h-10 w-56"
+                                >
+                                    <option value="documento">Documento</option>
+                                    <option value="nombres">Apellidos y Nombres</option>
+                                </select>
+
+                                {/* Contenedor vertical para input + error */}
+                                <div className="flex flex-col">
+                                    <Input
+                                        id="documento"
+                                        type="text"
+                                        placeholder={tipoBusqueda === "documento" ? "Ingrese número de documento" : "Ingrese apellidos y nombres"}
+                                        autoComplete="off"
+                                        className={`border p-2 h-10 w-72 ${error ? "border-red-500" : ""}`}
+                                        value={dni}
+                                        onChange={(e) => {
+                                            setDni(e.target.value);
+                                            setError(""); // limpia error al escribir
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                e.preventDefault();
+                                                validarBusqueda();
+                                            }
+                                        }}
+                                        disabled={pacienteExterno}
+                                    />
+                                </div>
+
+                                <Button
+                                    type="button"
+                                    className="bg-blue-600 hover:bg-blue-700 text-white h-10 px-4"
+                                    onClick={validarBusqueda}
+                                    disabled={pacienteExterno}
+                                >
+                                    Buscar
+                                </Button>
+                            </div>
+
+                            {resultadosBusqueda.length > 0 && (
+                                <div className="mt-8">
+                                    <h3 className="text-md font-semibold">
+                                        Resultados de búsqueda ({resultadosBusqueda.length} {resultadosBusqueda.length === 1 ? "encontrado" : "encontrados"})
+                                    </h3>
+                                </div>
+                            )}
+
+                            {resultadosBusqueda.length > 0 && (
+                                <div className="mt-4">
+                                    <table className="w-full border-collapse border border-gray-300">
+                                        <thead className="bg-gray-100">
+                                            <tr>
+                                                <th className="border border-gray-300 px-2 py-1">Historia</th>
+                                                <th className="border border-gray-300 px-2 py-1">Nombre</th>
+                                                <th className="border border-gray-300 px-2 py-1">Sexo</th>
+                                                <th className="border border-gray-300 px-2 py-1">Fecha Nac.</th>
+                                                <th className="border border-gray-300 px-2 py-1">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {resultadosBusqueda.map((paciente, index) => (
+                                                <tr key={index}>
+                                                    <td className="border border-gray-300 px-2 py-1">{paciente.historia}</td>
+                                                    <td className="border border-gray-300 px-2 py-1">{paciente.nombre}</td>
+                                                    <td className="border border-gray-300 px-2 py-1">{paciente.sexo}</td>
+                                                    <td className="border border-gray-300 px-2 py-1">{paciente.fechaNac}</td>
+                                                    <td className="border border-gray-300 px-2 py-1 flex gap-2">
+                                                        <button
+                                                            type="button"
+                                                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm flex items-center gap-2"
+                                                            onClick={() => abrirDetallePaciente(paciente)}
+                                                        >
+                                                            <CheckCircleIcon className="h-4 w-4" />
+                                                            Validar Receta
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="bg-orange-600 hover:bg-orange-700 text-white px-3 py-2 rounded text-sm flex items-center gap-2"
+                                                            onClick={() => {
+                                                                // acción receta externa
+                                                                setPacienteExterno(true);
+                                                                setPacienteData(paciente);
+                                                                setMedicamentos([]);
+                                                                setDniValidado(true);
+                                                            }}
+                                                        >
+                                                            <ClipboardList className="h-4 w-4" />
+                                                            Receta Externa
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+
+                            <div className="flex justify-end gap-2 mt-4">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={resetForm}
+                                >
+                                    Cancelar
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {modalDetallePaciente && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
                     <div className="bg-white rounded-md shadow-lg p-6 max-w-7xl w-full max-h-[90vh] overflow-y-auto relative">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-lg font-semibold">Registrar Proforma</h2>
@@ -1284,27 +1572,8 @@ export default function SalidasPage() {
                             </div>
 
                             <button
-                                onClick={() => {
-                                    setModalNuevaProforma(false);
-                                    setDniValidado(false); // reinicia validación
-                                    setDni(""); // limpia input
-                                    setError(""); // limpia mensaje de error
-                                    setPacienteExterno(false);
-                                    setMedicamentos([]); // limpia la tabla al cerrar
-                                    setPaciente("");
-                                    setHistoria("");
-                                    setSeguro("");
-                                    setTipoAtencion("");
-                                    setEspecialidad("");
-                                    setMedico("");
-                                    setErrors({});
-                                    setProducto("");
-                                    setCantidad("");
-                                    setSugerencias([]);
-                                    setErrorMedicamentos("");
-                                    setActivarRecetaEspecial(false);
-                                    setRecetaEspecial("");
-                                }}
+                                type="button"
+                                onClick={resetForm}
                                 className="text-gray-500 hover:text-red-600"
                             >
                                 <X className="h-5 w-5" />
@@ -1313,110 +1582,6 @@ export default function SalidasPage() {
 
                         {/* Aquí va tu formulario */}
                         <form>
-                            <div className="flex items-center gap-4 mb-4">
-                                <Label htmlFor="documento" className="w-48">
-                                    Documento de identidad del paciente:
-                                </Label>
-
-                                {/* Contenedor vertical para input + error */}
-                                <div className="flex flex-col">
-                                    <Input
-                                        id="documento"
-                                        type="text"
-                                        placeholder="Ingrese DNI"
-                                        autoComplete="off"
-                                        className={`border p-2 h-10 w-40 ${error ? "border-red-500" : ""}`}
-                                        value={dni}
-                                        onChange={(e) => {
-                                            setDni(e.target.value);
-                                            setError(""); // limpia error al escribir
-                                        }}
-                                        onKeyDown={(e) => {
-                                            if (e.key === "Enter") {
-                                                e.preventDefault();
-                                                validarDni();
-                                            }
-                                        }}
-                                        disabled={pacienteExterno}
-                                    />
-                                </div>
-
-                                <Button
-                                    type="button"
-                                    className="bg-blue-600 hover:bg-blue-700 text-white h-10 px-4"
-                                    onClick={validarDni}
-                                    disabled={pacienteExterno}
-                                >
-                                    Validar
-                                </Button>
-
-                                {/* Checkbox Paciente Externo */}
-                                <div className="flex items-center gap-2 ml-6">
-                                    <input
-                                        id="pacienteExterno"
-                                        type="checkbox"
-                                        className={`h-4 w-4 ${dniValidado ? "cursor-not-allowed opacity-50" : ""}`}
-                                        checked={pacienteExterno}
-                                        onChange={(e) => {
-                                            setPacienteExterno(e.target.checked);
-                                            if (!e.target.checked) {
-                                                setMedicamentos([]); // limpia la tabla al desmarcar
-                                            }
-                                        }}
-                                        disabled={dniValidado}
-                                        title={dniValidado ? "Deshabilitado porque ya se validó un DNI" : ""}
-                                    />
-                                    <Label
-                                        htmlFor="pacienteExterno"
-                                        className={`text-sm ${dniValidado ? "text-gray-400" : ""}`}
-                                        title={dniValidado ? "Deshabilitado porque ya se validó un DNI" : ""}
-                                    >
-                                        Paciente Externo
-                                    </Label>
-                                </div>
-
-                                {/* Botón Resetear: visible si el DNI fue validado o si es paciente externo */}
-                                {(dniValidado || pacienteExterno) && (
-                                    <div className="ml-auto">
-                                        <Button
-                                            type="button"
-                                            className="bg-gray-500 hover:bg-gray-600 text-white h-10 px-4 flex items-center gap-2"
-                                            onClick={() => {
-                                                setDni("");
-                                                setError("");
-                                                setDniValidado(false);
-                                                setPacienteExterno(false);
-                                                setMedicamentos([]);   // limpia la tabla también
-                                                setPaciente("");
-                                                setHistoria("");
-                                                setSeguro("");
-                                                setTipoAtencion("");
-                                                setEspecialidad("");
-                                                setMedico("");
-                                                setErrors({});
-                                                setProducto("");
-                                                setCantidad("");
-                                                setSugerencias([]);
-                                                setErrorMedicamentos("");
-                                                setActivarRecetaEspecial(false);
-                                                setRecetaEspecial("");
-                                            }}
-                                        >
-                                            <RefreshCcw className="h-4 w-4" />
-                                            Resetear
-                                        </Button>
-                                    </div>
-                                )}
-
-                            </div>
-
-                            {/* Contenedor de error debajo de los campos iniciales */}
-                            {error && (
-                                <div className="border rounded-md p-4 mb-4 bg-red-100">
-                                    <p className="text-red-800 font-semibold">{error}</p>
-                                </div>
-                            )}
-
                             {/* Campos condicionales: aparecen solo si se validó el DNI */}
                             {dniValidado && pacienteData && (
                                 <>
@@ -1592,6 +1757,7 @@ export default function SalidasPage() {
                                                 <div className="flex justify-between items-center mb-4">
                                                     <h2 className="text-lg font-semibold">Editar cantidad</h2>
                                                     <button
+                                                        type="button"
                                                         onClick={() => setModalEditarCantidad(false)}
                                                         className="text-gray-500 hover:text-red-600"
                                                     >
@@ -1630,6 +1796,7 @@ export default function SalidasPage() {
                                                         {/* Botón confirmar */}
                                                         <div className="flex justify-end">
                                                             <Button
+                                                                type="button"
                                                                 className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
                                                                 onClick={() => {
                                                                     console.log("Confirmar cambio de cantidad");
@@ -1651,6 +1818,7 @@ export default function SalidasPage() {
                                                 <div className="flex justify-between items-center mb-4">
                                                     <h2 className="text-lg font-semibold">Historial de recetas</h2>
                                                     <button
+                                                        type="button"
                                                         onClick={() => setModalHistorial(false)}
                                                         className="text-gray-500 hover:text-red-600"
                                                     >
@@ -2022,27 +2190,7 @@ export default function SalidasPage() {
                             <div className="flex justify-end gap-2 mt-4">
                                 <Button
                                     variant="outline"
-                                    onClick={() => {
-                                        setModalNuevaProforma(false);
-                                        setDniValidado(false);
-                                        setDni("");
-                                        setError("");
-                                        setPacienteExterno(false);
-                                        setMedicamentos([]); // limpia la tabla al cancelar
-                                        setPaciente("");
-                                        setHistoria("");
-                                        setSeguro("");
-                                        setTipoAtencion("");
-                                        setEspecialidad("");
-                                        setMedico("");
-                                        setErrors({});
-                                        setProducto("");
-                                        setCantidad("");
-                                        setSugerencias([]);
-                                        setErrorMedicamentos("");
-                                        setActivarRecetaEspecial(false);
-                                        setRecetaEspecial("");
-                                    }}
+                                    onClick={resetForm}
                                 >
                                     Cancelar
                                 </Button>
