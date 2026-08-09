@@ -123,18 +123,18 @@ interface MedicamentoBase {
 }
 
 interface Paciente {
-  dni: string;
-  historia: string;
-  nombre: string;
-  sexo: string;
-  fechaNac: string;
-  medico: string;
-  seguro?: string;
-  tipoAtencion?: string;
-  especialidad?: string;
-  transaccion?: string;
-  receta?: string;
-  cuenta?: string;
+    dni: string;
+    historia: string;
+    nombre: string;
+    sexo: string;
+    fechaNac: string;
+    medico: string;
+    seguro?: string;
+    tipoAtencion?: string;
+    especialidad?: string;
+    transaccion?: string;
+    receta?: string;
+    cuenta?: string;
 }
 
 
@@ -554,6 +554,7 @@ const proformasData = [
 
 const pacientesPrueba: Record<string, any> = {
     "12345678": {
+        dni: "12345678",
         nombre: "CHUNGA HUAYLINOS LUIS DIEGO",
         historia: "12345678",
         sexo: "M",
@@ -567,6 +568,7 @@ const pacientesPrueba: Record<string, any> = {
         cuenta: "3013144",
     },
     "87654321": {
+        dni: "87654321",
         nombre: "HILARIO GARCIA MIGUEL ANGEL",
         historia: "87654321",
         sexo: "M",
@@ -580,6 +582,7 @@ const pacientesPrueba: Record<string, any> = {
         cuenta: "3013145",
     },
     "11223344": {
+        dni: "11223344",
         nombre: "PRADO DAVILA CARLOS ENRIQUE ALBERTO",
         historia: "11223344",
         sexo: "M",
@@ -1029,6 +1032,7 @@ export default function SalidasPage() {
     // RESETEAR MODAL
     const resetForm = () => {
         setModalNuevaProforma(false);
+        setModalDetallePaciente(false);
         setDniValidado(false);
         setDni("");
         setError("");
@@ -1049,17 +1053,6 @@ export default function SalidasPage() {
         setRecetaEspecial("");
         setResultadosBusqueda([]);
         setTipoBusqueda("documento");
-    };
-
-    // FUNCION PARA ABRIR DETALLE Y CERRAR BUSQUEDA
-    const abrirDetallePaciente = (paciente: Paciente) => {
-        setPacienteData(paciente);
-        setMedicamentosData(medicamentosPrueba[paciente.dni] || []);
-        setMedicoReceta(paciente.medico);
-        setHistorialData(historialPrueba[paciente.dni] || []);
-        setDniValidado(true);
-        setModalNuevaProforma(false);
-        setModalDetallePaciente(true);
     };
 
     // LIMPIAR FILTROS DE BÚSQUEDA
@@ -1514,7 +1507,15 @@ export default function SalidasPage() {
                                                         <button
                                                             type="button"
                                                             className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm flex items-center gap-2"
-                                                            onClick={() => abrirDetallePaciente(paciente)}
+                                                            onClick={() => {
+                                                                setPacienteData(paciente);
+                                                                setMedicamentosData(medicamentosPrueba[paciente.dni] || []);
+                                                                setMedicoReceta(paciente.medico);
+                                                                setHistorialData(historialPrueba[paciente.dni] || []);
+                                                                setDniValidado(true);
+                                                                setModalNuevaProforma(false);
+                                                                setModalDetallePaciente(true);
+                                                            }}
                                                         >
                                                             <CheckCircleIcon className="h-4 w-4" />
                                                             Validar Receta
