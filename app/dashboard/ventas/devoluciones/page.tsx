@@ -2289,7 +2289,7 @@ export default function SalidasPage() {
                       {pacienteData?.seguro === "PAGANTE" ? (
                         <>
                           La proforma se generó con éxito. <br />
-                          Se generó el siguiente código de pago: <span className="font-semibold">2025000001</span>. <br />
+                          Se generó el siguiente ID Orden: <span className="font-semibold">2025000001</span>. <br />
                           Acuda a caja para pagar por los medicamentos y así proceder con su respectivo despacho.
                         </>
                       ) : (
