@@ -177,12 +177,12 @@ export default function Navbar() {
       icon: <DollarSign className="h-5 w-5" />,
       subItems: [
         { name: "Proformas Web", href: "/dashboard/ventas/proformas" },
-        { name: "Proformas Contado", href: "/dashboard/ventas/proformas-contado" },
-        { name: "Proformas Crédito", href: "/dashboard/ventas/proformas-credito" },
-        { name: "Proformas Exoneradas", href: "/dashboard/ventas/proformas-exoneradas" },
+        //{ name: "Proformas Contado", href: "/dashboard/ventas/proformas-contado" },
+        //{ name: "Proformas Crédito", href: "/dashboard/ventas/proformas-credito" },
+        //{ name: "Proformas Exoneradas", href: "/dashboard/ventas/proformas-exoneradas" },
         { name: "Armado de Paquetes", href: "/dashboard/ventas/paquetes" },
-        { name: "Devoluciones", href: "/dashboard/ventas/devoluciones" },
-        { name: "Visualizador de Proformas", href: "/dashboard/ventas/visualizador" },
+        { name: "Devolución de Medicamentos", href: "/dashboard/ventas/devoluciones" },
+        //{ name: "Visualizador de Proformas", href: "/dashboard/ventas/visualizador" },
       ],
     },
     {

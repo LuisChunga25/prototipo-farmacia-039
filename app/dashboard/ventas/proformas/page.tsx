@@ -560,9 +560,9 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "08/03/1996",
         seguro: "SIS",
-        tipoAtencion: "CE - CONSULTA EXTERNA",
-        especialidad: "1011 - MEDICINA INTERNA 1",
-        medico: "DIL - DIONICIO IBAÑEZ LUIS FELIPE",
+        tipoAtencion: "CONSULTA EXTERNA",
+        especialidad: "MEDICINA INTERNA",
+        medico: "DIONICIO IBAÑEZ LUIS FELIPE",
         transaccion: "VRS - SIS",
         receta: "270065000",
         cuenta: "3013144",
@@ -574,9 +574,9 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "16/02/1983",
         seguro: "PAGANTE",
-        tipoAtencion: "EM - EMERGENCIA",
-        especialidad: "2021 - CIRUGÍA GENERAL",
-        medico: "BVJ - BASOMBRIO VELASQUEZ JORGE",
+        tipoAtencion: "EMERGENCIA",
+        especialidad: "CIRUGÍA GENERAL",
+        medico: "BASOMBRIO VELASQUEZ JORGE",
         transaccion: "VC - CONTADO",
         receta: "270065100",
         cuenta: "3013145",
@@ -588,9 +588,9 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "12/04/1997",
         seguro: "SIS",
-        tipoAtencion: "HO - HOSPITALIZACON",
-        especialidad: "1097 - UCI UNIDAD DE CUIDADOS INTENSIVOS",
-        medico: "TVA - TOMANGUILLO VASQUEZ MIGUEL ALEJANDRO",
+        tipoAtencion: "HOSPITALIZACON",
+        especialidad: "ANESTESIOLOGIA",
+        medico: "TOMANGUILLO VASQUEZ MIGUEL ALEJANDRO",
         transaccion: "VRD - SIS (DOSIS UNITARIA)",
         receta: "270065200",
         cuenta: "3013146",
@@ -1533,7 +1533,7 @@ export default function SalidasPage() {
                                                             }}
                                                         >
                                                             <ClipboardList className="h-4 w-4" />
-                                                            Receta Externa
+                                                            Receta Manual
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -1573,7 +1573,7 @@ export default function SalidasPage() {
                                 >
                                     <ArrowLeft className="h-5 w-5" />
                                 </button>
-                                <h2 className="text-lg font-semibold">Registrar Proforma</h2>
+                                <h2 className="text-lg font-semibold">Validación de receta</h2>
                             </div>
 
                             {/* Bloque de fecha y hora */}
@@ -2331,7 +2331,7 @@ export default function SalidasPage() {
                                 >
                                     <ArrowLeft className="h-5 w-5" />
                                 </button>
-                                <h2 className="text-lg font-semibold">Registrar Proforma - Receta Externa</h2>
+                                <h2 className="text-lg font-semibold">Registro manual de receta externa</h2>
                             </div>
 
                             {/* Bloque de fecha y hora */}
@@ -2379,13 +2379,20 @@ export default function SalidasPage() {
                                         </div>
                                         <div>
                                             <Label className="block mb-1">Seguro:</Label>
-                                            <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese seguro" />
+                                            <Input
+                                                className="border-2 border-gray-500"
+                                                type="text"
+                                                placeholder="Ingrese seguro"
+                                                value={seguro}
+                                                onChange={(e) => {
+                                                    setSeguro(e.target.value);
+                                                    if (errors.seguro) {
+                                                        setErrors(prev => ({ ...prev, seguro: "" }));
+                                                    }
+                                                }}
+                                            />
                                         </div>
                                         <div>
-                                            <Label>Transacción:</Label>
-                                            <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese transacción" />
-                                        </div>
-                                        {/*<div>
                                             <Label>Tipo de Atención:</Label>
                                             <Input
                                                 className="border-2 border-gray-500"
@@ -2440,7 +2447,7 @@ export default function SalidasPage() {
                                         <div>
                                             <Label>N° Receta:</Label>
                                             <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese número de receta" />
-                                        </div>*/}
+                                        </div>
                                         <div className="col-span-3 flex items-center gap-6">
                                             <div className="flex items-center gap-2">
                                                 <input

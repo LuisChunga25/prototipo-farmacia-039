@@ -68,7 +68,7 @@ export default function VentasPage() {
           </Card>
         </Link>
 
-        <Link href="/dashboard/ventas/proformas-contado" className="block">
+        {/*<Link href="/dashboard/ventas/proformas-contado" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">
@@ -108,7 +108,7 @@ export default function VentasPage() {
               <CardDescription className="text-xs">Registro y gestión de proformas exoneradas</CardDescription>
             </CardContent>
           </Card>
-        </Link>
+        </Link>*/}
 
         <Link href="/dashboard/ventas/paquetes" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
@@ -129,7 +129,7 @@ export default function VentasPage() {
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">
                 <RotateCcw className="h-5 w-5 text-primary" />
-                Devoluciones
+                Devolución de Medicamentos
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-0">
@@ -138,7 +138,7 @@ export default function VentasPage() {
           </Card>
         </Link>
 
-        <Link href="/dashboard/ventas/visualizador" className="block">
+        {/*<Link href="/dashboard/ventas/visualizador" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">
@@ -150,7 +150,7 @@ export default function VentasPage() {
               <CardDescription className="text-xs">Consulta y gestión de proformas emitidas</CardDescription>
             </CardContent>
           </Card>
-        </Link>
+        </Link>*/}
       </div>
     </div>
   )
