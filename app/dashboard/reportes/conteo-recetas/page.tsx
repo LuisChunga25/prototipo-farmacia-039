@@ -63,7 +63,6 @@ interface Proforma {
     tipoPago: string;
     total: number;
     usuario: string;
-    nombreUsuario: string;
     medicamentos: {
         producto: string;
         cantSolicitada: number;
@@ -161,7 +160,6 @@ const proformasData = [
         tipoPago: "R",
         total: 67.4,
         usuario: "40532847",
-        nombreUsuario: "ROMERO CRISTOBAL EDITH SANDRA",
         medicamentos: [
             {
                 producto: "PARACETAMOL 500 MG TAB",
@@ -203,7 +201,6 @@ const proformasData = [
         tipoPago: "R",
         total: 15.8,
         usuario: "07651840",
-        nombreUsuario: "ZAMUDIO PEÑA GLORIA MARTHA",
         medicamentos: [
             {
                 producto: "PARACETAMOL 500 MG TAB",
@@ -245,7 +242,6 @@ const proformasData = [
         tipoPago: "R",
         total: 26.5,
         usuario: "07651840",
-        nombreUsuario: "ZAMUDIO PEÑA GLORIA MARTHA",
         medicamentos: [
             {
                 producto: "PARACETAMOL 500 MG TAB",
@@ -287,7 +283,6 @@ const proformasData = [
         tipoPago: "R",
         total: 16.1,
         usuario: "07672070",
-        nombreUsuario: "CHUYES SILVA DE CADILLO MARIA ELENA",
         medicamentos: [
             {
                 producto: "PARACETAMOL 500 MG TAB",
@@ -329,7 +324,6 @@ const proformasData = [
         tipoPago: "R",
         total: 8.6,
         usuario: "40532847",
-        nombreUsuario: "ROMERO CRISTOBAL EDITH SANDRA",
         medicamentos: [
             {
                 producto: "PARACETAMOL 500 MG TAB",
@@ -371,7 +365,6 @@ const proformasData = [
         tipoPago: "R",
         total: 13.20,
         usuario: "07672070",
-        nombreUsuario: "CHUYES SILVA DE CADILLO MARIA ELENA",
         medicamentos: [
             {
                 producto: "PARACETAMOL 500 MG TAB",
@@ -413,7 +406,6 @@ const proformasData = [
         tipoPago: "R",
         total: 23.5,
         usuario: "07651840",
-        nombreUsuario: "ZAMUDIO PEÑA GLORIA MARTHA",
         medicamentos: [
             {
                 producto: "PARACETAMOL 500 MG TAB",
@@ -455,7 +447,6 @@ const proformasData = [
         tipoPago: "R",
         total: 7.90,
         usuario: "40532847",
-        nombreUsuario: "ROMERO CRISTOBAL EDITH SANDRA",
         medicamentos: [
             {
                 producto: "PARACETAMOL 500 MG TAB",
@@ -497,7 +488,6 @@ const proformasData = [
         tipoPago: "R",
         total: 8.20,
         usuario: "40532847",
-        nombreUsuario: "ROMERO CRISTOBAL EDITH SANDRA",
         medicamentos: [
             {
                 producto: "PARACETAMOL 500 MG TAB",
@@ -539,7 +529,6 @@ const proformasData = [
         tipoPago: "R",
         total: 4.10,
         usuario: "40532847",
-        nombreUsuario: "ROMERO CRISTOBAL EDITH SANDRA",
         medicamentos: [
             {
                 producto: "PARACETAMOL 500 MG TAB",
@@ -606,20 +595,6 @@ const pacientesPrueba: Record<string, any> = {
         receta: "270065200",
         cuenta: "3013146",
     },
-    "55667788": {
-        dni: "55667788",
-        nombre: "HUILLCAHUARI DURAND DANIEL",
-        historia: "55667788",
-        sexo: "M",
-        fechaNac: "25/02/1998",
-        seguro: "SOAT",
-        tipoAtencion: "EMERGENCIA",
-        especialidad: "CIRUGIA GENERAL",
-        medico: "PINEDA CUSIHUAMAN EDSON GUSTAVO",
-        transaccion: "VRO - SOAT",
-        receta: "270065300",
-        cuenta: "3013147",
-    },
 };
 
 const medicamentosPrueba: Record<string, any[]> = {
@@ -672,20 +647,6 @@ const medicamentosPrueba: Record<string, any[]> = {
             subfilas: [
                 { cantAsignada: 6, precio: "S/ 1.80", importe: "S/ 10.80", lote: "LTTRAM202601", venc: "30/11/2026" },
                 { cantAsignada: 6, precio: "S/ 2.00", importe: "S/ 12.00", lote: "LTTRAM202602", venc: "31/03/2027" },
-            ],
-        },
-    ],
-    "55667788": [
-        {
-            item: 1,
-            producto: "PARACETAMOL 500 MG",
-            presentacion: "TAB",
-            sisMed: "07654",
-            siga: "580900100099",
-            cantSolicitada: 12,
-            subfilas: [
-                { cantAsignada: 6, precio: "S/ 1.50", importe: "S/ 9.00", lote: "LTPAR202601", venc: "30/11/2026" },
-                { cantAsignada: 6, precio: "S/ 1.20", importe: "S/ 7.20", lote: "LTPAR202602", venc: "31/03/2027" },
             ],
         },
     ],
@@ -826,6 +787,32 @@ const medicamentosDisponibles: MedicamentoBase[] = [
         ],
     },
 ];
+
+const conteoData = [
+    { consultorio: "Cirugía", m: 3, t: 2, efectivo: 120.00 },
+    { consultorio: "Cardiología", m: 17, t: 0, efectivo: 350.00 },
+    { consultorio: "Endocrinología", m: 5, t: 12, efectivo: 280.00 },
+    { consultorio: "Gastroenterología", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Geriatría", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Ginecología", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Infectología", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Medicina Interna", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Medicina Física y Rehabilitación", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Neumología", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Neurología", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Oftalmología", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Otorrinolaringología", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Psiquiatría", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Reumatología", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Urología", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Laboratorio", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "SOAT", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Programa (TB - MAMIS - VIH - PLANIF)", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Pagantes de Consultorios HJATCH", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Pagantes Particulares con Receta", m: 11, t: 8, efectivo: 410.00 },
+    { consultorio: "Pagantes Particulares sin Receta", m: 11, t: 8, efectivo: 410.00 },
+]
+
 
 export default function SalidasPage() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -1047,13 +1034,13 @@ export default function SalidasPage() {
             setMedicoReceta(pacientesPrueba[dni.trim()].medico);
             setHistorialData(historialPrueba[dni.trim()] || []);
             setDniValidado(true);
-
+    
         } else if (tipoBusqueda === "nombres") {
             // ejemplo básico: búsqueda por nombres
             const pacienteEncontrado = Object.values(pacientesPrueba).find(
                 (p) => p.nombre.toLowerCase().includes(dni.trim().toLowerCase())
             );
-
+    
             if (!pacienteEncontrado) {
                 setError("No se encontró paciente con esos apellidos y nombres");
                 setDniValidado(false);
@@ -1117,79 +1104,31 @@ export default function SalidasPage() {
                 <Button
                     variant="outline"
                     className="border border-gray-300 h-9 shadow-sm cursor-pointer hover:shadow-md hover:bg-gray-100 transition"
-                    onClick={() => router.push("/dashboard/ventas")}
+                    onClick={() => router.push("/dashboard/reportes")}
                 >
-                    <Link href="/dashboard/ventas">
+                    <Link href="/dashboard/reportes">
                         <ArrowLeft className="w-5 h-5" />
                     </Link>
                     Regresar
                 </Button>
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Módulo de Proformas Web</h1>
-                    <p className="text-muted-foreground">Gestione la emisión de proformas con el detalle y costo estimado de los medicamentos solicitados por el paciente antes de la venta</p>
+                    <h1 className="text-2xl font-bold tracking-tight">Conteo de Recetas</h1>
+                    <p className="text-muted-foreground">Reporte diario sobre la cantidad de recetas en consultorios externos</p>
                 </div>
             </div>
 
             <div className="flex items-center py-4 justify-between">
                 <div className="flex items-end gap-4">
-                    <div className="flex flex-col flex-1">
-                        <Label htmlFor="buscar" className="mb-1">Buscar por:</Label>
-
-                        <div className="flex gap-2">
-
-                            {/* Combobox */}
-                            <select
-                                className="h-10 w-44 rounded-md border border-input bg-background px-3 text-sm"
-                                value={searchBy}
-                                onChange={(e) => setSearchBy(e.target.value)}
-                            >
-                                {opcionesBusqueda.map((opcion) => (
-                                    <option
-                                        key={opcion.value}
-                                        value={opcion.value}
-                                    >
-                                        {opcion.label}
-                                    </option>
-                                ))}
-                            </select>
-
-                            {/* Caja de búsqueda */}
-                            <div className="relative flex-1">
-                                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-
-                                <Input
-                                    className="pl-9 h-10"
-                                    placeholder={`Ingrese ${opcionesBusqueda.find(o => o.value === searchBy)?.label}`}
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                            </div>
-
-                        </div>
-                    </div>
-
                     <div className="flex flex-col">
-                        <Label htmlFor="fechaInicio" className="mb-1">Desde</Label>
-                        <Input
-                            id="fechaInicio"
-                            type="date"
-                            className="h-10 w-40"
-                            value={fechaInicio}
-                            onChange={(e) => setFechaInicio(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="flex flex-col">
-                        <Label htmlFor="fechaFin" className="mb-1">Hasta</Label>
+                        <Label htmlFor="fechaFin" className="mb-1">Fecha:</Label>
                         <Input
                             id="fechaFin"
                             type="date"
                             className="h-10 w-40"
                             value={fechaFin}
-                            onChange={(e) => setFechaFin(e.target.value)}
+                            onChange={(e) => setFechaActual(e.target.value)}
                         />
                     </div>
-
                 </div>
 
                 <div className="flex gap-2">
@@ -1209,7 +1148,7 @@ export default function SalidasPage() {
                         onClick={() => setModalNuevaProforma(true)}
                     >
                         <Plus className="h-4 w-4" strokeWidth={3} />
-                        Nueva Proforma
+                        Nueva Devolución
                     </Button>
                 </div>
             </div>
@@ -1218,64 +1157,32 @@ export default function SalidasPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Estado</TableHead>
-                            <TableHead>Orden ID</TableHead>
-                            <TableHead>Número de Receta</TableHead>
-                            <TableHead>Paciente</TableHead>
-                            <TableHead>Historia</TableHead>
-                            <TableHead>Tipo de Seguro</TableHead>
-                            <TableHead>Fecha</TableHead>
-                            <TableHead>Almacén</TableHead>
-                            <TableHead>Total (S/.)</TableHead>
-                            <TableHead>Usuario</TableHead>
-                            <TableHead>Acciones</TableHead>
+                            <TableHead rowSpan={2} className="text-center font-semibold bg-gray-100">Consultorio</TableHead>
+                            <TableHead colSpan={3} className="text-center font-semibold bg-gray-100">Cantidad de Recetas</TableHead>
+                            <TableHead rowSpan={2} className="text-center font-semibold bg-gray-100">Cantidad de Efectivo</TableHead>
+                            <TableHead rowSpan={2} className="text-center font-semibold bg-gray-100">Acciones</TableHead>
+                        </TableRow>
+
+                        <TableRow>
+                            <TableHead className="text-center bg-gray-50">M</TableHead>
+                            <TableHead className="text-center bg-gray-50">T</TableHead>
+                            <TableHead className="text-center bg-gray-50">Total</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filtrarProformas().map((proforma) => (
-                            <TableRow key={proforma.id} className={selectedItems.includes(proforma.id) ? "bg-primary/10" : ""}>
-                                <TableCell>{getEstadoBadge(proforma.estado)}</TableCell>
-                                <TableCell className="font-medium">{proforma.ordenId}</TableCell>
-                                <TableCell className="font-medium">{proforma.numReceta}</TableCell>
-                                <TableCell>
-                                    <div className="font-mediunm">{proforma.nombrePaciente}</div>
-                                    <div className="text-sm text-gray-500">{proforma.numPaciente}</div>
+                        {conteoData.map((fila, index) => (
+                            <TableRow key={index}>
+                                <TableCell className="font-medium">{fila.consultorio}</TableCell>
+                                <TableCell className="text-center">{fila.m}</TableCell>
+                                <TableCell className="text-center">{fila.t}</TableCell>
+                                <TableCell className="text-center font-semibold">{fila.m + fila.t}</TableCell>
+                                <TableCell className="text-right font-bold text-green-700">
+                                    S/. {fila.efectivo.toFixed(2)}
                                 </TableCell>
-                                <TableCell className="font-medium">{proforma.historia}</TableCell>
-                                <TableCell className="font-medium">{proforma.tipoSeguro}</TableCell>
-                                <TableCell>
-                                    <div className="font-medium">{proforma.fecha}</div>
-                                    <div className="text-sm text-gray-500">{proforma.hora}</div>
-                                </TableCell>
-                                <TableCell className="font-medium">{proforma.nombreAlmacen}</TableCell>
-                                <TableCell>{proforma.total.toFixed(2)}</TableCell>
-                                <TableCell>{proforma.usuario}</TableCell>
-                                <TableCell>
-                                    <div className="flex space-x-2">
-                                        <Button
-                                            title="Ver detalle"
-                                            variant="outline"
-                                            className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50 flex items-center justify-center"
-                                            onClick={() => {
-                                                setProformaSeleccionada(proforma);
-                                                setMostrarDetalle(true);
-                                            }}
-                                        >
-                                            <Eye className="w-4 h-4" />
-                                        </Button>
-                                        <Button
-                                            title="Anular documento"
-                                            variant="outline"
-                                            className="h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50 flex items-center justify-center"
-                                            onClick={() => {
-                                                setProformaSeleccionada(proforma);
-                                                setMostrarConfirmacionAnular(true);
-                                            }}
-                                            disabled={proforma.estado === "3"}
-                                        >
-                                            <X className="w-4 h-4" />
-                                        </Button>
-                                    </div>
+                                <TableCell className="text-center">
+                                    <button className="text-blue-600 hover:underline flex items-center gap-1">
+                                        <Eye className="w-4 h-4" /> Ver detalle
+                                    </button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -1304,11 +1211,10 @@ export default function SalidasPage() {
                             <p><strong>Historia:</strong> {proformaSeleccionada.historia}</p>
                             <p><strong>Seguro:</strong> {proformaSeleccionada.tipoSeguro}</p>
                             <p><strong>Médico:</strong> {proformaSeleccionada.medico}</p>
-                            <p><strong>Usuario Creación:</strong> {proformaSeleccionada.nombreUsuario}</p>
                         </div>
 
                         {/* Botón historial */}
-                        {/*<Button variant="outline" className="mb-4">Ver historial de recetas</Button>*/}
+                        <Button variant="outline" className="mb-4">Ver historial de recetas</Button>
 
                         {/* Tabla de medicamentos */}
                         <div className="overflow-x-auto">
@@ -2328,8 +2234,8 @@ export default function SalidasPage() {
                                         <p className="mb-4 text-gray-700">
                                             {pacienteData?.seguro === "PAGANTE" ? (
                                                 <>
-                                                    La proforma se generó con éxito. <br /><br />
-                                                    Se generó el siguiente ID Orden: <span className="font-semibold">2025000001</span>. <br /><br />
+                                                    La proforma se generó con éxito. <br />
+                                                    Se generó el siguiente ID Orden: <span className="font-semibold">2025000001</span>. <br />
                                                     Acuda a caja para pagar por los medicamentos y así proceder con su respectivo despacho.
                                                 </>
                                             ) : (
@@ -2355,540 +2261,7 @@ export default function SalidasPage() {
                 </div>
             )}
 
-            {modalPacienteExterno && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-                    <div className="bg-white rounded-md shadow-lg p-6 max-w-7xl w-full max-h-[90vh] overflow-y-auto relative">
-                        <div className="flex justify-between items-center mb-4">
-                            <div className="flex items-center gap-2">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        resetForm();
-                                        setModalPacienteExterno(false);
-                                        setModalNuevaProforma(true);
-                                    }}
-                                    className="text-gray-600 hover:text-blue-600 hover:bg-gray-100 p-2"
-                                >
-                                    <ArrowLeft className="h-5 w-5" />
-                                </button>
-                                <h2 className="text-lg font-semibold">Registro manual de receta externa</h2>
-                            </div>
 
-                            {/* Bloque de fecha y hora */}
-                            <div className="text-right text-sm flex gap-4">
-                                <div className="bg-blue-100 text-blue-900 font-semibold px-3 py-1 rounded">
-                                    Fecha: {fechaActual}
-                                </div>
-                                <div className="bg-blue-100 text-blue-900 font-semibold px-3 py-1 rounded">
-                                    Hora: {horaActual}
-                                </div>
-                            </div>
-
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    resetForm();
-                                    setModalPacienteExterno(false);
-                                }}
-                                className="text-gray-500 hover:text-red-600"
-                            >
-                                <X className="h-5 w-5" />
-                            </button>
-                        </div>
-
-                        {pacienteExterno && pacienteData && (
-                            <>
-                                <div className="border rounded-md p-4 mb-4 bg-yellow-100">
-                                    <p className="text-yellow-900 font-semibold">
-                                        Debe registrar manualmente los datos de la venta de medicamentos para la receta externa.
-                                    </p>
-                                </div>
-
-                                {/* Sección de datos del paciente */}
-                                <div className="border rounded-md p-4 mb-4 bg-gray-50">
-                                    <h3 className="text-md font-semibold mb-3">Datos del paciente</h3>
-
-                                    <div className="grid grid-cols-3 gap-4">
-                                        <div>
-                                            <Label className="block mb-1">Paciente:</Label>
-                                            <p className="text-gray-700 font-medium">{pacienteData.nombre}</p>
-                                        </div>
-                                        <div>
-                                            <Label className="block mb-1">Historia/DNI:</Label>
-                                            <p className="text-gray-700 font-medium">{pacienteData.historia}</p>
-                                        </div>
-                                        <div>
-                                            <Label className="block mb-1">Seguro:</Label>
-                                            <Input
-                                                className="border-2 border-gray-500"
-                                                type="text"
-                                                placeholder="Ingrese seguro"
-                                                value={seguro}
-                                                onChange={(e) => {
-                                                    setSeguro(e.target.value);
-                                                    if (errors.seguro) {
-                                                        setErrors(prev => ({ ...prev, seguro: "" }));
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <Label>Tipo de Atención:</Label>
-                                            <Input
-                                                className="border-2 border-gray-500"
-                                                type="text"
-                                                placeholder="Ingrese tipo de atención"
-                                                value={tipoAtencion}
-                                                onChange={(e) => {
-                                                    setTipoAtencion(e.target.value);
-                                                    if (errors.tipoAtencion) {
-                                                        setErrors(prev => ({ ...prev, tipoAtencion: "" }));
-                                                    }
-                                                }}
-                                            />
-                                            {errors.tipoAtencion && <p className="text-red-600 text-sm">{errors.tipoAtencion}</p>}
-                                        </div>
-                                        <div>
-                                            <Label>Especialidad:</Label>
-                                            <Input
-                                                className="border-2 border-gray-500"
-                                                type="text"
-                                                placeholder="Ingrese especialidad"
-                                                value={especialidad}
-                                                onChange={(e) => {
-                                                    setEspecialidad(e.target.value);
-                                                    if (errors.especialidad) {
-                                                        setErrors(prev => ({ ...prev, especialidad: "" }));
-                                                    }
-                                                }}
-                                            />
-                                            {errors.especialidad && <p className="text-red-600 text-sm">{errors.especialidad}</p>}
-                                        </div>
-                                        <div>
-                                            <Label>Médico:</Label>
-                                            <Input
-                                                className="border-2 border-gray-500"
-                                                type="text"
-                                                placeholder="Ingrese médico"
-                                                value={medico}
-                                                onChange={(e) => {
-                                                    setMedico(e.target.value);
-                                                    if (errors.medico) {
-                                                        setErrors(prev => ({ ...prev, medico: "" }));
-                                                    }
-                                                }}
-                                            />
-                                            {errors.medico && <p className="text-red-600 text-sm">{errors.medico}</p>}
-                                        </div>
-                                        <div>
-                                            <Label>Transacción:</Label>
-                                            <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese transacción" />
-                                        </div>
-                                        <div>
-                                            <Label>N° Receta:</Label>
-                                            <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese número de receta" />
-                                        </div>
-                                        <div className="col-span-3 flex items-center gap-6">
-                                            <div className="flex items-center gap-2">
-                                                <input
-                                                    id="activarRecetaEspecial"
-                                                    type="checkbox"
-                                                    checked={activarRecetaEspecial}
-                                                    onChange={(e) => {
-                                                        const checked = e.target.checked;
-                                                        setActivarRecetaEspecial(checked);
-                                                        if (!checked) {
-                                                            setRecetaEspecial("");
-                                                        }
-                                                    }}
-                                                    className="w-5 h-5"
-                                                />
-                                                <Label htmlFor="activarRecetaEspecial" className="mb-0">
-                                                    Activar Receta Especial
-                                                </Label>
-                                            </div>
-
-                                            <div className="flex items-center gap-2 flex-1">
-                                                <Label className="mb-0">N° Receta Especial:</Label>
-                                                <input
-                                                    type="text"
-                                                    className={`border-2 rounded-md p-2 flex-1 ${activarRecetaEspecial
-                                                        ? "border-gray-500 bg-white text-black"
-                                                        : "border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed"}`}
-                                                    value={recetaEspecial}
-                                                    onChange={(e) => setRecetaEspecial(e.target.value)}
-                                                    disabled={!activarRecetaEspecial}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-span-3">
-                                            <Label className="block mb-1">Comentario:</Label>
-                                            <input
-                                                className="border-2 border-gray-500 rounded-md p-2 w-full"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Botón Ver historial de recetas */}
-                                <div className="mb-4">
-                                    <Button
-                                        type="button"
-                                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
-                                        onClick={() => setModalHistorial(true)}
-                                    >
-                                        <FileText className="w-4 h-4" />
-                                        Ver historial de recetas
-                                    </Button>
-                                </div>
-
-                                {/* Sección Registrar medicamentos */}
-                                <div className="border rounded-md p-4 mb-4 bg-gray-50">
-                                    <h3 className="text-md font-semibold mb-3">Registrar medicamentos</h3>
-
-                                    <div className="flex items-start gap-4 mb-4">
-                                        <div className="relative">
-                                            <Label>Producto:</Label>
-                                            <Input
-                                                className="border-2 border-gray-500 w-[600px]"
-                                                type="text"
-                                                placeholder="Ingrese producto"
-                                                value={producto}
-                                                onChange={(e) => {
-                                                    const valor = e.target.value;
-                                                    setProducto(valor);
-                                                    if (valor.trim()) {
-                                                        setSugerencias(
-                                                            medicamentosDisponibles.filter(m =>
-                                                                m.producto.toLowerCase().includes(valor.toLowerCase())
-                                                            )
-                                                        );
-                                                    } else {
-                                                        setSugerencias([]);
-                                                    }
-                                                }}
-                                            />
-                                            {sugerencias.length > 0 && (
-                                                <ul className="absolute left-0 right-0 border border-gray-300 bg-white mt-1 rounded shadow z-10">
-                                                    {sugerencias.map((med, idx) => (
-                                                        <li
-                                                            key={idx}
-                                                            className="px-2 py-1 hover:bg-blue-100 cursor-pointer"
-                                                            onClick={() => {
-                                                                setProducto(med.producto);
-                                                                setSugerencias([]);
-                                                            }}
-                                                        >
-                                                            {med.producto}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            )}
-                                            <div className="min-h-[24px] mt-1">
-                                                {producto && (
-                                                    <span className="text-green-600 font-semibold">
-                                                        Stock total: {
-                                                            medicamentosDisponibles.find(m => m.producto === producto)
-                                                                ?.lotes.reduce((acc, lote) => acc + lote.cantAsignada, 0)
-                                                        }
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <Label>Cantidad:</Label>
-                                            <Input
-                                                className="border-2 border-gray-500"
-                                                type="number"
-                                                placeholder="Ingrese cantidad"
-                                                value={cantidad}
-                                                onChange={(e) => setCantidad(e.target.value)}
-                                            />
-                                        </div>
-                                        <div>
-                                            <Label className="invisible">Acción</Label>
-                                            <Button
-                                                type="button"
-                                                className="bg-green-600 hover:bg-green-700 text-white h-10 px-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                                                onClick={() => {
-                                                    const medBase = medicamentosDisponibles.find(
-                                                        m => m.producto.toLowerCase() === producto.toLowerCase()
-                                                    );
-                                                    if (medBase && cantidad.trim()) {
-                                                        let cantidadSolicitada = parseInt(cantidad, 10);
-                                                        let lotesDistribuidos: Lote[] = [];
-
-                                                        for (const lote of medBase.lotes) {
-                                                            if (cantidadSolicitada <= 0) break;
-
-                                                            const asignar = Math.min(lote.cantAsignada, cantidadSolicitada);
-                                                            lotesDistribuidos.push({
-                                                                ...lote,
-                                                                cantAsignada: asignar,
-                                                                importe: `S/ ${(asignar * parseFloat(lote.precio.replace("S/ ", ""))).toFixed(2)}`
-                                                            });
-                                                            cantidadSolicitada -= asignar;
-                                                        }
-
-                                                        setMedicamentos([
-                                                            ...medicamentos,
-                                                            { ...medBase, cantidadSolicitada: parseInt(cantidad, 10), lotes: lotesDistribuidos }
-                                                        ]);
-
-                                                        setErrorMedicamentos("");
-
-                                                        setProducto("");
-                                                        setCantidad("");
-                                                    }
-                                                }}
-                                                disabled={!producto.trim() || !cantidad.trim()}
-                                            >
-                                                <CirclePlus className="h-4 w-4" />
-                                                Agregar
-                                            </Button>
-                                        </div>
-                                    </div>
-
-                                    {/* Tabla de medicamentos registrados */}
-                                    <table className="w-full border-collapse border border-gray-300">
-                                        <thead className="bg-blue-100">
-                                            <tr>
-                                                <th className="border border-gray-300 px-2 py-1">Item</th>
-                                                <th className="border border-gray-300 px-2 py-1">Producto</th>
-                                                <th className="border border-gray-300 px-2 py-1">SISMED / SIGA</th>
-                                                <th className="border border-gray-300 px-2 py-1">Cant. Solicitada</th>
-                                                <th className="border border-gray-300 px-2 py-1">Cant. Asignada</th>
-                                                <th className="border border-gray-300 px-2 py-1">Precio</th>
-                                                <th className="border border-gray-300 px-2 py-1">Importe</th>
-                                                <th className="border border-gray-300 px-2 py-1">Lote</th>
-                                                <th className="border border-gray-300 px-2 py-1">F. Venc.</th>
-                                                <th className="border border-gray-300 px-2 py-1">Acción</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {medicamentos.length === 0 ? (
-                                                <tr>
-                                                    <td colSpan={10} className="border px-3 py-2 text-center text-gray-500 italic">
-                                                        No hay medicamentos registrados
-                                                    </td>
-                                                </tr>
-                                            ) : (
-                                                medicamentos.map((med, index) => (
-                                                    <React.Fragment key={med.producto + index}>
-                                                        {med.lotes.map((lote, idx) => (
-                                                            <tr key={`${med.producto}-${lote.lote}-${idx}`}>
-                                                                {idx === 0 && (
-                                                                    <>
-                                                                        <td className="border px-3 py-2" rowSpan={med.lotes.length}>{index + 1}</td>
-                                                                        <td className="border px-3 py-2" rowSpan={med.lotes.length}>
-                                                                            {med.producto}
-                                                                            <div className="font-bold text-gray-700">{med.presentacion}</div>
-                                                                        </td>
-                                                                        <td className="border px-3 py-2" rowSpan={med.lotes.length}>
-                                                                            <div><span className="font-semibold">SISMED:</span> {med.sisMed}</div>
-                                                                            <div><span className="font-semibold">SIGA:</span> {med.siga}</div>
-                                                                        </td>
-                                                                        <td className="border px-3 py-2" rowSpan={med.lotes.length}>{med.cantidadSolicitada}</td>
-                                                                    </>
-                                                                )}
-                                                                <td className="border px-3 py-2">
-                                                                    <span className="bg-green-100 text-green-700 font-semibold px-2 py-1 rounded">
-                                                                        {lote.cantAsignada}
-                                                                    </span>
-                                                                </td>
-                                                                <td className="border px-3 py-2">{lote.precio}</td>
-                                                                <td className="border px-3 py-2">{lote.importe}</td>
-                                                                <td className="border px-3 py-2">
-                                                                    <span className="bg-blue-100 text-blue-700 font-medium px-2 py-1 rounded">
-                                                                        {lote.lote}
-                                                                    </span>
-                                                                </td>
-                                                                <td className="border px-3 py-2">{lote.venc}</td>
-                                                                {idx === 0 && (
-                                                                    <td className="border px-3 py-2 text-center" rowSpan={med.lotes.length}>
-                                                                        <button
-                                                                            onClick={() => {
-                                                                                setMedicamentos(medicamentos.filter((_, i) => i !== index));
-                                                                            }}
-                                                                            className="border border-red-600 rounded-md p-2 text-red-600 hover:bg-red-50"
-                                                                            title="Eliminar registro"
-                                                                        >
-                                                                            <Trash2 className="h-5 w-5" />
-                                                                        </button>
-                                                                    </td>
-                                                                )}
-                                                            </tr>
-                                                        ))}
-                                                    </React.Fragment>
-                                                ))
-                                            )}
-                                        </tbody>
-                                    </table>
-                                    {errorMedicamentos && (
-                                        <p className="text-red-600 text-sm mt-2">{errorMedicamentos}</p>
-                                    )}
-                                </div>
-
-                            </>
-                        )}
-
-                        {/* Botones de acción */}
-                        <div className="flex justify-end gap-2 mt-4">
-                            <Button variant="outline" onClick={() => {
-                                resetForm();
-                                setModalPacienteExterno(false);
-                            }}>
-                                Cancelar
-                            </Button>
-                            <Button
-                                type="button"
-                                className="bg-cyan-600 hover:bg-cyan-700 text-white"
-                                onClick={() => {
-                                    if (pacienteExterno) {
-                                        const newErrors: Record<string, string> = {};
-
-                                        setErrors(newErrors);
-
-                                        if (medicamentos.length === 0) {
-                                            setErrorMedicamentos("Debe registrar al menos un medicamento");
-                                        } else {
-                                            setErrorMedicamentos("");
-                                        }
-
-                                        if (Object.keys(newErrors).length === 0 && medicamentos.length > 0) {
-                                            setMostrarConfirmacion(true);
-                                        }
-                                    } else {
-                                        setMostrarConfirmacion(true); // caso DNI validado normal
-                                    }
-                                }}
-                            >
-                                Generar Proforma
-                            </Button>
-                        </div>
-
-                        {modalHistorial && (
-                            <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-                                <div className="bg-white rounded-md shadow-lg p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto relative">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <h2 className="text-lg font-semibold">Historial de recetas</h2>
-                                        <button
-                                            type="button"
-                                            onClick={() => setModalHistorial(false)}
-                                            className="text-gray-500 hover:text-red-600"
-                                        >
-                                            <X className="h-5 w-5" />
-                                        </button>
-                                    </div>
-
-                                    {/* Tabla de historial */}
-                                    <div className="overflow-x-auto">
-                                        <table className="min-w-full border-collapse border border-gray-300">
-                                            <thead className="bg-blue-800 text-white">
-                                                <tr>
-                                                    <th className="border border-gray-300 px-3 py-2 text-left">Fecha</th>
-                                                    <th className="border border-gray-300 px-3 py-2 text-left">Tipo de Seguro</th>
-                                                    <th className="border border-gray-300 px-3 py-2 text-left">Servicio</th>
-                                                    <th className="border border-gray-300 px-3 py-2 text-left">Fármaco</th>
-                                                    <th className="border border-gray-300 px-3 py-2 text-left">Cantidad</th>
-                                                    <th className="border border-gray-300 px-3 py-2 text-left">Indicación</th>
-                                                    <th className="border border-gray-300 px-3 py-2 text-left">Vía</th>
-                                                    <th className="border border-gray-300 px-3 py-2 text-left">Diagnóstico</th>
-                                                    <th className="border border-gray-300 px-3 py-2 text-left">Médico</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {historialData.map((receta, idx) => (
-                                                    <tr key={`${receta.fecha}-${receta.farmaco}-${idx}`}>
-                                                        <td className="border px-3 py-2">{receta.fecha}</td>
-                                                        <td className="border px-3 py-2">{receta.seguro}</td>
-                                                        <td className="border px-3 py-2">{receta.servicio}</td>
-                                                        <td className="border px-3 py-2">
-                                                            <div>{receta.farmaco}</div>
-                                                            <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mt-1">
-                                                                {receta.presentacion}
-                                                            </span>
-                                                        </td>
-                                                        <td className="border px-3 py-2">{receta.cantidad}</td>
-                                                        <td className="border px-3 py-2">{receta.indicacion}</td>
-                                                        <td className="border px-3 py-2">{receta.via}</td>
-                                                        <td className="border px-3 py-2">{receta.diagnostico}</td>
-                                                        <td className="border px-3 py-2">{receta.medico}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {mostrarConfirmacion && (
-                            <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-                                <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
-                                    <div className="flex items-center gap-2 mb-4">
-                                        <HelpCircle className="h-6 w-6 text-yellow-600" />
-                                        <h2 className="text-lg font-semibold">Confirmar acción</h2>
-                                    </div>
-                                    <p className="mb-4 text-gray-700">
-                                        ¿Está seguro de generar la proforma? Esta acción no se podrá deshacer.
-                                    </p>
-                                    <div className="flex justify-end gap-2">
-                                        <Button
-                                            variant="outline"
-                                            onClick={() => setMostrarConfirmacion(false)}
-                                        >
-                                            Cancelar
-                                        </Button>
-                                        <Button
-                                            className="bg-green-600 hover:bg-green-700 text-white"
-                                            onClick={() => {
-                                                setMostrarConfirmacion(false);
-                                                setMostrarExito(true);
-                                            }}
-                                        >
-                                            Confirmar
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {mostrarExito && (
-                            <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-                                <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
-                                    <div className="flex items-center gap-2 mb-4">
-                                        <BadgeCheck className="h-6 w-6 text-green-600" />
-                                        <h2 className="text-lg font-semibold">Proforma generada</h2>
-                                    </div>
-                                    <p className="mb-4 text-gray-700">
-                                        {pacienteData?.seguro === "PAGANTE" ? (
-                                            <>
-                                                La proforma se generó con éxito. <br /><br />
-                                                Se generó el siguiente ID Orden: <span className="font-semibold">2025000001</span>. <br /><br />
-                                                Acuda a caja para pagar por los medicamentos y así proceder con su respectivo despacho.
-                                            </>
-                                        ) : (
-                                            "La proforma se generó con éxito."
-                                        )}
-                                    </p>
-                                    <div className="flex justify-end">
-                                        <Button
-                                            className="bg-blue-600 hover:bg-blue-700 text-white"
-                                            onClick={() => {
-                                                resetForm();
-                                                setModalPacienteExterno(false);
-                                            }}
-                                        >
-                                            Finalizar
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
         </div>
     )
 }

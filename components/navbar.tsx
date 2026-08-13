@@ -190,6 +190,13 @@ export default function Navbar() {
       href: "/dashboard/reportes",
       icon: <FileText className="h-5 w-5" />,
       subItems: [
+        /*{
+          name: "Reportes de Ventas CE",
+          href: "/dashboard/reportes/ventas-ce",
+          subItems: [
+            { name: "Conteo de Recetas", href: "/dashboard/reportes/conteo-recetas" },
+          ],
+        },*/
         {
           name: "Reportes Generales",
           href: "/dashboard/reportes/generales",

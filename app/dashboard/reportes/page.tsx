@@ -35,6 +35,16 @@ export default function ReportesPage() {
     }
   }, [])
 
+  const reportesVentasCE = [
+    {
+      id: 1,
+      nombre: "Conteo de Recetas",
+      descripcion: "Cantidad diaria de recetas por consultorio",
+      icon: Calendar,
+      href: "/dashboard/reportes/conteo-recetas"
+    }
+  ]
+
   const reportesGenerales = [
     {
       id: 1,
@@ -179,6 +189,29 @@ export default function ReportesPage() {
       {/* No info bar needed here as it's already in the footer */}
 
       <div className="space-y-6">
+        {/*<div>
+          <h2 className="text-lg font-medium mb-3 flex items-center gap-2">
+            <FileText className="h-5 w-5 text-primary" />
+            Reportes de Ventas de Consulta Externa
+          </h2>
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {reportesVentasCE.map((reporte) => (
+              <Link key={reporte.id} href={reporte.href} className="block">
+                <Card className="h-full hover:border-primary cursor-pointer transition-colors">
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <reporte.icon className="h-5 w-5 text-primary" />
+                      {reporte.nombre}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 pt-0">
+                    <CardDescription className="text-xs">{reporte.descripcion}</CardDescription>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>*/}
         <div>
           <h2 className="text-lg font-medium mb-3 flex items-center gap-2">
             <FileText className="h-5 w-5 text-primary" />
