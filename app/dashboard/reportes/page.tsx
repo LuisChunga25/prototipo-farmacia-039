@@ -189,7 +189,7 @@ export default function ReportesPage() {
       {/* No info bar needed here as it's already in the footer */}
 
       <div className="space-y-6">
-        {/*<div>
+        <div>
           <h2 className="text-lg font-medium mb-3 flex items-center gap-2">
             <FileText className="h-5 w-5 text-primary" />
             Reportes de Ventas de Consulta Externa
@@ -211,7 +211,7 @@ export default function ReportesPage() {
               </Link>
             ))}
           </div>
-        </div>*/}
+        </div>
         <div>
           <h2 className="text-lg font-medium mb-3 flex items-center gap-2">
             <FileText className="h-5 w-5 text-primary" />

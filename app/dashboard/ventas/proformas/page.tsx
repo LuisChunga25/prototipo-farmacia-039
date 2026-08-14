@@ -198,8 +198,8 @@ const proformasData = [
         nombrePaciente: "SUAREZ ORTEGA GABRIEL OCTAVIO",
         tipoSeguro: "SIS",
         medico: "DIONICIO IBAÑEZ LUIS FELIPE",
-        nombreAlmacen: "FARMACIA EMERGENCIA",
-        nombreConsultorio: "MEDICINA EMERGENCIA",
+        nombreAlmacen: "CONSULTORIOS EXTERNOS",
+        nombreConsultorio: "MEDICINA INTERNA",
         tipoPago: "R",
         total: 15.8,
         usuario: "07651840",
@@ -240,8 +240,8 @@ const proformasData = [
         nombrePaciente: "REYES SALCEDO JOSE ANTONIO",
         tipoSeguro: "PAGANTE",
         medico: "DIONICIO IBAÑEZ LUIS FELIPE",
-        nombreAlmacen: "FARMACIA EMERGENCIA",
-        nombreConsultorio: "MEDICINA EMERGENCIA",
+        nombreAlmacen: "CONSULTORIOS EXTERNOS",
+        nombreConsultorio: "MEDICINA INTERNA",
         tipoPago: "R",
         total: 26.5,
         usuario: "07651840",
@@ -282,8 +282,8 @@ const proformasData = [
         nombrePaciente: "RAMOS OJEDA ALBERTO FEDERICO",
         tipoSeguro: "SIS",
         medico: "BASOMBRIO VELAQUEZ JORGE",
-        nombreAlmacen: "FARMACIA DOSIS UNITARIA",
-        nombreConsultorio: "CIRUGIA HOSPITALIZACION",
+        nombreAlmacen: "CONSULTORIOS EXTERNOS",
+        nombreConsultorio: "MEDICINA INTERNA",
         tipoPago: "R",
         total: 16.1,
         usuario: "07672070",
@@ -324,8 +324,8 @@ const proformasData = [
         nombrePaciente: "SANCHEZ FLORES BEATRIZ ALBERTINA",
         tipoSeguro: "PAGANTE",
         medico: "BASOMBRIO VELASQUEZ JORGE",
-        nombreAlmacen: "CONSULTORIOS EXTERNOS",
-        nombreConsultorio: "CIRUGIA GENERAL",
+        nombreAlmacen: "FARMACIA EMERGENCIA",
+        nombreConsultorio: "CIRUGIA EMERGENCIA",
         tipoPago: "R",
         total: 8.6,
         usuario: "40532847",
@@ -366,8 +366,8 @@ const proformasData = [
         nombrePaciente: "GONZALEZ LOPEZ PEDRO",
         tipoSeguro: "SIS",
         medico: "BASOMBRIO VELASQUEZ JORGE",
-        nombreAlmacen: "FARMACIA DOSIS UNITARIA",
-        nombreConsultorio: "CIRUGIA HOSPITALIZACION",
+        nombreAlmacen: "FARMACIA EMERGENCIA",
+        nombreConsultorio: "CIRUGIA EMERGENCIA",
         tipoPago: "R",
         total: 13.20,
         usuario: "07672070",
@@ -450,8 +450,8 @@ const proformasData = [
         nombrePaciente: "PACHECO MENDOZA XIMENA GABRIELA",
         tipoSeguro: "SIS",
         medico: "SOTO ESCALANTE MARIA EUGENIA",
-        nombreAlmacen: "CONSULTORIOS EXTERNOS",
-        nombreConsultorio: "MEDICINA INTERNA",
+        nombreAlmacen: "FARMACIA DOSIS UNITARIA",
+        nombreConsultorio: "MEDICINA HOSPITALIZACION",
         tipoPago: "R",
         total: 7.90,
         usuario: "40532847",
@@ -492,8 +492,8 @@ const proformasData = [
         nombrePaciente: "CASAS GARCIA SUSANA LETICIA",
         tipoSeguro: "SIS",
         medico: "DIONICIO IBAÑEZ LUIS FELIPE",
-        nombreAlmacen: "CONSULTORIOS EXTERNOS",
-        nombreConsultorio: "MEDICINA INTERNA",
+        nombreAlmacen: "FARMACIA DOSIS UNITARIA",
+        nombreConsultorio: "MEDICINA HOSPITALIZACION",
         tipoPago: "R",
         total: 8.20,
         usuario: "40532847",
@@ -534,8 +534,8 @@ const proformasData = [
         nombrePaciente: "ORTIGOSA GUTIERREZ REBECA MARIANA",
         tipoSeguro: "SIS",
         medico: "BASOMBRIO VELASQUEZ JORGE",
-        nombreAlmacen: "CONSULTORIOS EXTERNOS",
-        nombreConsultorio: "CIRUGIA GENERAL",
+        nombreAlmacen: "FARMACIA DOSIS UNITARIA",
+        nombreConsultorio: "CIRUGIA HOSPITALIZACION",
         tipoPago: "R",
         total: 4.10,
         usuario: "40532847",
@@ -558,6 +558,90 @@ const proformasData = [
                 importe: "S/ 10.00",
                 lote: "LTPAR33333",
                 fechaVenc: "31/12/2026",
+            },
+        ],
+    },
+    {
+        id: 11,
+        estado: "2",
+        ordenId: "1726126002",
+        numReceta: "260363081",
+        cuentaId: "3010186",
+        fecha: "06/08/2026",
+        hora: "09:45:12",
+        fecha_proceso: "06/08/2026",
+        hora_proceso: "09:45",
+        numPaciente: "2009001122",
+        historia: "55667788",
+        nombrePaciente: "HUILLCAHUARI DURAND DANIEL",
+        tipoSeguro: "SOAT",
+        medico: "PINEDA CUSIHUAMAN EDSON GUSTAVO",
+        nombreAlmacen: "FARMACIA EMERGENCIA",
+        nombreConsultorio: "CIRUGIA GENERAL",
+        tipoPago: "R",
+        total: 32.5,
+        usuario: "40532847",
+        nombreUsuario: "ROMERO CRISTOBAL EDITH SANDRA",
+        medicamentos: [
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 12,
+                cantAsignada: 6,
+                precio: "S/ 1.50",
+                importe: "S/ 9.00",
+                lote: "LTPAR202601",
+                fechaVenc: "30/11/2026",
+            },
+            {
+                producto: "PARACETAMOL 500 MG TAB",
+                cantSolicitada: 12,
+                cantAsignada: 6,
+                precio: "S/ 1.20",
+                importe: "S/ 7.20",
+                lote: "LTPAR202602",
+                fechaVenc: "31/03/2027",
+            },
+        ],
+    },
+    {
+        id: 12,
+        estado: "2",
+        ordenId: "1726126001",
+        numReceta: "260363080",
+        cuentaId: "3010185",
+        fecha: "07/08/2026",
+        hora: "14:20:00",
+        fecha_proceso: "07/08/2026",
+        hora_proceso: "14:20",
+        numPaciente: "2008112233",
+        historia: "11223344",
+        nombrePaciente: "PRADO DAVILA CARLOS ENRIQUE ALBERTO",
+        tipoSeguro: "SIS",
+        medico: "TOMANGUILLO VASQUEZ MIGUEL ALEJANDRO",
+        nombreAlmacen: "FARMACIA DOSIS UNITARIA",
+        nombreConsultorio: "ANESTESIOLOGIA",
+        tipoPago: "R",
+        total: 45.0,
+        usuario: "07651840",
+        nombreUsuario: "ZAMUDIO PEÑA GLORIA MARTHA",
+        medicamentos: [
+            {
+                producto: "TRAMADOL 50 MG TAB",
+                cantSolicitada: 12,
+                cantAsignada: 6,
+                precio: "S/ 1.80",
+                importe: "S/ 10.80",
+                lote: "LTTRAM202601",
+                fechaVenc: "30/11/2026",
+            },
+            {
+                producto: "TRAMADOL 50 MG TAB",
+                cantSolicitada: 12,
+                cantAsignada: 6,
+                precio: "S/ 2.00",
+                importe: "S/ 12.00",
+                lote: "LTTRAM202602",
+                fechaVenc: "31/03/2027",
             },
         ],
     },
@@ -872,6 +956,7 @@ export default function SalidasPage() {
     const [recetaEspecial, setRecetaEspecial] = useState("");
     const [tipoBusqueda, setTipoBusqueda] = useState("documento");
     const [resultadosBusqueda, setResultadosBusqueda] = useState<any[]>([]);
+    const [filtroFarmacia, setFiltroFarmacia] = useState("CONSULTORIOS EXTERNOS");
 
     // Estados de error
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -957,12 +1042,11 @@ export default function SalidasPage() {
 
     const filtrarProformas = () => {
         return proformasData.filter((proforma) => {
-            // convertir fecha del registro (ej. "16/07/2026") a Date
             // --- FILTRO POR FECHA ---
             const [dia, mes, anio] = proforma.fecha.split("/");
             const fechaRegistro = new Date(`${anio}-${mes}-${dia}`);
-            const inicio = fechaInicio ? new Date(fechaInicio) : null; // ya es ISO
-            const fin = fechaFin ? new Date(fechaFin) : null;          // ya es ISO
+            const inicio = fechaInicio ? new Date(fechaInicio) : null;
+            const fin = fechaFin ? new Date(fechaFin) : null;
 
             if (inicio && fechaRegistro < inicio) return false;
             if (fin && fechaRegistro > fin) return false;
@@ -993,6 +1077,11 @@ export default function SalidasPage() {
                 if (!campo.toLowerCase().includes(searchTerm.toLowerCase())) {
                     return false;
                 }
+            }
+
+            // --- FILTRO MAESTRO DE FARMACIA ---
+            if (!proforma.nombreAlmacen.toLowerCase().includes(filtroFarmacia.toLowerCase())) {
+                return false;
             }
 
             return true;
@@ -1113,20 +1202,35 @@ export default function SalidasPage() {
 
     return (
         <div className="container mx-auto py-6">
-            <div className="flex items-center gap-4 mb-4">
-                <Button
-                    variant="outline"
-                    className="border border-gray-300 h-9 shadow-sm cursor-pointer hover:shadow-md hover:bg-gray-100 transition"
-                    onClick={() => router.push("/dashboard/ventas")}
-                >
-                    <Link href="/dashboard/ventas">
-                        <ArrowLeft className="w-5 h-5" />
-                    </Link>
-                    Regresar
-                </Button>
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Módulo de Proformas Web</h1>
-                    <p className="text-muted-foreground">Gestione la emisión de proformas con el detalle y costo estimado de los medicamentos solicitados por el paciente antes de la venta</p>
+            <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-4">
+                    <Button
+                        variant="outline"
+                        className="border border-gray-300 h-9 shadow-sm cursor-pointer hover:shadow-md hover:bg-gray-100 transition"
+                        onClick={() => router.push("/dashboard/ventas")}
+                    >
+                        <Link href="/dashboard/ventas">
+                            <ArrowLeft className="w-5 h-5" />
+                        </Link>
+                        Regresar
+                    </Button>
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight">Módulo de Proformas Web</h1>
+                        <p className="text-muted-foreground">Gestione la emisión de proformas con los detalles de los medicamentos antes de su entrega al paciente</p>
+                    </div>
+                </div>
+                <div className="bg-cyan-50 border border-cyan-200 border-2 p-4 rounded-md">
+                    <Label htmlFor="filtroFarmacia" className="mr-2 font-medium">Farmacia:</Label>
+                    <select
+                        id="filtroFarmacia"
+                        value={filtroFarmacia}
+                        onChange={(e) => setFiltroFarmacia(e.target.value)}
+                        className="border p-2 h-10 rounded-md w-72"
+                    >
+                        <option value="CONSULTORIOS EXTERNOS">Consultorios Externos</option>
+                        <option value="FARMACIA EMERGENCIA">Farmacia Emergencia</option>
+                        <option value="FARMACIA DOSIS UNITARIA">Farmacia Dosis Unitaria</option>
+                    </select>
                 </div>
             </div>
 
@@ -1232,53 +1336,61 @@ export default function SalidasPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filtrarProformas().map((proforma) => (
-                            <TableRow key={proforma.id} className={selectedItems.includes(proforma.id) ? "bg-primary/10" : ""}>
-                                <TableCell>{getEstadoBadge(proforma.estado)}</TableCell>
-                                <TableCell className="font-medium">{proforma.ordenId}</TableCell>
-                                <TableCell className="font-medium">{proforma.numReceta}</TableCell>
-                                <TableCell>
-                                    <div className="font-mediunm">{proforma.nombrePaciente}</div>
-                                    <div className="text-sm text-gray-500">{proforma.numPaciente}</div>
-                                </TableCell>
-                                <TableCell className="font-medium">{proforma.historia}</TableCell>
-                                <TableCell className="font-medium">{proforma.tipoSeguro}</TableCell>
-                                <TableCell>
-                                    <div className="font-medium">{proforma.fecha}</div>
-                                    <div className="text-sm text-gray-500">{proforma.hora}</div>
-                                </TableCell>
-                                <TableCell className="font-medium">{proforma.nombreAlmacen}</TableCell>
-                                <TableCell>{proforma.total.toFixed(2)}</TableCell>
-                                <TableCell>{proforma.usuario}</TableCell>
-                                <TableCell>
-                                    <div className="flex space-x-2">
-                                        <Button
-                                            title="Ver detalle"
-                                            variant="outline"
-                                            className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50 flex items-center justify-center"
-                                            onClick={() => {
-                                                setProformaSeleccionada(proforma);
-                                                setMostrarDetalle(true);
-                                            }}
-                                        >
-                                            <Eye className="w-4 h-4" />
-                                        </Button>
-                                        <Button
-                                            title="Anular documento"
-                                            variant="outline"
-                                            className="h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50 flex items-center justify-center"
-                                            onClick={() => {
-                                                setProformaSeleccionada(proforma);
-                                                setMostrarConfirmacionAnular(true);
-                                            }}
-                                            disabled={proforma.estado === "3"}
-                                        >
-                                            <X className="w-4 h-4" />
-                                        </Button>
-                                    </div>
+                        {filtrarProformas().length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={10} className="text-center text-gray-500 italic">
+                                    No se hallaron registros según los filtros de búsqueda
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        ) : (
+                            filtrarProformas().map((proforma) => (
+                                <TableRow key={proforma.id} className={selectedItems.includes(proforma.id) ? "bg-primary/10" : ""}>
+                                    <TableCell>{getEstadoBadge(proforma.estado)}</TableCell>
+                                    <TableCell className="font-medium">{proforma.ordenId}</TableCell>
+                                    <TableCell className="font-medium">{proforma.numReceta}</TableCell>
+                                    <TableCell>
+                                        <div className="font-mediunm">{proforma.nombrePaciente}</div>
+                                        <div className="text-sm text-gray-500">{proforma.numPaciente}</div>
+                                    </TableCell>
+                                    <TableCell className="font-medium">{proforma.historia}</TableCell>
+                                    <TableCell className="font-medium">{proforma.tipoSeguro}</TableCell>
+                                    <TableCell>
+                                        <div className="font-medium">{proforma.fecha}</div>
+                                        <div className="text-sm text-gray-500">{proforma.hora}</div>
+                                    </TableCell>
+                                    <TableCell className="font-medium">{proforma.nombreAlmacen}</TableCell>
+                                    <TableCell>{proforma.total.toFixed(2)}</TableCell>
+                                    <TableCell>{proforma.usuario}</TableCell>
+                                    <TableCell>
+                                        <div className="flex space-x-2">
+                                            <Button
+                                                title="Ver detalle"
+                                                variant="outline"
+                                                className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50 flex items-center justify-center"
+                                                onClick={() => {
+                                                    setProformaSeleccionada(proforma);
+                                                    setMostrarDetalle(true);
+                                                }}
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </Button>
+                                            <Button
+                                                title="Anular documento"
+                                                variant="outline"
+                                                className="h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50 flex items-center justify-center"
+                                                onClick={() => {
+                                                    setProformaSeleccionada(proforma);
+                                                    setMostrarConfirmacionAnular(true);
+                                                }}
+                                                disabled={proforma.estado === "3"}
+                                            >
+                                                <X className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
                     </TableBody>
                 </Table>
             </div>

@@ -190,13 +190,13 @@ export default function Navbar() {
       href: "/dashboard/reportes",
       icon: <FileText className="h-5 w-5" />,
       subItems: [
-        /*{
+        {
           name: "Reportes de Ventas CE",
           href: "/dashboard/reportes/ventas-ce",
           subItems: [
             { name: "Conteo de Recetas", href: "/dashboard/reportes/conteo-recetas" },
           ],
-        },*/
+        },
         {
           name: "Reportes Generales",
           href: "/dashboard/reportes/generales",
@@ -351,14 +351,14 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden md:flex items-center gap-2 ml-6">
-            <Button
+            {/*<Button
               variant="secondary"
               onClick={() => setOpenAlmacen(true)}
               className="bg-white/20 text-white hover:bg-white/30 flex items-center gap-2"
             >
               <Boxes className="h-4 w-4" />
               Seleccionar Almacén
-            </Button>
+            </Button>*/}
 
             {/*<Button
               variant="secondary"
