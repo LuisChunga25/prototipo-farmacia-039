@@ -683,7 +683,7 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "12/04/1997",
         seguro: "SIS",
-        tipoAtencion: "HOSPITALIZACON",
+        tipoAtencion: "HOSPITALIZACION",
         especialidad: "ANESTESIOLOGIA",
         medico: "TOMANGUILLO VASQUEZ MIGUEL ALEJANDRO",
         transaccion: "VRD - SIS (DOSIS UNITARIA)",
@@ -957,6 +957,8 @@ export default function SalidasPage() {
     const [tipoBusqueda, setTipoBusqueda] = useState("documento");
     const [resultadosBusqueda, setResultadosBusqueda] = useState<any[]>([]);
     const [filtroFarmacia, setFiltroFarmacia] = useState("CONSULTORIOS EXTERNOS");
+    const [modalAviso, setModalAviso] = useState(false);
+    const [mensajeAviso, setMensajeAviso] = useState("");
 
     // Estados de error
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -1006,12 +1008,19 @@ export default function SalidasPage() {
         return () => clearInterval(intervalo);
     }, []);
 
+    // MAPEO DE LAS FARMACIAS
+    const mapaFarmacias: Record<string, string> = {
+        "CONSULTORIOS EXTERNOS": "CONSULTA EXTERNA",
+        "FARMACIA EMERGENCIA": "EMERGENCIA",
+        "FARMACIA DOSIS UNITARIA": "HOSPITALIZACON", // ojo con la ortografía en tu data
+    };
+
+
     const opcionesBusqueda = [
         { value: "ordenId", label: "Orden ID" },
         { value: "receta", label: "N° Receta" },
         { value: "historia", label: "Historia Clínica" },
         { value: "paciente", label: "Paciente" },
-        { value: "almacen", label: "Almacén" },
     ];
 
     // INICIALIZAR CUANDO CARGUE LA PÁGINA
@@ -1066,9 +1075,6 @@ export default function SalidasPage() {
                         break;
                     case "paciente":
                         campo = proforma.nombrePaciente;
-                        break;
-                    case "almacen":
-                        campo = proforma.nombreAlmacen;
                         break;
                     default:
                         campo = "";
@@ -1660,13 +1666,20 @@ export default function SalidasPage() {
                                                             type="button"
                                                             className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm flex items-center gap-2"
                                                             onClick={() => {
-                                                                setPacienteData(paciente);
-                                                                setMedicamentosData(medicamentosPrueba[paciente.dni] || []);
-                                                                setMedicoReceta(paciente.medico);
-                                                                setHistorialData(historialPrueba[paciente.dni] || []);
-                                                                setDniValidado(true);
-                                                                setModalNuevaProforma(false);
-                                                                setModalDetallePaciente(true);
+                                                                const farmaciaEsperada = mapaFarmacias[filtroFarmacia];
+                                                                if (paciente.tipoAtencion === farmaciaEsperada) {
+                                                                    setPacienteData(paciente);
+                                                                    setMedicamentosData(medicamentosPrueba[paciente.dni] || []);
+                                                                    setMedicoReceta(paciente.medico);
+                                                                    setHistorialData(historialPrueba[paciente.dni] || []);
+                                                                    setDniValidado(true);
+                                                                    setModalNuevaProforma(false);
+                                                                    setModalDetallePaciente(true);
+                                                                } else {
+                                                                    setMensajeAviso(`No se tiene registro de una receta para ${filtroFarmacia}.`);
+                                                                    setModalAviso(true);
+                                                                }
+
                                                             }}
                                                         >
                                                             <CheckCircleIcon className="h-4 w-4" />
@@ -1707,6 +1720,29 @@ export default function SalidasPage() {
                         </form>
                     </div>
                 </div>
+            )}
+
+            {modalAviso && (
+                <Dialog open={modalAviso} onOpenChange={setModalAviso}>
+                    <DialogContent className="max-w-md" onInteractOutside={(e) => e.preventDefault()}>
+                        <DialogHeader className="flex items-center gap-2">
+                            <AlertTriangle className="h-5 w-5 text-red-600" />
+                            <DialogTitle className="text-lg font-semibold text-red-600">Validación de Receta</DialogTitle>
+                            <DialogDescription className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-md">
+                                {mensajeAviso}
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="flex justify-end mt-4">
+                            <Button
+                                variant="outline"
+                                className="border border-gray-300 hover:bg-gray-100"
+                                onClick={() => setModalAviso(false)}
+                            >
+                                Cerrar
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
             )}
 
             {modalDetallePaciente && (
@@ -1857,10 +1893,24 @@ export default function SalidasPage() {
 
                                     {/* Tabla de medicamentos */}
                                     <div className="border rounded-md p-4 mb-4 bg-white">
-                                        <h3 className="text-md font-semibold">Medicamentos registrados</h3>
-                                        <div className="flex items-center text-sm text-gray-600 mb-3 gap-2">
-                                            <Stethoscope className="h-4 w-4 text-gray-500" />
-                                            <span>Médico: {medicoReceta}</span>
+                                        <div className="flex justify-between items-center mb-3">
+                                            <div>
+                                                <h3 className="text-md font-semibold">Medicamentos registrados</h3>
+                                                <div className="flex items-center text-sm text-gray-600 mb-3 gap-2">
+                                                    <Stethoscope className="h-4 w-4 text-gray-500" />
+                                                    <span>Médico: {medicoReceta}</span>
+                                                </div>
+                                            </div>
+
+                                            <Button
+                                                variant="outline"
+                                                type="button"
+                                                className="bg-teal-600 hover:bg-teal-700 text-white font-semibold shadow-md flex items-center gap-2 px-4 py-2 rounded-md"
+                                                onClick={() => window.open("/Modelo Receta CE.pdf", "_blank")}
+                                            >
+                                                <Printer className="h-4 w-4" />
+                                                Imprimir Receta
+                                            </Button>
                                         </div>
 
                                         <div className="overflow-x-auto">
