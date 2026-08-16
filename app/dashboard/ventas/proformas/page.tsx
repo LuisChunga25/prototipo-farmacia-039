@@ -1920,8 +1920,8 @@ export default function SalidasPage() {
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Item</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Producto</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">SISMED / SIGA</th>
-                                                        <th className="border border-gray-300 px-3 py-2 text-left">Cant. Solicitada</th>
-                                                        <th className="border border-gray-300 px-3 py-2 text-left">Cant. Asignada</th>
+                                                        <th className="border border-gray-300 px-3 py-2 text-left">Cantidad solicitada</th>
+                                                        <th className="border border-gray-300 px-3 py-2 text-left">Cantidad por lote</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Precio</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Importe</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Lote</th>
@@ -2328,8 +2328,8 @@ export default function SalidasPage() {
                                                     <th className="border border-gray-300 px-2 py-1">Item</th>
                                                     <th className="border border-gray-300 px-2 py-1">Producto</th>
                                                     <th className="border border-gray-300 px-2 py-1">SISMED / SIGA</th>
-                                                    <th className="border border-gray-300 px-2 py-1">Cant. Solicitada</th>
-                                                    <th className="border border-gray-300 px-2 py-1">Cant. Asignada</th>
+                                                    <th className="border border-gray-300 px-2 py-1">Cantidad solicitada</th>
+                                                    <th className="border border-gray-300 px-2 py-1">Cantidad por lote</th>
                                                     <th className="border border-gray-300 px-2 py-1">Precio</th>
                                                     <th className="border border-gray-300 px-2 py-1">Importe</th>
                                                     <th className="border border-gray-300 px-2 py-1">Lote</th>
@@ -2818,8 +2818,8 @@ export default function SalidasPage() {
                                                 <th className="border border-gray-300 px-2 py-1">Item</th>
                                                 <th className="border border-gray-300 px-2 py-1">Producto</th>
                                                 <th className="border border-gray-300 px-2 py-1">SISMED / SIGA</th>
-                                                <th className="border border-gray-300 px-2 py-1">Cant. Solicitada</th>
-                                                <th className="border border-gray-300 px-2 py-1">Cant. Asignada</th>
+                                                <th className="border border-gray-300 px-2 py-1">Cantidad solicitada</th>
+                                                <th className="border border-gray-300 px-2 py-1">Cantidad por lote</th>
                                                 <th className="border border-gray-300 px-2 py-1">Precio</th>
                                                 <th className="border border-gray-300 px-2 py-1">Importe</th>
                                                 <th className="border border-gray-300 px-2 py-1">Lote</th>
