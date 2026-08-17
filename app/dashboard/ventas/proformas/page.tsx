@@ -36,6 +36,7 @@ import {
     AlertTriangle,
     CheckCircleIcon,
     ClipboardList,
+
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Label } from "@/components/ui/label"
@@ -710,7 +711,7 @@ const medicamentosPrueba: Record<string, any[]> = {
     "12345678": [
         {
             item: 1,
-            producto: "PARACETAMOL 500 MG",
+            producto: "PARACETAMOL 500 MG TAB",
             presentacion: "TAB",
             sisMed: "05335",
             siga: "580200460011",
@@ -762,7 +763,7 @@ const medicamentosPrueba: Record<string, any[]> = {
     "55667788": [
         {
             item: 1,
-            producto: "PARACETAMOL 500 MG",
+            producto: "PARACETAMOL 500 MG TAB",
             presentacion: "TAB",
             sisMed: "07654",
             siga: "580900100099",
@@ -778,31 +779,31 @@ const medicamentosPrueba: Record<string, any[]> = {
 const historialPrueba: Record<string, Receta[]> = {
     "12345678": [
         {
-            fecha: "15/07/2026",
+            fecha: "15/08/2026",
             seguro: "SIS",
             servicio: "CE",
-            farmaco: "PARACETAMOL 500 MG",
+            farmaco: "PARACETAMOL 500 MG TAB",
             presentacion: "TAB",
             cantidad: 28,
-            indicacion: "1 cada 6 hrs por 7 días",
+            indicacion: "1 cada 6 hrs por 17 días",
             via: "Oral",
             diagnostico: "J110 - Influenza con Neumonía, Virus no Identificado",
             medico: "DIONICIO IBAÑEZ LUIS FELIPE",
         },
         {
-            fecha: "10/07/2026",
+            fecha: "10/08/2026",
             seguro: "SIS",
             servicio: "EM",
             farmaco: "AMOXICILINA 500 MG",
             presentacion: "TAB",
             cantidad: 12,
-            indicacion: "1 cada 3 hrs por 4 días",
+            indicacion: "1 cada 3 hrs por 14 días",
             via: "Oral",
             diagnostico: "J209 - Bronquitis Aguda, no Especificada",
             medico: "BASOMBRIO VELASQUEZ JORGE",
         },
         {
-            fecha: "08/07/2026",
+            fecha: "08/08/2026",
             seguro: "SIS",
             servicio: "CE",
             farmaco: "NAPROXENO 500 MG TAB",
@@ -816,7 +817,7 @@ const historialPrueba: Record<string, Receta[]> = {
     ],
     "87654321": [
         {
-            fecha: "13/07/2026",
+            fecha: "13/08/2026",
             seguro: "PAGANTE",
             servicio: "CE",
             farmaco: "IBUPROFENO 400 MG",
@@ -828,7 +829,7 @@ const historialPrueba: Record<string, Receta[]> = {
             medico: "BASOMBRIO VELASQUEZ JORGE",
         },
         {
-            fecha: "13/07/2026",
+            fecha: "13/08/2026",
             seguro: "PAGANTE",
             servicio: "CE",
             farmaco: "ORFENADRINA CITRATO 100 MG",
@@ -842,7 +843,7 @@ const historialPrueba: Record<string, Receta[]> = {
     ],
     "11223344": [
         {
-            fecha: "13/07/2026",
+            fecha: "13/08/2026",
             seguro: "SIS",
             servicio: "CE",
             farmaco: "IBUPROFENO 400 MG",
@@ -854,7 +855,7 @@ const historialPrueba: Record<string, Receta[]> = {
             medico: "APAZA ARAUJO BERIOSKA PAMELA",
         },
         {
-            fecha: "13/07/2026",
+            fecha: "13/08/2026",
             seguro: "SIS",
             servicio: "CE",
             farmaco: "ORFENADRINA CITRATO 100 MG",
@@ -866,7 +867,7 @@ const historialPrueba: Record<string, Receta[]> = {
             medico: "APAZA ARAUJO BERIOSKA PAMELA",
         },
         {
-            fecha: "12/07/2026",
+            fecha: "12/08/2026",
             seguro: "SIS",
             servicio: "CE",
             farmaco: "LORATADINA 10MG TABLETA",
@@ -882,7 +883,7 @@ const historialPrueba: Record<string, Receta[]> = {
 
 const medicamentosDisponibles: MedicamentoBase[] = [
     {
-        producto: "PARACETAMOL 500 MG",
+        producto: "PARACETAMOL 500 MG TAB",
         presentacion: "TAB",
         sisMed: "05335",
         siga: "580200460011",
@@ -989,6 +990,66 @@ export default function SalidasPage() {
             setDniValidado(true); // despliega datos solo si cumple
         }
     }
+
+    // Parsear la fecha y duración
+    const obtenerDiasDeIndicacion = (indicacion: string): number => {
+        const match = indicacion.match(/(\d+)\s*d[ií]as/i);
+        return match ? parseInt(match[1], 10) : 0;
+    };
+
+    // Función de verificación de vigencia
+    const verificarConflicto = (dni: string | undefined, medicamento: any) => {
+        if (!dni) return null;
+
+        const recetasPrevias = historialPrueba[dni] || [];
+
+        const fechaActualDate = new Date();
+
+        const recetaPrev = recetasPrevias.find((r) => {
+            // Verificar que sea el mismo medicamento
+            const mismoMedicamento =
+                r.farmaco.toUpperCase().includes(medicamento.producto.toUpperCase()) ||
+                medicamento.producto.toUpperCase().includes(r.farmaco.toUpperCase());
+
+            if (!mismoMedicamento) return false;
+
+            // Obtener cantidad de días de la indicación
+            const diasTratamiento = obtenerDiasDeIndicacion(r.indicacion);
+
+            if (diasTratamiento <= 0) return false;
+
+            // Convertir fecha DD/MM/YYYY a Date
+            const [dia, mes, anio] = r.fecha.split("/").map(Number);
+
+            const fechaInicio = new Date(anio, mes - 1, dia);
+
+            // Fecha final = fecha inicial + días - 1
+            const fechaFin = new Date(fechaInicio);
+            fechaFin.setDate(fechaFin.getDate() + diasTratamiento - 1);
+
+            // Verificar si el tratamiento continúa vigente
+            return (
+                fechaActualDate >= fechaInicio &&
+                fechaActualDate <= fechaFin
+            );
+        });
+
+        if (recetaPrev) {
+            const diasTratamiento = obtenerDiasDeIndicacion(recetaPrev.indicacion);
+
+            const [dia, mes, anio] = recetaPrev.fecha.split("/").map(Number);
+            const fechaInicio = new Date(anio, mes - 1, dia);
+
+            const fechaFin = new Date(fechaInicio);
+            fechaFin.setDate(fechaFin.getDate() + diasTratamiento - 1);
+
+            const fechaFinFormateada = fechaFin.toLocaleDateString("es-PE");
+
+            return `Este medicamento ya fue recetado el ${recetaPrev.fecha} por ${diasTratamiento} días. Tratamiento vigente hasta el ${fechaFinFormateada}.`;
+        }
+
+        return null;
+    };
 
     // Al montar el componente, inicializa fecha y hora
     useEffect(() => {
@@ -1938,6 +1999,12 @@ export default function SalidasPage() {
                                                                         <td className="border px-3 py-2" rowSpan={med.subfilas.length}>
                                                                             {med.producto}
                                                                             <div className="font-bold text-gray-700">{med.presentacion}</div>
+                                                                            {verificarConflicto(pacienteData?.dni, med) && (
+                                                                                <div className="text-yellow-600 text-xs mt-1 flex items-center gap-1">
+                                                                                    <AlertTriangle className="h-12 w-12" />
+                                                                                    {verificarConflicto(pacienteData?.dni, med)}
+                                                                                </div>
+                                                                            )}
                                                                         </td>
                                                                         <td className="border px-3 py-2" rowSpan={med.subfilas.length}>
                                                                             <div><span className="font-semibold">SISMED:</span> {med.sisMed}</div>
