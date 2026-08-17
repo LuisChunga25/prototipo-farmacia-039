@@ -732,6 +732,17 @@ const medicamentosPrueba: Record<string, any[]> = {
                 { cantAsignada: 7, precio: "S/ 3.50", importe: "S/ 24.50", lote: "LTAMOX210702", venc: "30/09/2026" },
             ],
         },
+        {
+            item: 3,
+            producto: "NAPROXENO 500 MG TAB",
+            presentacion: "TAB",
+            sisMed: "04982",
+            siga: "580200450003",
+            cantSolicitada: 7,
+            subfilas: [
+                { cantAsignada: 7, precio: "S/ 3.50", importe: "S/ 24.50", lote: "LTNAP210701", venc: "30/09/2027" },
+            ],
+        },
     ],
     "87654321": [
         {
@@ -1050,6 +1061,22 @@ export default function SalidasPage() {
 
         return null;
     };
+
+    // Calcular color según la fecha de vencimiento
+    const obtenerColorVencimiento = (fechaVenc: string) => {
+        const [dia, mes, anio] = fechaVenc.split("/").map(Number);
+        const fechaVencimiento = new Date(anio, mes - 1, dia);
+        const hoy = new Date();
+
+        const diferenciaMeses =
+            (fechaVencimiento.getFullYear() - hoy.getFullYear()) * 12 +
+            (fechaVencimiento.getMonth() - hoy.getMonth());
+
+        if (diferenciaMeses <= 3) return "bg-red-500 text-white";     // Rojo
+        if (diferenciaMeses <= 6) return "bg-yellow-400 text-black";  // Amarillo
+        return "bg-green-500 text-white";                             // Verde
+    };
+
 
     // Al montar el componente, inicializa fecha y hora
     useEffect(() => {
@@ -2025,7 +2052,20 @@ export default function SalidasPage() {
                                                                         {subfila.lote}
                                                                     </span>
                                                                 </td>
-                                                                <td className="border px-3 py-2">{subfila.venc}</td>
+                                                                <td className="border px-3 py-2 text-center">
+                                                                    <div className="flex flex-col items-center gap-1">
+                                                                        <span>{subfila.venc}</span>
+                                                                        <span
+                                                                            className={`px-2 py-0.5 rounded-full text-xs font-semibold ${obtenerColorVencimiento(subfila.venc)}`}
+                                                                        >
+                                                                            {obtenerColorVencimiento(subfila.venc).includes("red")
+                                                                                ? "⚠️ Próximo a vencer"
+                                                                                : obtenerColorVencimiento(subfila.venc).includes("yellow")
+                                                                                    ? "Vencimiento medio"
+                                                                                    : " ✔️ Vencimiento lejano"}
+                                                                        </span>
+                                                                    </div>
+                                                                </td>
                                                             </tr>
                                                         ))
                                                     )}
