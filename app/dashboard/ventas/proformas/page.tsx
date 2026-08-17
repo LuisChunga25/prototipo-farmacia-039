@@ -2001,7 +2001,7 @@ export default function SalidasPage() {
                                                                             <div className="font-bold text-gray-700">{med.presentacion}</div>
                                                                             {verificarConflicto(pacienteData?.dni, med) && (
                                                                                 <div className="text-yellow-600 text-xs mt-1 flex items-center gap-1">
-                                                                                    <AlertTriangle className="h-12 w-12" />
+                                                                                    <AlertTriangle className="h-10 w-10" />
                                                                                     {verificarConflicto(pacienteData?.dni, med)}
                                                                                 </div>
                                                                             )}
