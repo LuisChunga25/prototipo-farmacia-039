@@ -5,7 +5,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { deleteCookie } from "cookies-next"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select"
 import {
@@ -36,9 +36,44 @@ import {
   UserSquare,
   Boxes,
   CalendarDays,
+  AlertTriangle,
 } from "lucide-react"
 import { ThemeToggle } from "./theme-toggle"
 import { useAlmacen } from "@/context/AlmacenContext"
+
+// Datos de prueba de medicamentos (puedes moverlos a un archivo común si quieres reutilizar)
+const medicamentosPrueba: any[] = [
+  {
+    producto: "PARACETAMOL 500 MG",
+    presentacion: "TAB",
+    subfilas: [
+      { lote: "LTPAR22222", venc: "31/10/2026" },
+      { lote: "LTPAR33333", venc: "31/12/2026" },
+    ],
+  },
+  {
+    producto: "AMOXICILINA 500 MG",
+    presentacion: "TAB",
+    subfilas: [
+      { lote: "LTAMOX210702", venc: "30/09/2026" },
+    ],
+  },
+]
+
+// Función para calcular color según vencimiento
+const obtenerColorVencimiento = (fechaVenc: string) => {
+  const [dia, mes, anio] = fechaVenc.split("/").map(Number)
+  const fechaVencimiento = new Date(anio, mes - 1, dia)
+  const hoy = new Date()
+
+  const diferenciaMeses =
+    (fechaVencimiento.getFullYear() - hoy.getFullYear()) * 12 +
+    (fechaVencimiento.getMonth() - hoy.getMonth())
+
+  if (diferenciaMeses <= 3) return "bg-red-500 text-white"
+  if (diferenciaMeses <= 6) return "bg-yellow-400 text-black"
+  return "bg-green-500 text-white"
+}
 
 // Define types for navigation items
 interface SubItem {
@@ -65,11 +100,12 @@ export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const [userName, setUserName] = useState("Usuario")
+  const [openSemaforo, setOpenSemaforo] = useState(false)
 
   const { almacen, setAlmacen } = useAlmacen();
   const [openAlmacen, setOpenAlmacen] = useState(false)
   const [openPeriodo, setOpenPeriodo] = useState(false)
-  
+
   const [periodoMes, setPeriodoMes] = useState("")
   const [periodoAnio, setPeriodoAnio] = useState(new Date().getFullYear().toString())
 
@@ -528,7 +564,14 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          {/*<ThemeToggle />*/}
+          {/* Botón de alerta */}
+          <Button
+            className="flex items-center gap-2 px-3 bg-red-600 text-white hover:bg-red-700 animate-parpadeo-alertas rounded-md"
+            onClick={() => setOpenSemaforo(true)}
+          >
+            <AlertTriangle className="h-5 w-5 text-yellow-400" />
+            <span className="text-sm">Medicamentos a vencer</span>
+          </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -548,6 +591,49 @@ export default function Navbar() {
           </DropdownMenu>
         </div>
       </div>
+
+      {/* Modal de semaforización */}
+      <Dialog open={openSemaforo} onOpenChange={setOpenSemaforo}>
+        <DialogContent
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+          className="sm:max-w-lg bg-white rounded-lg shadow-lg pt-8 pr-8"
+        >
+          <DialogHeader className="flex items-center gap-2 bg-blue-50 p-3 rounded-t">
+            <AlertTriangle className="h-5 w-5 text-red-500" />
+            <DialogTitle className="text-lg font-bold text-gray-800">Medicamentos próximos a vencer</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            {medicamentosPrueba.map((med, idx) =>
+              med.subfilas.map((subfila: any, i: number) => (
+                <div
+                  key={`${idx}-${i}`}
+                  className="flex items-center justify-between bg-gray-50 border border-gray-200 p-3 rounded-md shadow-sm"
+                >
+                  <div>
+                    <span className="font-semibold text-gray-700">{med.producto}</span>
+                    <div className="text-xs text-gray-500">
+                      Lote {subfila.lote} - F. Venc: {subfila.venc}
+                    </div>
+                  </div>
+
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-bold ${obtenerColorVencimiento(
+                      subfila.venc
+                    )}`}
+                  >
+                    {obtenerColorVencimiento(subfila.venc).includes("red")
+                      ? "⚠️ Urgente"
+                      : obtenerColorVencimiento(subfila.venc).includes("yellow")
+                        ? "Medio"
+                        : "✔️ OK"}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </header>
   )
 }
