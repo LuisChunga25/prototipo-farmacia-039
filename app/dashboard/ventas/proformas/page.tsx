@@ -1359,7 +1359,7 @@ export default function SalidasPage() {
             </div>
 
             <div>
-                <div className="flex justify-end mb-4 mt-8">
+                <div className="flex justify-end mb-4 mt-12">
                     <div className="flex gap-2">
                         <Button
                             className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 font-semibold h-11 px-4"
@@ -1387,7 +1387,7 @@ export default function SalidasPage() {
                     </div>
                 </div>
 
-                <div className="flex items-end gap-4 border border-gray-300 rounded-md px-6 py-4 mb-6">
+                <div className="flex items-end gap-4 border border-cyan-300 rounded-md px-6 py-4 mb-6 shadow-sm">
                     <div className="flex flex-col flex-1">
                         <Label htmlFor="buscar" className="mb-1">Buscar por:</Label>
 
@@ -1462,18 +1462,18 @@ export default function SalidasPage() {
             <div className="overflow-x-auto border rounded-md">
                 <Table>
                     <TableHeader>
-                        <TableRow>
-                            <TableHead>Estado</TableHead>
-                            <TableHead>Orden ID</TableHead>
-                            <TableHead>Número de Receta</TableHead>
-                            <TableHead>Paciente</TableHead>
-                            <TableHead>Historia</TableHead>
-                            <TableHead>Tipo de Seguro</TableHead>
-                            <TableHead>Fecha</TableHead>
-                            <TableHead>Almacén</TableHead>
-                            <TableHead>Total (S/.)</TableHead>
-                            <TableHead>Usuario</TableHead>
-                            <TableHead>Acciones</TableHead>
+                        <TableRow className="bg-cyan-600 hover:bg-cyan-600">
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Estado</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Orden ID</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Número de Receta</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Paciente</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Historia</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Tipo de Seguro</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Fecha</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Almacén</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Total (S/.)</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Usuario</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Acciones</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
