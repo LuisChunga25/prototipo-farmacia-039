@@ -804,7 +804,7 @@ const medicamentosPrueba: Record<string, any[]> = {
     "23456789": [
         {
             item: 1,
-            producto: "PARACETAMOL 500 MG TAB",
+            producto: "IBUPROFENO 400 MG",
             presentacion: "TAB",
             sisMed: "07654",
             siga: "580900100099",
@@ -858,13 +858,13 @@ const historialPrueba: Record<string, Receta[]> = {
     ],
     "87654321": [
         {
-            fecha: "13/08/2026",
+            fecha: "24/08/2026",
             seguro: "PAGANTE",
             servicio: "CE",
             farmaco: "IBUPROFENO 400 MG",
             presentacion: "TAB",
             cantidad: 20,
-            indicacion: "1 cada 12 hrs por 10 días",
+            indicacion: "1 cada 12 hrs por 2 días",
             via: "Oral",
             diagnostico: "M151 - Artritis",
             medico: "BASOMBRIO VELASQUEZ JORGE",
@@ -960,13 +960,13 @@ const historialPrueba: Record<string, Receta[]> = {
     ],
     "23456789": [
         {
-            fecha: "13/08/2026",
+            fecha: "24/08/2026",
             seguro: "SIS",
             servicio: "CE",
             farmaco: "IBUPROFENO 400 MG",
             presentacion: "TAB",
             cantidad: 20,
-            indicacion: "1 cada 12 hrs por 10 días",
+            indicacion: "1 cada 12 hrs por 2 días",
             via: "Oral",
             diagnostico: "M151 - Artritis",
             medico: "APAZA ARAUJO BERIOSKA PAMELA",
@@ -1565,12 +1565,12 @@ export default function SalidasPage() {
                     </div>
 
                     <div className="flex gap-2">
-                        <Button variant="outline" size="sm" className="gap-1" onClick={limpiarFiltros}>
+                        <Button variant="outline" size="sm" className="h-10 gap-1" onClick={limpiarFiltros}>
                             <Eraser className="h-4 w-4" />
                             Limpiar Filtros
                         </Button>
 
-                        <Button variant="outline" size="sm" className="gap-1">
+                        <Button variant="outline" size="sm" className="h-10 gap-1">
                             <RefreshCw className="h-4 w-4" />
                             Actualizar
                         </Button>
@@ -2327,7 +2327,7 @@ export default function SalidasPage() {
                                         </div>
                                         <div className="flex justify-end mt-4">
                                             <div className="bg-blue-900 text-white font-bold px-6 py-2 rounded-md shadow">
-                                                Total: S/. {totalImporte.toFixed(2)}
+                                                Total: S/ {totalImporte.toFixed(2)}
                                             </div>
                                         </div>
                                     </div>
@@ -3274,7 +3274,7 @@ export default function SalidasPage() {
 
                             <div className="flex justify-end mt-4">
                                 <div className="bg-blue-900 text-white font-bold px-6 py-2 rounded-md shadow">
-                                    Total: S/. {totalImporteRecExt.toFixed(2)}
+                                    Total: S/ {totalImporteRecExt.toFixed(2)}
                                 </div>
                             </div>
 
