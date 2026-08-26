@@ -1161,6 +1161,7 @@ export default function SalidasPage() {
     const [openPaquetes, setOpenPaquetes] = useState(false);
     const [openItemsPaquete, setOpenItemsPaquete] = useState(false);
     const [paqueteSeleccionado, setPaqueteSeleccionado] = useState<Paquete | null>(null);
+    const [cantidadesDispensar, setCantidadesDispensar] = useState<Record<string, number>>({});
 
     // Estados de error
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -1321,6 +1322,16 @@ export default function SalidasPage() {
     useEffect(() => {
         setProformasVisibles(proformasData);
     }, [proformasData]);
+
+    // INICIALIZAR CON LA CANTIDAD SOLICITADA
+    useEffect(() => {
+        const inicial = medicamentosData.reduce((acc, med) => {
+            acc[med.item] = med.cantSolicitada;
+            return acc;
+        }, {} as Record<string, number>);
+        setCantidadesDispensar(inicial);
+    }, [medicamentosData]);
+
 
     const getEstadoBadge = (estado: string) => {
         const variants = {
@@ -2415,6 +2426,7 @@ export default function SalidasPage() {
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Producto</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">SISMED / SIGA</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Cantidad solicitada</th>
+                                                        <th className="border border-gray-300 px-3 py-2 text-left">Cantidad a dispensar</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Cantidad por lote</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Precio de Operación</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Importe</th>
@@ -2444,6 +2456,24 @@ export default function SalidasPage() {
                                                                             <div><span className="font-semibold">SIGA:</span> {med.siga}</div>
                                                                         </td>
                                                                         <td className="border px-3 py-2" rowSpan={med.subfilas.length}>{med.cantSolicitada}</td>
+                                                                        <td className="border px-3 py-2" rowSpan={med.subfilas.length}>
+                                                                            <input
+                                                                                type="number"
+                                                                                min={1}
+                                                                                max={med.cantSolicitada}
+                                                                                value={cantidadesDispensar[med.item] ?? med.cantSolicitada}
+                                                                                onChange={(e) => {
+                                                                                    const nuevaCantidad = parseInt(e.target.value, 10);
+                                                                                    if (nuevaCantidad <= med.cantSolicitada) {
+                                                                                        setCantidadesDispensar(prev => ({
+                                                                                            ...prev,
+                                                                                            [med.item]: nuevaCantidad
+                                                                                        }));
+                                                                                    }
+                                                                                }}
+                                                                                className="border rounded-md p-1 w-20 text-center"
+                                                                            />
+                                                                        </td>
                                                                     </>
                                                                 )}
                                                                 <td className="border px-3 py-2">
