@@ -1394,6 +1394,32 @@ export default function SalidasPage() {
         });
     };
 
+    const recalcularLotes = (med: Medicamento) => {
+        let restante = cantidadesDispensar[med.item] ?? med.cantSolicitada;
+        return med.subfilas.map((subfila) => {
+            if (restante <= 0) {
+                return { ...subfila, cantAsignada: 0, importe: "S/ 0.00" };
+            }
+            const asignar = Math.min(restante, subfila.cantAsignada);
+            const precioNum = parseFloat(subfila.precio.replace("S/", "").trim());
+            const nuevoImporte = `S/ ${(asignar * precioNum).toFixed(2)}`;
+            restante -= asignar;
+            return { ...subfila, cantAsignada: asignar, importe: nuevoImporte };
+        });
+    };
+
+    const calcularTotal = () => {
+        return medicamentosData.reduce((accMed, med) => {
+            const subfilasRecalculadas = recalcularLotes(med);
+            const subtotal = subfilasRecalculadas.reduce((accSub, subfila) => {
+                const precioNum = parseFloat(subfila.precio.replace("S/", "").trim());
+                return accSub + (subfila.cantAsignada * precioNum);
+            }, 0);
+            return accMed + subtotal;
+        }, 0);
+    };
+
+
     // FUNCION DE VALIDACION GENERICA
     const validarBusqueda = () => {
         if (dni.trim().length === 0) {
@@ -1522,7 +1548,7 @@ export default function SalidasPage() {
                     </Button>
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Módulo de Proformas Web</h1>
-                        <p className="text-muted-foreground">Gestione la emisión de proformas con los detalles de los medicamentos antes de su entrega al paciente</p>
+                        <p className="text-muted-foreground">Gestión de la emisión de proformas</p>
                     </div>
                 </div>
                 <div className="bg-cyan-50 border border-cyan-200 border-2 p-4 rounded-md">
@@ -2436,7 +2462,7 @@ export default function SalidasPage() {
                                                 </thead>
                                                 <tbody>
                                                     {medicamentosData.map((med) =>
-                                                        med.subfilas.map((subfila, idx) => (
+                                                        recalcularLotes(med).map((subfila, idx) => (
                                                             <tr key={`${med.item}-${idx}`}>
                                                                 {idx === 0 && (
                                                                     <>
@@ -2510,7 +2536,7 @@ export default function SalidasPage() {
                                         </div>
                                         <div className="flex justify-end mt-4">
                                             <div className="bg-blue-900 text-white font-bold px-6 py-2 rounded-md shadow">
-                                                Total: S/ {totalImporte.toFixed(2)}
+                                                Total: S/ {calcularTotal().toFixed(2)}
                                             </div>
                                         </div>
                                     </div>
