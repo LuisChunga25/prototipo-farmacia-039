@@ -864,7 +864,7 @@ export default function SalidasPage() {
   const [searchBy, setSearchBy] = useState("ingresoId");
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [devolucionesVisibles, setDevolucionesVisibles] = useState<any[]>([]);
-  const [modalNuevaProforma, setModalNuevaProforma] = useState(false);
+  const [modalNuevaDevolucion, setModalNuevaDevolucion] = useState(false);
   const [modalDetallePaciente, setModalDetallePaciente] = useState(false);
   const [modalPacienteExterno, setModalPacienteExterno] = useState(false);
   const [modalRecetaExterna, setModalRecetaExterna] = useState(false);
@@ -1165,7 +1165,7 @@ export default function SalidasPage() {
 
   // RESETEAR MODAL
   const resetForm = () => {
-    setModalNuevaProforma(false);
+    setModalNuevaDevolucion(false);
     setModalDetallePaciente(false);
     setDniValidado(false);
     setDni("");
@@ -1311,7 +1311,7 @@ export default function SalidasPage() {
 
             <Button
               className="bg-teal-600 hover:bg-teal-700 text-white gap-2 font-semibold h-10 px-4"
-              onClick={() => setModalNuevaProforma(true)}
+              onClick={() => setModalNuevaDevolucion(true)}
             >
               <Plus className="h-5 w-5" strokeWidth={3} />
               Nueva Devolución
@@ -1643,12 +1643,12 @@ export default function SalidasPage() {
         </div>
       )}
 
-      {/* MODAL DE REGISTRO DE NUEVA PROFORMA DE VENTA */}
-      {modalNuevaProforma && (
+      {/* MODAL DE REGISTRO DE NUEVA DEVOLUCION */}
+      {modalNuevaDevolucion && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50">
           <div className="bg-white rounded-md shadow-lg p-6 max-w-5xl w-full max-h-[90vh] overflow-y-auto relative">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Registrar Proforma</h2>
+              <h2 className="text-lg font-semibold">Registrar Devolución</h2>
 
               <button
                 type="button"
@@ -1764,7 +1764,7 @@ export default function SalidasPage() {
                                   setMedicoReceta(paciente.medico);
                                   setHistorialData(historialPrueba[paciente.dni] || []);
                                   setDniValidado(true);
-                                  setModalNuevaProforma(false);
+                                  setModalNuevaDevolucion(false);
                                   setModalDetallePaciente(true);
                                 } else {
                                   setMensajeAviso(`No se tiene registro de una receta para ${filtroFarmacia}.`);
@@ -1839,7 +1839,7 @@ export default function SalidasPage() {
                   onClick={() => {
                     resetForm();
                     setModalDetallePaciente(false);
-                    setModalNuevaProforma(true);
+                    setModalNuevaDevolucion(true);
                   }}
                   className="text-gray-600 hover:text-blue-600 hover:bg-gray-100 p-2"
                 >

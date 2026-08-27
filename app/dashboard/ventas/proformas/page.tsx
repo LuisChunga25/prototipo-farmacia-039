@@ -1325,11 +1325,13 @@ export default function SalidasPage() {
 
     // INICIALIZAR CON LA CANTIDAD SOLICITADA
     useEffect(() => {
-        const inicial = medicamentosData.reduce((acc, med) => {
-            acc[med.item] = med.cantSolicitada;
-            return acc;
-        }, {} as Record<string, number>);
-        setCantidadesDispensar(inicial);
+        if (medicamentosData.length > 0) {
+            const inicial = medicamentosData.reduce((acc, med) => {
+                acc[med.item] = med.cantSolicitada;
+                return acc;
+            }, {} as Record<string, number>);
+            setCantidadesDispensar(inicial);
+        }
     }, [medicamentosData]);
 
 
@@ -1449,45 +1451,6 @@ export default function SalidasPage() {
             setError("");
             setResultadosBusqueda(coincidencias);
         }
-
-        /*if (tipoBusqueda === "documento") {
-            if (dni.trim().length < 8) {
-                setError("El documento debe tener al menos 8 caracteres");
-                setDniValidado(false);
-                return;
-            }
-            if (!pacientesPrueba[dni.trim()]) {
-                setError("No se encontró paciente con ese DNI en la data de prueba");
-                setDniValidado(false);
-                return;
-            }
-            // éxito por documento
-            setError("");
-            setPacienteData(pacientesPrueba[dni.trim()]);
-            setMedicamentosData(medicamentosPrueba[dni.trim()] || []);
-            setMedicoReceta(pacientesPrueba[dni.trim()].medico);
-            setHistorialData(historialPrueba[dni.trim()] || []);
-            setDniValidado(true);
-
-        } else if (tipoBusqueda === "nombres") {
-            // ejemplo básico: búsqueda por nombres
-            const pacienteEncontrado = Object.values(pacientesPrueba).find(
-                (p) => p.nombre.toLowerCase().includes(dni.trim().toLowerCase())
-            );
-
-            if (!pacienteEncontrado) {
-                setError("No se encontró paciente con esos apellidos y nombres");
-                setDniValidado(false);
-                return;
-            }
-            // éxito por nombres
-            setError("");
-            setPacienteData(pacienteEncontrado);
-            setMedicamentosData(medicamentosPrueba[pacienteEncontrado.dni] || []);
-            setMedicoReceta(pacienteEncontrado.medico);
-            setHistorialData(historialPrueba[pacienteEncontrado.dni] || []);
-            setDniValidado(true);
-        }*/
     };
 
     // RESETEAR MODAL
@@ -1515,6 +1478,7 @@ export default function SalidasPage() {
         setResultadosBusqueda([]);
         setTipoBusqueda("documento");
         setMostrarExito(false);
+        setCantidadesDispensar({});
     };
 
     // LIMPIAR FILTROS DE BÚSQUEDA
