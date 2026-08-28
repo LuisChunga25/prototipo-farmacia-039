@@ -26,6 +26,12 @@ const medicamentosPrueba: any[] = [
   },
 ]
 
+// Datos de prueba de medicamentos con stock bajo
+const stockBajoPrueba: any[] = [
+  { producto: "PARACETAMOL 500 MG", lote: "LTPAR22222", stock: 3 },
+  { producto: "AMOXICILINA 500 MG", lote: "LTAMOX210702", stock: 2 },
+];
+
 // Función para calcular color según vencimiento
 const obtenerColorVencimiento = (fechaVenc: string) => {
   const [dia, mes, anio] = fechaVenc.split("/").map(Number)
@@ -87,7 +93,7 @@ export default function Dashboard() {
                       Lote {subfila.lote} - F. Venc: {subfila.venc}
                     </div>
                   </div>
-                  
+
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-bold ${obtenerColorVencimiento(
                       subfila.venc
@@ -102,6 +108,28 @@ export default function Dashboard() {
                 </div>
               ))
             )}
+          </div>
+
+          <div className="mt-6">
+            <h3 className="text-md font-semibold text-red-700 mb-2">Medicamentos con stock bajo</h3>
+            <div className="space-y-3">
+              {stockBajoPrueba.map((med, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between bg-gray-50 border border-gray-200 p-3 rounded-md shadow-sm"
+                >
+                  <div>
+                    <span className="font-semibold text-gray-700">{med.producto}</span>
+                    <div className="text-xs text-gray-500">
+                      Lote {med.lote}
+                    </div>
+                  </div>
+                  <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                    Stock: {med.stock}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </DialogContent>
       </Dialog>

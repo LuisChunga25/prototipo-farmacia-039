@@ -138,6 +138,19 @@ interface Paciente {
   cuenta?: string;
 }
 
+interface KardexItem {
+  nombre: string;
+  cantidad: number;
+  precio: string;
+  importe: string;
+}
+
+interface ProformaKardex {
+  proforma: string;
+  fecha: string;
+  usuario: string;
+  items: KardexItem[];
+}
 
 // DATOS DE EJEMPLO PARA LA TABLA
 const devolucionesData = [
@@ -622,6 +635,38 @@ const medicamentosPrueba: Record<string, any[]> = {
   ],
 };
 
+const kardexPrueba: Record<string, any[]> = {
+  "12345678": [
+    {
+      proforma: "1726151436",
+      fecha: "27/08/2026",
+      usuario: "RIVAS BRAVO FLOR DE MARIA",
+      items: [
+        { nombre: "ONDANSETRON CLORHIDRATO 2 MG/ML 4 ML INY", cantidad: 1, precio: "S/ 1.07", importe: "S/ 1.07" },
+        { nombre: "GLUCOSA EN AGUA (5%) 1 L", cantidad: 1, precio: "S/ 4.99", importe: "S/ 4.99" },
+      ],
+    },
+    {
+      proforma: "1726151447",
+      fecha: "27/08/2026",
+      usuario: "YALOPOMA POMA JHENRY",
+      items: [
+        { nombre: "CATETER Nº 22 G X 1", cantidad: 1, precio: "S/ 4.12", importe: "S/ 4.12" },
+      ],
+    },
+  ],
+  "87654321": [
+    {
+      proforma: "1726152001",
+      fecha: "26/08/2026",
+      usuario: "BASOMBRIO",
+      items: [
+        { nombre: "IBUPROFENO 400 MG TAB", cantidad: 12, precio: "S/ 1.80", importe: "S/ 21.60" },
+      ],
+    },
+  ],
+};
+
 const historialPrueba: Record<string, Receta[]> = {
   "12345678": [
     {
@@ -859,7 +904,7 @@ const tarifariosPrueba = {
 }
 
 
-export default function SalidasPage() {
+export default function DevolucionesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchBy, setSearchBy] = useState("ingresoId");
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -875,8 +920,6 @@ export default function SalidasPage() {
   const [modalEditarCantidad, setModalEditarCantidad] = useState(false);
   const [medicamentoSeleccionado, setMedicamentoSeleccionado] = useState<any>(null);
   const router = useRouter();
-  const hoy = new Date();
-  const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
   const [fechaActual, setFechaActual] = useState("");
   const [horaActual, setHoraActual] = useState("");
   const [pacienteExterno, setPacienteExterno] = useState(false);
@@ -914,15 +957,31 @@ export default function SalidasPage() {
   const [nuevaCantidad, setNuevaCantidad] = useState("");
   const [modalEditarCantidadMed, setModalEditarCantidadMed] = useState(false);
   const [errorStock, setErrorStock] = useState("");
+  const [modalKardex, setModalKardex] = useState(false);
+  const [kardexData, setKardexData] = useState<ProformaKardex[]>([]);
+  const [modalDevolucion, setModalDevolucion] = useState(false);
+  const [proformaSeleccionada, setProformaSeleccionada] = useState<ProformaKardex | null>(null);
+  const [horaIngresoModal, setHoraIngresoModal] = useState("");
+  const [modalConfirmacion, setModalConfirmacion] = useState(false);
+  const [devolucionToProcesar, setDevolucionToProcesar] = useState<any>(null);
+  const [showConfirmProcesar, setShowConfirmProcesar] = useState(false);
+  const [showSuccessProcesar, setShowSuccessProcesar] = useState(false);
+  const [devolucionToDelete, setDevolucionToDelete] = useState<any>(null);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [showSuccessDelete, setShowSuccessDelete] = useState(false);
 
   // Estados de error
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [errorMedicamentos, setErrorMedicamentos] = useState("");
 
   // Formatear a yyyy-MM-dd para que el input type="date" lo acepte
+  const hoy = new Date();
+  const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
   const formatoISO = (fecha: Date) => fecha.toISOString().split("T")[0];
   const [fechaInicio, setFechaInicio] = useState(formatoISO(primerDiaMes));
   const [fechaFin, setFechaFin] = useState(formatoISO(hoy));
+  const [fechaInicioKardex, setFechaInicioKardex] = useState(formatoISO(hoy));
+  const [fechaFinKardex, setFechaFinKardex] = useState(formatoISO(hoy));
 
   // Función validar DNI
   const validarDni = () => {
@@ -944,6 +1003,43 @@ export default function SalidasPage() {
       setDniValidado(true); // despliega datos solo si cumple
     }
   }
+
+  // Simular procesamiento de devolución
+  const confirmProcesar = () => {
+    setShowConfirmProcesar(false);
+
+    // Simulación de cambio de estado
+    setDevolucionesVisibles((prev) =>
+      prev.map((s) =>
+        s.id === devolucionToProcesar.id
+          ? { ...s, estado: "2" }
+          : s
+      )
+    );
+
+    setTimeout(() => {
+      setShowSuccessProcesar(true);
+    }, 200);
+  };
+
+  const confirmDelete = () => {
+    setShowConfirmDelete(false);
+
+    // Ocultamiento visual
+    setDevolucionesVisibles((prev) =>
+      prev.filter((s) => s.id !== devolucionToDelete.id)
+    );
+
+    setTimeout(() => {
+      setShowSuccessDelete(true);
+    }, 200);
+  };
+
+  // ELIMINAR DOCUMENTO DE SALIDA
+  const handleDeleteClick = (devolucion: any) => {
+    setDevolucionToDelete(devolucion);
+    setShowConfirmDelete(true);
+  };
 
   // Parsear la fecha y duración
   const obtenerDiasDeIndicacion = (indicacion: string): number => {
@@ -1369,6 +1465,19 @@ export default function SalidasPage() {
                   <TableCell>
                     <div className="flex space-x-2">
                       <Button
+                        title="Procesar"
+                        variant="outline"
+                        className={`h-8 w-10 p-1.5 border-green-600 text-green-600 hover:bg-green-50
+                                              ${devolucion.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
+                        disabled={devolucion.estado !== "1"}
+                        onClick={() => {
+                          setDevolucionToProcesar(devolucion);
+                          setShowConfirmProcesar(true);
+                        }}
+                      >
+                        <CheckCircle className="w-3 h-3" />
+                      </Button>
+                      <Button
                         title="Ver detalle"
                         variant="outline"
                         className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50 flex items-center justify-center"
@@ -1380,16 +1489,26 @@ export default function SalidasPage() {
                         <Eye className="w-4 h-4" />
                       </Button>
                       <Button
-                        title="Anular documento"
+                        title="Editar"
                         variant="outline"
-                        className="h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50 flex items-center justify-center"
-                        onClick={() => {
-                          setDevolucionSeleccionada(devolucion);
-                          setMostrarConfirmacionAnular(true);
-                        }}
-                        disabled={devolucion.estado === "3"}
+                        className={`h-8 w-10 p-1.5 border-yellow-600 text-yellow-600 hover:bg-yellow-50
+                                              ${devolucion.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
+                        disabled={devolucion.estado !== "1"}
+                        onClick={() =>
+                          router.push(`/dashboard/almacenes/salidas/editar/${devolucion.id}`)
+                        }
                       >
-                        <X className="w-4 h-4" />
+                        <Edit className="w-3 h-3" />
+                      </Button>
+                      <Button
+                        title="Eliminar"
+                        variant="outline"
+                        className={`h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50
+                        ${devolucion.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
+                        disabled={devolucion.estado !== "1"}
+                        onClick={() => handleDeleteClick(devolucion)}
+                      >
+                        <Trash2 className="w-3 h-3" />
                       </Button>
                     </div>
                   </TableCell>
@@ -1659,70 +1778,111 @@ export default function SalidasPage() {
               </button>
             </div>
 
+            <h3 className="mb-6">Kardex Detallado del Paciente por Historia Clínica</h3>
+
             {/* Aquí va tu formulario */}
             <form>
-              <div className="mb-6 mt-6 flex justify-between items-center">
-                <h3 className="text-md font-semibold">Buscar Paciente</h3>
+              {/* Filtros de rango de fechas y tipo de transacción */}
+              <div className="flex gap-4 mb-6">
+                {/* Fecha desde */}
+                <div className="flex flex-col w-40">
+                  <label className="text-sm font-medium mb-1">Desde:</label>
+                  <Input
+                    type="date"
+                    className="border p-2 h-10"
+                    value={fechaInicioKardex}
+                    onChange={(e) => setFechaInicioKardex(e.target.value)}
+                  />
+                </div>
 
-                {resultadosBusqueda.length > 0 && (
+                {/* Fecha hasta */}
+                <div className="flex flex-col w-40">
+                  <label className="text-sm font-medium mb-1">Hasta:</label>
+                  <Input
+                    type="date"
+                    className="border p-2 h-10"
+                    value={fechaFinKardex}
+                    onChange={(e) => setFechaFinKardex(e.target.value)}
+                  />
+                </div>
+
+                {/* Tipo de transacción */}
+                <div className="flex flex-col w-40">
+                  <label className="text-sm font-medium mb-1">Tipo de Transacción:</label>
+                  <Input />
+                  {/*<select
+                    className="border p-2 h-10"
+                    value={tipoTransaccion}
+                    onChange={(e) => setTipoTransaccion(e.target.value)}
+                  >
+                    <option value="">Seleccione</option>
+                    <option value="Ingreso">Ingreso</option>
+                    <option value="Devolución">Devolución</option>
+                    <option value="Salida">Salida</option>
+                  </select>*/}
+                </div>
+              </div>
+
+              <div className="mb-4 text-sm">
+                <label className="text-sm font-medium block mb-2">Paciente:</label>
+                <div className="flex items-center gap-4">
+                  <select
+                    value={tipoBusqueda}
+                    onChange={(e) => setTipoBusqueda(e.target.value)}
+                    className="border p-2 h-10 w-56"
+                  >
+                    <option value="documento">N° de Historia Clínica</option>
+                    <option value="nombres">Apellidos y Nombres</option>
+                  </select>
+
+                  {/* Contenedor vertical para input + error */}
+                  <Input
+                    id="documento"
+                    type="text"
+                    placeholder={tipoBusqueda === "documento" ? "Ingrese número de historia clínica" : "Ingrese apellidos y nombres"}
+                    autoComplete="off"
+                    className={`border p-2 h-10 flex-1 ${error ? "border-red-500" : ""}`}
+                    value={dni}
+                    onChange={(e) => {
+                      setDni(e.target.value);
+                      setError(""); // limpia error al escribir
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        validarBusqueda();
+                      }
+                    }}
+                  />
+
                   <Button
                     type="button"
-                    className="bg-gray-500 hover:bg-gray-600 text-white h-9 px-3"
-                    onClick={() => {
-                      setDni("");
-                      setError("");
-                      setResultadosBusqueda([]);
-                      setPacienteData(null);
-                      setMedicamentosData([]);
-                      setHistorialData([]);
-                      setDniValidado(false);
-                      setPacienteExterno(false);
-                      setTipoBusqueda("documento");
-                    }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white h-10 px-4"
+                    onClick={validarBusqueda}
                   >
-                    Nueva Búsqueda
+                    Buscar
                   </Button>
-                )}
-              </div>
-              <div className="flex items-center gap-4 mb-4">
-                <select
-                  value={tipoBusqueda}
-                  onChange={(e) => setTipoBusqueda(e.target.value)}
-                  className="border p-2 h-10 w-56"
-                >
-                  <option value="documento">Documento</option>
-                  <option value="nombres">Apellidos y Nombres</option>
-                </select>
 
-                {/* Contenedor vertical para input + error */}
-                <Input
-                  id="documento"
-                  type="text"
-                  placeholder={tipoBusqueda === "documento" ? "Ingrese número de documento" : "Ingrese apellidos y nombres"}
-                  autoComplete="off"
-                  className={`border p-2 h-10 flex-1 ${error ? "border-red-500" : ""}`}
-                  value={dni}
-                  onChange={(e) => {
-                    setDni(e.target.value);
-                    setError(""); // limpia error al escribir
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      validarBusqueda();
-                    }
-                  }}
-                  disabled={pacienteExterno}
-                />
-
-                <Button
-                  type="button"
-                  className="bg-blue-600 hover:bg-blue-700 text-white h-10 px-4"
-                  onClick={validarBusqueda}
-                  disabled={pacienteExterno}
-                >
-                  Buscar
-                </Button>
+                  {resultadosBusqueda.length > 0 && (
+                    <Button
+                      type="button"
+                      className="bg-gray-500 hover:bg-gray-600 text-white h-10 px-3"
+                      onClick={() => {
+                        setDni("");
+                        setError("");
+                        setResultadosBusqueda([]);
+                        setPacienteData(null);
+                        setMedicamentosData([]);
+                        setHistorialData([]);
+                        setDniValidado(false);
+                        setPacienteExterno(false);
+                        setTipoBusqueda("documento");
+                      }}
+                    >
+                      Nueva Búsqueda
+                    </Button>
+                  )}
+                </div>
               </div>
 
               {resultadosBusqueda.length > 0 && (
@@ -1734,7 +1894,7 @@ export default function SalidasPage() {
               )}
 
               {resultadosBusqueda.length > 0 && (
-                <div className="mt-4">
+                <div className="mt-4 text-sm">
                   <table className="w-full border-collapse border border-gray-300">
                     <thead className="bg-gray-100">
                       <tr>
@@ -1757,32 +1917,14 @@ export default function SalidasPage() {
                               type="button"
                               className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2 px-4 py-2 rounded-md"
                               onClick={() => {
-                                const farmaciaEsperada = mapaFarmacias[filtroFarmacia];
-                                if (paciente.tipoAtencion === farmaciaEsperada) {
-                                  setPacienteData(paciente);
-                                  setMedicamentosData(medicamentosPrueba[paciente.dni] || []);
-                                  setMedicoReceta(paciente.medico);
-                                  setHistorialData(historialPrueba[paciente.dni] || []);
-                                  setDniValidado(true);
-                                  setModalNuevaDevolucion(false);
-                                  setModalDetallePaciente(true);
-                                } else {
-                                  setMensajeAviso(`No se tiene registro de una receta para ${filtroFarmacia}.`);
-                                  setModalAviso(true);
-                                }
-
+                                setPacienteData(paciente);
+                                setKardexData(kardexPrueba[paciente.dni] || []);
+                                setModalNuevaDevolucion(false);
+                                setModalKardex(true);
                               }}
                             >
                               <CheckCircleIcon className="h-4 w-4" />
-                              Validar Receta
-                            </Button>
-                            <Button
-                              type="button"
-                              className="bg-teal-600 hover:bg-teal-700 text-white flex items-center gap-2 px-4 py-2 rounded-md"
-                              onClick={() => window.open("/Modelo Receta CE.pdf", "_blank")}
-                            >
-                              <Printer className="h-4 w-4" />
-                              Imprimir Receta
+                              Revisar Kardex
                             </Button>
                           </td>
                         </tr>
@@ -3247,6 +3389,280 @@ export default function SalidasPage() {
           </div>
         </div>
       )}
+
+      {modalKardex && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-md shadow-lg p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto relative">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Kardex Detallado del Paciente</h2>
+              <button
+                type="button"
+                onClick={() => setModalKardex(false)}
+                className="text-gray-500 hover:text-red-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {pacienteData && (
+              <div className="mb-4 text-sm">
+                <p><strong>Paciente:</strong> {pacienteData.nombre}</p>
+                <p><strong>Historia Clínica:</strong> {pacienteData.historia}</p>
+              </div>
+            )}
+
+            {kardexData.map((proforma, idx) => (
+              <div key={idx} className="border rounded-md p-4 mb-6 bg-gray-50">
+                <h3 className="text-md font-semibold mb-2">
+                  Proforma {proforma.proforma} - Fecha: {proforma.fecha} - Usuario: {proforma.usuario}
+                </h3>
+                <table className="w-full border-collapse border border-gray-300 text-sm mb-3">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="border px-2 py-1">Item</th>
+                      <th className="border px-2 py-1">Cantidad</th>
+                      <th className="border px-2 py-1">Precio</th>
+                      <th className="border px-2 py-1">Importe</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {proforma.items.map((item, i) => (
+                      <tr key={i}>
+                        <td className="border px-2 py-1">{item.nombre}</td>
+                        <td className="border px-2 py-1">{item.cantidad}</td>
+                        <td className="border px-2 py-1">{item.precio}</td>
+                        <td className="border px-2 py-1">{item.importe}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <Button
+                  type="button"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
+                  onClick={() => {
+                    setProformaSeleccionada(proforma);
+                    const ahora = new Date();
+                    const opcionesHora: Intl.DateTimeFormatOptions = { hour: "2-digit", minute: "2-digit", second: "2-digit" };
+                    setHoraIngresoModal(ahora.toLocaleTimeString("es-PE", opcionesHora));
+                    setModalKardex(false);
+                    setModalDevolucion(true);
+                  }}
+                >
+                  Realizar Devolución
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {modalDevolucion && proformaSeleccionada && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-md shadow-lg p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto relative">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Registrar Devolución</h2>
+              <button
+                type="button"
+                onClick={() => setModalDevolucion(false)}
+                className="text-gray-500 hover:text-red-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Datos generales */}
+            <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
+              <div>
+                <p><strong>Fecha:</strong> {fechaActual}</p>
+                <p><strong>Hora:</strong> {horaIngresoModal}</p>
+              </div>
+              <div>
+                <p><strong>Almacén:</strong> {filtroFarmacia}</p>
+                <p><strong>Nro. Proforma:</strong> {proformaSeleccionada.proforma}</p>
+                <p><strong>Paciente:</strong> {pacienteData?.nombre}</p>
+              </div>
+            </div>
+
+            {/* Detalle de items */}
+            <table className="w-full border-collapse border border-gray-300 text-sm mb-4">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="border px-2 py-1">Item</th>
+                  <th className="border px-2 py-1">Cantidad</th>
+                  <th className="border px-2 py-1">Precio</th>
+                  <th className="border px-2 py-1">Importe</th>
+                  <th className="border px-2 py-1">Cantidad a devolver</th>
+                </tr>
+              </thead>
+              <tbody>
+                {proformaSeleccionada.items.map((item: KardexItem, idx: number) => (
+                  <tr key={idx}>
+                    <td className="border px-2 py-1">{item.nombre}</td>
+                    <td className="border px-2 py-1">{item.cantidad}</td>
+                    <td className="border px-2 py-1">{item.precio}</td>
+                    <td className="border px-2 py-1">{item.importe}</td>
+                    <td className="border px-2 py-1">
+                      <Input
+                        type="number"
+                        min={0}
+                        max={item.cantidad}
+                        className="border p-1 w-20"
+                        placeholder="0"
+                        onChange={(e) => {
+                          const nuevaCantidad = parseInt(e.target.value, 10);
+                          console.log("Devolver", nuevaCantidad, "de", item.nombre);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Botones de acción */}
+            <div className="flex justify-end gap-2 mt-4">
+              <Button variant="outline" onClick={() => setModalDevolucion(false)}>Cancelar</Button>
+              <Button
+                className="bg-green-600 hover:bg-green-700 text-white"
+                onClick={() => {
+                  setModalConfirmacion(true);
+                  setModalDevolucion(false);
+                }}
+              >
+                Grabar Devolución
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {modalConfirmacion && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
+            <div className="flex items-center gap-2 mb-4">
+              <CheckCircle className="h-8 w-8 text-green-600" />
+              <h2 className="text-lg font-semibold">Devolución Registrada</h2>
+            </div>
+
+            <p className="text-sm text-gray-700 mb-6 text-center">
+              La devolución ha sido registrada con éxito.
+            </p>
+
+            <div className="flex justify-end">
+              <Button
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={() => setModalConfirmacion(false)}
+              >
+                Finalizar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showConfirmProcesar && (
+        <Dialog open={showConfirmProcesar} onOpenChange={setShowConfirmProcesar}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirmar procesamiento de devolución</DialogTitle>
+              <DialogDescription>
+                ¿Está seguro de procesar este documento?
+                <br />
+                <span className="text-red-500 font-medium">
+                  Esta acción no podrá deshacerse.
+                </span>
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex justify-end gap-3 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => setShowConfirmProcesar(false)}
+              >
+                Cancelar
+              </Button>
+
+              <Button
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={confirmProcesar}
+              >
+                Confirmar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {showSuccessProcesar && (
+        <Dialog open={showSuccessProcesar} onOpenChange={setShowSuccessProcesar}>
+          <DialogContent>
+            <DialogHeader>
+              <CheckCircle className="mx-auto h-12 w-12 text-green-600 mb-3" />
+              <DialogTitle className="text-center">Documento procesado</DialogTitle>
+              <DialogDescription className="text-center">
+                El documento de devolución ha sido procesado con éxito.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex justify-end mt-4">
+              <Button
+                className="bg-green-600 hover:bg-green-700 text-white"
+                onClick={() => setShowSuccessProcesar(false)}
+              >
+                Aceptar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {showConfirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+            <h2 className="text-lg font-semibold mb-2">Confirmar eliminación</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              ¿Está seguro de eliminar el documento{" "}
+              <span className="font-semibold">{devolucionToDelete?.documento}</span>?
+            </p>
+
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowConfirmDelete(false)}
+              >
+                Cancelar
+              </Button>
+              <Button
+                className="bg-red-600 hover:bg-red-700 text-white"
+                onClick={confirmDelete}
+              >
+                Eliminar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE ÉXITO DE ELIMINACIÓN DE DOCUMENTO DE SALIDA */}
+      {showSuccessDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-center">
+            <CheckCircle className="mx-auto h-12 w-12 text-green-600 mb-3" />
+            <h2 className="text-lg font-semibold mb-2">Eliminado con éxito</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              El documento fue eliminado correctamente.
+            </p>
+
+            <Button
+              className="bg-green-600 hover:bg-green-700 text-white"
+              onClick={() => setShowSuccessDelete(false)}
+            >
+              Aceptar
+            </Button>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

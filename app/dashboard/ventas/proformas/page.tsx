@@ -1103,7 +1103,7 @@ const paquetesPrueba: Paquete[] = [
 ];
 
 
-export default function SalidasPage() {
+export default function ProformasPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchBy, setSearchBy] = useState("ordenId");
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -2105,7 +2105,7 @@ export default function SalidasPage() {
                                     </Button>
                                 )}
                             </div>
-                            <div className="flex items-center gap-4 mb-4">
+                            <div className="flex items-center gap-4 mb-4 text-sm">
                                 <select
                                     value={tipoBusqueda}
                                     onChange={(e) => setTipoBusqueda(e.target.value)}
@@ -2156,7 +2156,7 @@ export default function SalidasPage() {
 
                             {resultadosBusqueda.length > 0 && (
                                 <div className="mt-4">
-                                    <table className="w-full border-collapse border border-gray-300">
+                                    <table className="w-full border-collapse border border-gray-300 text-sm">
                                         <thead className="bg-gray-100">
                                             <tr>
                                                 <th className="border border-gray-300 px-2 py-1">Historia</th>
