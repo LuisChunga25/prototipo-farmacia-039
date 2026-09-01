@@ -166,9 +166,9 @@ const proformasData = [
         ordenId: "1726126012",
         numReceta: "260363091",
         cuentaId: "3010196",
-        fecha: "05/08/2026",
+        fecha: "01/09/2026",
         hora: "11:12:07",
-        fecha_proceso: "05/08/2026",
+        fecha_proceso: "01/09/2026",
         hora_proceso: "11:12",
         numPaciente: "2008352165",
         historia: "09846541",
@@ -208,9 +208,9 @@ const proformasData = [
         ordenId: "1726126011",
         numReceta: "260363090",
         cuentaId: "3010195",
-        fecha: "05/08/2026",
+        fecha: "01/09/2026",
         hora: "11:10:25",
-        fecha_proceso: "05/08/2026",
+        fecha_proceso: "01/09/2026",
         hora_proceso: "11:10",
         numPaciente: "2008126535",
         historia: "48952215",
@@ -250,9 +250,9 @@ const proformasData = [
         ordenId: "1726126010",
         numReceta: "260363089",
         cuentaId: "3010194",
-        fecha: "04/08/2026",
+        fecha: "01/09/2026",
         hora: "11:09:35",
-        fecha_proceso: "04/08/2026",
+        fecha_proceso: "01/09/2026",
         hora_proceso: "11:09",
         numPaciente: "2008115424",
         historia: "47515642",
@@ -292,9 +292,9 @@ const proformasData = [
         ordenId: "1726126009",
         numReceta: "260363088",
         cuentaId: "3010193",
-        fecha: "04/08/2026",
+        fecha: "01/09/2026",
         hora: "11:08:46",
-        fecha_proceso: "04/08/2026",
+        fecha_proceso: "01/09/2026",
         hora_proceso: "11:08",
         numPaciente: "2025451316",
         historia: "75486512",
@@ -334,9 +334,9 @@ const proformasData = [
         ordenId: "1726126008",
         numReceta: "260363087",
         cuentaId: "3010192",
-        fecha: "04/08/2026",
+        fecha: "01/09/2026",
         hora: "11:06:29",
-        fecha_proceso: "04/08/2026",
+        fecha_proceso: "01/09/2026",
         hora_proceso: "11:06",
         numPaciente: "2011345165",
         historia: "73542141",
@@ -376,9 +376,9 @@ const proformasData = [
         ordenId: "1726126007",
         numReceta: "260363086",
         cuentaId: "3010191",
-        fecha: "03/08/2026",
+        fecha: "01/09/2026",
         hora: "10:55:29",
-        fecha_proceso: "03/08/2026",
+        fecha_proceso: "01/09/2026",
         hora_proceso: "10:55",
         numPaciente: "2024112233",
         historia: "46518494",
@@ -418,9 +418,9 @@ const proformasData = [
         ordenId: "1726126006",
         numReceta: "260363085",
         cuentaId: "3010190",
-        fecha: "03/08/2026",
+        fecha: "01/09/2026",
         hora: "10:52:35",
-        fecha_proceso: "03/08/2026",
+        fecha_proceso: "01/09/2026",
         hora_proceso: "10:52",
         numPaciente: "2024998877",
         historia: "09845165",
@@ -460,9 +460,9 @@ const proformasData = [
         ordenId: "1726126005",
         numReceta: "260363084",
         cuentaId: "3010189",
-        fecha: "03/08/2026",
+        fecha: "01/09/2026",
         hora: "10:48:35",
-        fecha_proceso: "03/08/2026",
+        fecha_proceso: "01/09/2026",
         hora_proceso: "10:48",
         numPaciente: "2026112233",
         historia: "79745121",
@@ -502,9 +502,9 @@ const proformasData = [
         ordenId: "1726126004",
         numReceta: "260363083",
         cuentaId: "3010188",
-        fecha: "03/08/2026",
+        fecha: "01/09/2026",
         hora: "10:40:35",
-        fecha_proceso: "03/08/2026",
+        fecha_proceso: "01/09/2026",
         hora_proceso: "10:40",
         numPaciente: "2026445566",
         historia: "70105410",
@@ -544,9 +544,9 @@ const proformasData = [
         ordenId: "1726126003",
         numReceta: "260363082",
         cuentaId: "3010187",
-        fecha: "03/08/2026",
+        fecha: "01/09/2026",
         hora: "10:36:23",
-        fecha_proceso: "03/08/2026",
+        fecha_proceso: "01/09/2026",
         hora_proceso: "10:36",
         numPaciente: "2026778899",
         historia: "73212154",
@@ -586,9 +586,9 @@ const proformasData = [
         ordenId: "1726126002",
         numReceta: "260363081",
         cuentaId: "3010186",
-        fecha: "06/08/2026",
+        fecha: "01/09/2026",
         hora: "09:45:12",
-        fecha_proceso: "06/08/2026",
+        fecha_proceso: "01/09/2026",
         hora_proceso: "09:45",
         numPaciente: "2009001122",
         historia: "55667788",
@@ -628,9 +628,9 @@ const proformasData = [
         ordenId: "1726126001",
         numReceta: "260363080",
         cuentaId: "3010185",
-        fecha: "07/08/2026",
+        fecha: "01/09/2026",
         hora: "14:20:00",
-        fecha_proceso: "07/08/2026",
+        fecha_proceso: "01/09/2026",
         hora_proceso: "14:20",
         numPaciente: "2008112233",
         historia: "11223344",
@@ -1162,6 +1162,8 @@ export default function ProformasPage() {
     const [openItemsPaquete, setOpenItemsPaquete] = useState(false);
     const [paqueteSeleccionado, setPaqueteSeleccionado] = useState<Paquete | null>(null);
     const [cantidadesDispensar, setCantidadesDispensar] = useState<Record<string, number>>({});
+    const [showConfirmAnular, setShowConfirmAnular] = useState(false);
+    const [showSuccessAnular, setShowSuccessAnular] = useState(false);
 
     // Estados de error
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -2406,6 +2408,13 @@ export default function ProformasPage() {
                                                     <span>Médico: {medicoReceta}</span>
                                                 </div>
                                             </div>
+                                            <Button
+                                                type="button"
+                                                className="bg-red-600 hover:bg-red-700 text-white"
+                                                onClick={() => setShowConfirmAnular(true)}
+                                            >
+                                                Anular Receta
+                                            </Button>
                                         </div>
 
                                         <div className="overflow-x-auto">
@@ -2449,7 +2458,7 @@ export default function ProformasPage() {
                                                                         <td className="border px-3 py-2" rowSpan={med.subfilas.length}>
                                                                             <input
                                                                                 type="number"
-                                                                                min={1}
+                                                                                min={0}
                                                                                 max={med.cantSolicitada}
                                                                                 value={cantidadesDispensar[med.item] ?? med.cantSolicitada}
                                                                                 onChange={(e) => {
@@ -2712,12 +2721,17 @@ export default function ProformasPage() {
                                         <p className="mb-4 text-gray-700">
                                             {pacienteData?.seguro === "PAGANTE" ? (
                                                 <>
-                                                    La proforma se generó con éxito. <br /><br />
-                                                    Se generó el siguiente ID Orden: <span className="font-semibold">2025000001</span>. <br /><br />
-                                                    Acuda a caja para pagar por los medicamentos y así proceder con su respectivo despacho.
+                                                    ¡La proforma se generó con éxito! <br /><br />
+                                                    Código N°: <span className="font-semibold text-blue-600">17-26-152465</span> <br /><br />
+                                                    Total: <span className="font-semibold text-blue-600"> S/ {calcularTotal().toFixed(2)}</span> <br /><br />
+                                                    Paciente debe acudir a caja para pagar por los medicamentos y así proceder con su respectivo despacho.
                                                 </>
                                             ) : (
-                                                "La proforma se generó con éxito."
+                                                <>
+                                                    ¡La proforma se generó con éxito! <br /><br />
+                                                    Código N°: <span className="font-semibold text-blue-600">17-26-152465</span> <br /><br />
+                                                    Total: <span className="font-semibold text-blue-600"> S/ {calcularTotal().toFixed(2)}</span> <br /><br />
+                                                </>
                                             )}
                                         </p>
                                         <div className="flex justify-end">
@@ -2734,6 +2748,56 @@ export default function ProformasPage() {
                                     </div>
                                 </div>
                             )}
+
+                            {showConfirmAnular && (
+                                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+                                    <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full relative">
+                                        <h2 className="text-lg font-semibold mb-4 text-red-600">Confirmar Anulación</h2>
+                                        <p className="text-sm text-gray-700 mb-6">
+                                            ¿Está seguro de anular la receta? Esta acción no podrá revertirse.
+                                        </p>
+                                        <div className="flex justify-end gap-2">
+                                            <Button variant="outline" onClick={() => setShowConfirmAnular(false)}>Cancelar</Button>
+                                            <Button
+                                                className="bg-red-600 hover:bg-red-700 text-white"
+                                                onClick={() => {
+                                                    setShowConfirmAnular(false);
+                                                    setShowSuccessAnular(true);
+                                                }}
+                                            >
+                                                Confirmar
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {showSuccessAnular && (
+                                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+                                    <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full relative">
+                                        <div className="flex flex-col items-center mb-4">
+                                            <BadgeCheck className="h-10 w-10 text-green-600 mb-2" />
+                                            <h2 className="text-lg font-semibold text-green-700">Receta Anulada</h2>
+                                        </div>
+                                        <p className="text-sm text-gray-700 mb-6 text-center">
+                                            La receta del paciente ha sido anulada con éxito. <br />
+                                            El médico deberá registrar otra receta para que esta pueda ser atendida por Farmacia.
+                                        </p>
+                                        <div className="flex justify-center">
+                                            <Button
+                                                className="bg-blue-600 hover:bg-blue-700 text-white"
+                                                onClick={() => {
+                                                    resetForm();
+                                                    setShowSuccessAnular(false)
+                                                }}
+                                            >
+                                                Aceptar
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                         </form>
                     </div>
                 </div>

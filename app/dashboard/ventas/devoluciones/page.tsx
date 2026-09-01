@@ -139,6 +139,7 @@ interface Paciente {
 }
 
 interface KardexItem {
+  codItem: string;
   nombre: string;
   cantidad: number;
   precio: string;
@@ -639,29 +640,32 @@ const kardexPrueba: Record<string, any[]> = {
   "12345678": [
     {
       proforma: "1726151436",
-      fecha: "27/08/2026",
+      fecha: "28/08/2026",
       usuario: "RIVAS BRAVO FLOR DE MARIA",
       items: [
-        { nombre: "ONDANSETRON CLORHIDRATO 2 MG/ML 4 ML INY", cantidad: 1, precio: "S/ 1.07", importe: "S/ 1.07" },
-        { nombre: "GLUCOSA EN AGUA (5%) 1 L", cantidad: 1, precio: "S/ 4.99", importe: "S/ 4.99" },
+        { codItem: "170073", nombre: "MIDAZOLAM 5 MG 5 ML (S)", cantidad: 3, precio: "S/ 10.910", importe: "S/ 32.730" },
+        { codItem: "170792", nombre: "GUANTE QUIRURG. N° 7", cantidad: 4, precio: "S/ 0.870", importe: "S/ 3.480" },
+        { codItem: "170873", nombre: "EQUIPO DE VENOCLISIS (S)", cantidad: 1, precio: "S/ 0.980", importe: "S/ 0.980" },
+        { codItem: "170893", nombre: "SONDA ASPIRACION N° 14 ENDOTRAQ.", cantidad: 4, precio: "S/ 1.240", importe: "S/ 4.960" },
+        { codItem: "170945", nombre: "PROPOFOL 10 MG/ML (1 %) 20 ML INY", cantidad: 1, precio: "S/ 5.370", importe: "S/ 5.370" },
       ],
     },
     {
-      proforma: "1726151447",
-      fecha: "27/08/2026",
+      proforma: "1726151435",
+      fecha: "28/08/2026",
       usuario: "YALOPOMA POMA JHENRY",
       items: [
-        { nombre: "CATETER Nº 22 G X 1", cantidad: 1, precio: "S/ 4.12", importe: "S/ 4.12" },
+        { codItem: "170073", nombre: "MIDAZOLAM 5 MG 5 ML (S)", cantidad: 1, precio: "S/ 10.910", importe: "S/ 10.910" },
       ],
     },
   ],
   "87654321": [
     {
       proforma: "1726152001",
-      fecha: "26/08/2026",
+      fecha: "28/08/2026",
       usuario: "BASOMBRIO",
       items: [
-        { nombre: "IBUPROFENO 400 MG TAB", cantidad: 12, precio: "S/ 1.80", importe: "S/ 21.60" },
+        { codItem: "170093", nombre: "IBUPROFENO 400 MG TAB", cantidad: 12, precio: "S/ 1.80", importe: "S/ 21.60" },
       ],
     },
   ],
@@ -3394,10 +3398,26 @@ export default function DevolucionesPage() {
         <div className="fixed inset-0 flex items-center justify-center bg-black/50">
           <div className="bg-white rounded-md shadow-lg p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto relative">
             <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetForm();
+                    setModalKardex(false);
+                    setModalNuevaDevolucion(true);
+                  }}
+                  className="text-gray-600 hover:text-blue-600 hover:bg-gray-100 p-2"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </button>
+              </div>
               <h2 className="text-lg font-semibold">Kardex Detallado del Paciente</h2>
               <button
                 type="button"
-                onClick={() => setModalKardex(false)}
+                onClick={() => {
+                  resetForm();
+                  setModalKardex(false);
+                }}
                 className="text-gray-500 hover:text-red-600"
               >
                 <X className="h-5 w-5" />
@@ -3420,6 +3440,7 @@ export default function DevolucionesPage() {
                   <thead className="bg-gray-100">
                     <tr>
                       <th className="border px-2 py-1">Item</th>
+                      <th className="border px-2 py-1">Nombre</th>
                       <th className="border px-2 py-1">Cantidad</th>
                       <th className="border px-2 py-1">Precio</th>
                       <th className="border px-2 py-1">Importe</th>
@@ -3428,6 +3449,7 @@ export default function DevolucionesPage() {
                   <tbody>
                     {proforma.items.map((item, i) => (
                       <tr key={i}>
+                        <td className="border px-2 py-1">{item.codItem}</td>
                         <td className="border px-2 py-1">{item.nombre}</td>
                         <td className="border px-2 py-1">{item.cantidad}</td>
                         <td className="border px-2 py-1">{item.precio}</td>
@@ -3460,10 +3482,38 @@ export default function DevolucionesPage() {
         <div className="fixed inset-0 flex items-center justify-center bg-black/50">
           <div className="bg-white rounded-md shadow-lg p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto relative">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Registrar Devolución</h2>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetForm();
+                    setModalDevolucion(false);
+                    setModalKardex(true);
+                  }}
+                  className="text-gray-600 hover:text-blue-600 hover:bg-gray-100 p-2"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </button>
+                <h2 className="text-lg font-semibold">Registrar Devolución</h2>
+              </div>
+              
+              <div className="flex items-center gap-4 bg-cyan-50 px-4 py-2 text-sm rounded-lg border border-cyan-200">
+                <div className="flex items-center gap-2">
+                  <p><strong>N° de Orden:</strong> 26013396</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p><strong>Fecha:</strong> {fechaActual}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p><strong>Hora:</strong> {horaIngresoModal}</p>
+                </div>
+              </div>
               <button
                 type="button"
-                onClick={() => setModalDevolucion(false)}
+                onClick={() => {
+                  resetForm();
+                  setModalDevolucion(false);
+                }}
                 className="text-gray-500 hover:text-red-600"
               >
                 <X className="h-5 w-5" />
@@ -3473,14 +3523,34 @@ export default function DevolucionesPage() {
             {/* Datos generales */}
             <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
               <div>
-                <p><strong>Fecha:</strong> {fechaActual}</p>
-                <p><strong>Hora:</strong> {horaIngresoModal}</p>
-              </div>
-              <div>
                 <p><strong>Almacén:</strong> {filtroFarmacia}</p>
                 <p><strong>Nro. Proforma:</strong> {proformaSeleccionada.proforma}</p>
                 <p><strong>Paciente:</strong> {pacienteData?.nombre}</p>
+                <p><strong>Tipo de Transacción:</strong> IDE</p>
               </div>
+            </div>
+
+            <div className="flex flex-col mb-4 text-sm">
+              <label className="text-sm font-medium mb-1">Motivo:</label>
+              <select className="border border-gray-400 p-2 h-10 w-full rounded-md">
+                <option value="">Seleccione</option>
+                <option value="motivo01">Traslado Interinstitucional de paciente</option>
+                <option value="motivo02">Traslado (local) de paciente</option>
+                <option value="motivo03">Error de Prescripción</option>
+                <option value="motivo04">Error de Dispensación</option>
+                <option value="motivo05">Cambio de Terapia</option>
+                <option value="motivo06">Alta Paciente</option>
+                <option value="motivo07">Fallecimiento de Paciente</option>
+                <option value="motivo08">Sobrestock</option>
+                <option value="motivo09">Otros</option>
+              </select>
+            </div>
+
+            <div className="mb-4 text-sm">
+              <Label className="text-sm font-medium mb-1">Observación:</Label>
+              <input
+                className="border border-gray-400 rounded-md p-2 w-full"
+              />
             </div>
 
             {/* Detalle de items */}
@@ -3488,6 +3558,7 @@ export default function DevolucionesPage() {
               <thead className="bg-gray-100">
                 <tr>
                   <th className="border px-2 py-1">Item</th>
+                  <th className="border px-2 py-1">Nombre</th>
                   <th className="border px-2 py-1">Cantidad</th>
                   <th className="border px-2 py-1">Precio</th>
                   <th className="border px-2 py-1">Importe</th>
@@ -3497,6 +3568,7 @@ export default function DevolucionesPage() {
               <tbody>
                 {proformaSeleccionada.items.map((item: KardexItem, idx: number) => (
                   <tr key={idx}>
+                    <td className="border px-2 py-1">{item.codItem}</td>
                     <td className="border px-2 py-1">{item.nombre}</td>
                     <td className="border px-2 py-1">{item.cantidad}</td>
                     <td className="border px-2 py-1">{item.precio}</td>
@@ -3521,7 +3593,15 @@ export default function DevolucionesPage() {
 
             {/* Botones de acción */}
             <div className="flex justify-end gap-2 mt-4">
-              <Button variant="outline" onClick={() => setModalDevolucion(false)}>Cancelar</Button>
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  resetForm();
+                  setModalDevolucion(false);
+                }}
+              >
+                Cancelar
+              </Button>
               <Button
                 className="bg-green-600 hover:bg-green-700 text-white"
                 onClick={() => {
