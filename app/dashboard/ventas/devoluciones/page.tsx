@@ -50,9 +50,10 @@ interface Devolucion {
   id: number;
   estado: string;
   ingresoId: string;
-  documento: string;
+  documentoProforma: string;
   nombrePaciente: string;
   numPaciente: string;
+  historiaClinica: string;
   tipoTransaccion: string;
   nombreTransaccion: string;
   fecha: string;
@@ -69,7 +70,7 @@ interface Devolucion {
     nombreProd: string;
     presentacion: string;
     cantidad: number;
-    precio: number;
+    precio: string;
     lote: string;
     fechaVenc: string;
   }[];
@@ -159,14 +160,15 @@ const devolucionesData = [
     id: 1,
     estado: "1",
     ingresoId: "26013272",
-    documento: "1726149898",
+    documentoProforma: "1726149898",
     nombrePaciente: "MANRIQUE RODRIGUEZ DIJEIM SOLUN",
     numPaciente: "2008112233",
+    historiaClinica: "72000870",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "05/08/2026",
+    fecha: "01/09/2026",
     hora: "11:26:15",
-    fecha_proceso: "05/08/2026",
+    fecha_proceso: "01/09/2026",
     hora_proceso: "11:27:28",
     nombreAlmacen: "CONSULTORIOS EXTERNOS",
     usuario: "10170704",
@@ -178,8 +180,8 @@ const devolucionesData = [
         item: 170790,
         nombreProd: "GUANTE QUIRURG. N° 7 1/2",
         presentacion: "PAR",
-        cantidad: 1,
-        precio: 1.87,
+        cantidad: 2,
+        precio: "1.87",
         lote: "LTGUAN1111",
         fechaVenc: "31/10/2026",
       },
@@ -187,8 +189,8 @@ const devolucionesData = [
         item: 172556,
         nombreProd: "AGUA DESTILADA PARA INYECCION 1 L (S)",
         presentacion: "INY",
-        cantidad: 1,
-        precio: 7.86,
+        cantidad: 3,
+        precio: "7.86",
         lote: "LTAGUAD1111",
         fechaVenc: "31/12/2026",
       },
@@ -198,14 +200,15 @@ const devolucionesData = [
     id: 2,
     estado: "1",
     ingresoId: "26013271",
-    documento: "1726149868",
+    documentoProforma: "1726149868",
     nombrePaciente: "URIBE CARLIN CARLOS ANTONIO",
     numPaciente: "2008445566",
+    historiaClinica: "48088772",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "05/08/2026",
+    fecha: "01/09/2026",
     hora: "11:12:07",
-    fecha_proceso: "05/08/2026",
+    fecha_proceso: "01/09/2026",
     hora_proceso: "11:13:15",
     nombreAlmacen: "CONSULTORIOS EXTERNOS",
     usuario: "10170704",
@@ -218,7 +221,7 @@ const devolucionesData = [
         nombreProd: "GUANTE QUIRURG. N° 7 1/2",
         presentacion: "PAR",
         cantidad: 1,
-        precio: 1.87,
+        precio: "1.87",
         lote: "LTGUAN1111",
         fechaVenc: "31/10/2026",
       },
@@ -227,7 +230,7 @@ const devolucionesData = [
         nombreProd: "AGUA DESTILADA PARA INYECCION 1 L (S)",
         presentacion: "INY",
         cantidad: 1,
-        precio: 7.86,
+        precio: "7.86",
         lote: "LTAGUAD1111",
         fechaVenc: "31/12/2026",
       },
@@ -237,14 +240,15 @@ const devolucionesData = [
     id: 3,
     estado: "1",
     ingresoId: "26013270",
-    documento: "1726149858",
+    documentoProforma: "1726149858",
     nombrePaciente: "CHUNGA HUAYLINOS LUIS DIEGO",
     numPaciente: "2008352165",
+    historiaClinica: "76516872",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "05/08/2026",
+    fecha: "01/09/2026",
     hora: "11:12:07",
-    fecha_proceso: "05/08/2026",
+    fecha_proceso: "01/09/2026",
     hora_proceso: "11:13:15",
     nombreAlmacen: "FARMACIA EMERGENCIA",
     usuario: "10170704",
@@ -257,7 +261,7 @@ const devolucionesData = [
         nombreProd: "GUANTE QUIRURG. N° 7 1/2",
         presentacion: "PAR",
         cantidad: 1,
-        precio: 1.87,
+        precio: "1.87",
         lote: "LTGUAN1111",
         fechaVenc: "31/10/2026",
       },
@@ -266,7 +270,7 @@ const devolucionesData = [
         nombreProd: "AGUA DESTILADA PARA INYECCION 1 L (S)",
         presentacion: "INY",
         cantidad: 1,
-        precio: 7.86,
+        precio: "7.86",
         lote: "LTAGUAD1111",
         fechaVenc: "31/12/2026",
       },
@@ -276,14 +280,15 @@ const devolucionesData = [
     id: 4,
     estado: "1",
     ingresoId: "26013269",
-    documento: "1726149869",
+    documentoProforma: "1726149869",
     nombrePaciente: "HILARIO GARCIA MIGUEL ANGEL",
     numPaciente: "2008126535",
+    historiaClinica: "41877141",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "05/08/2026",
+    fecha: "01/09/2026",
     hora: "11:10:25",
-    fecha_proceso: "05/08/2026",
+    fecha_proceso: "01/09/2026",
     hora_proceso: "11:11:45",
     nombreAlmacen: "FARMACIA EMERGENCIA",
     usuario: "10170704",
@@ -296,7 +301,7 @@ const devolucionesData = [
         nombreProd: "GUANTE QUIRURG. N° 7 1/2",
         presentacion: "PAR",
         cantidad: 1,
-        precio: 1.87,
+        precio: "1.87",
         lote: "LTGUAN1111",
         fechaVenc: "31/10/2026",
       },
@@ -305,7 +310,7 @@ const devolucionesData = [
         nombreProd: "AGUA DESTILADA PARA INYECCION 1 L (S)",
         presentacion: "INY",
         cantidad: 1,
-        precio: 7.86,
+        precio: "7.86",
         lote: "LTAGUAD1111",
         fechaVenc: "31/12/2026",
       },
@@ -315,14 +320,15 @@ const devolucionesData = [
     id: 5,
     estado: "2",
     ingresoId: "26013268",
-    documento: "1726149763",
+    documentoProforma: "1726149763",
     nombrePaciente: "HOLGUIN CUCALON JORGE ALBERTO",
     numPaciente: "2008136454",
+    historiaClinica: "73101361",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "05/08/2026",
+    fecha: "01/09/2026",
     hora: "11:09:11",
-    fecha_proceso: "05/08/2026",
+    fecha_proceso: "01/09/2026",
     hora_proceso: "11:10:24",
     nombreAlmacen: "FARMACIA EMERGENCIA",
     usuario: "10170704",
@@ -335,7 +341,7 @@ const devolucionesData = [
         nombreProd: "GUANTE QUIRURG. N° 7 1/2",
         presentacion: "PAR",
         cantidad: 1,
-        precio: 1.87,
+        precio: "1.87",
         lote: "LTGUAN1111",
         fechaVenc: "31/10/2026",
       },
@@ -344,7 +350,7 @@ const devolucionesData = [
         nombreProd: "AGUA DESTILADA PARA INYECCION 1 L (S)",
         presentacion: "INY",
         cantidad: 1,
-        precio: 7.86,
+        precio: "7.86",
         lote: "LTAGUAD1111",
         fechaVenc: "31/12/2026",
       },
@@ -354,14 +360,15 @@ const devolucionesData = [
     id: 6,
     estado: "1",
     ingresoId: "26013267",
-    documento: "1726149784",
+    documentoProforma: "1726149784",
     nombrePaciente: "HUILLCAHUARI DURAND DANIEL",
     numPaciente: "2008468421",
+    historiaClinica: "70919488",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "05/08/2026",
+    fecha: "01/09/2026",
     hora: "11:05:28",
-    fecha_proceso: "05/08/2026",
+    fecha_proceso: "01/09/2026",
     hora_proceso: "11:08:52",
     nombreAlmacen: "FARMACIA DOSIS UNITARIA",
     usuario: "10170704",
@@ -374,7 +381,7 @@ const devolucionesData = [
         nombreProd: "GUANTE QUIRURG. N° 7 1/2",
         presentacion: "PAR",
         cantidad: 1,
-        precio: 1.87,
+        precio: "1.87",
         lote: "LTGUAN1111",
         fechaVenc: "31/10/2026",
       },
@@ -383,7 +390,7 @@ const devolucionesData = [
         nombreProd: "AGUA DESTILADA PARA INYECCION 1 L (S)",
         presentacion: "INY",
         cantidad: 1,
-        precio: 7.86,
+        precio: "7.86",
         lote: "LTAGUAD1111",
         fechaVenc: "31/12/2026",
       },
@@ -393,14 +400,15 @@ const devolucionesData = [
     id: 7,
     estado: "2",
     ingresoId: "26013266",
-    documento: "1726149635",
+    documentoProforma: "1726149635",
     nombrePaciente: "QUISPE JAVIER TERRY ANFONI",
     numPaciente: "2008561231",
+    historiaClinica: "46428041",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "05/08/2026",
+    fecha: "01/09/2026",
     hora: "11:02:01",
-    fecha_proceso: "05/08/2026",
+    fecha_proceso: "01/09/2026",
     hora_proceso: "11:02:35",
     nombreAlmacen: "FARMACIA DOSIS UNITARIA",
     usuario: "10170704",
@@ -413,7 +421,7 @@ const devolucionesData = [
         nombreProd: "GUANTE QUIRURG. N° 7 1/2",
         presentacion: "PAR",
         cantidad: 1,
-        precio: 1.87,
+        precio: "1.87",
         lote: "LTGUAN1111",
         fechaVenc: "31/10/2026",
       },
@@ -422,7 +430,7 @@ const devolucionesData = [
         nombreProd: "AGUA DESTILADA PARA INYECCION 1 L (S)",
         presentacion: "INY",
         cantidad: 1,
-        precio: 7.86,
+        precio: "7.86",
         lote: "LTAGUAD1111",
         fechaVenc: "31/12/2026",
       },
@@ -432,14 +440,15 @@ const devolucionesData = [
     id: 8,
     estado: "2",
     ingresoId: "26013265",
-    documento: "1726149932",
+    documentoProforma: "1726149932",
     nombrePaciente: "PRADO DAVILA CARLOS ENRIQUE ALBERTO",
     numPaciente: "2008784213",
+    historiaClinica: "76478385",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "05/08/2026",
+    fecha: "01/09/2026",
     hora: "11:00:15",
-    fecha_proceso: "05/08/2026",
+    fecha_proceso: "01/09/2026",
     hora_proceso: "11:02:19",
     nombreAlmacen: "FARMACIA DOSIS UNITARIA",
     usuario: "10170704",
@@ -452,7 +461,7 @@ const devolucionesData = [
         nombreProd: "GUANTE QUIRURG. N° 7 1/2",
         presentacion: "PAR",
         cantidad: 1,
-        precio: 1.87,
+        precio: "1.87",
         lote: "LTGUAN1111",
         fechaVenc: "31/10/2026",
       },
@@ -461,7 +470,7 @@ const devolucionesData = [
         nombreProd: "AGUA DESTILADA PARA INYECCION 1 L (S)",
         presentacion: "INY",
         cantidad: 1,
-        precio: 7.86,
+        precio: "7.86",
         lote: "LTAGUAD1111",
         fechaVenc: "31/12/2026",
       },
@@ -1155,18 +1164,11 @@ export default function DevolucionesPage() {
     return () => clearInterval(intervalo);
   }, []);
 
-  // MAPEO DE LAS FARMACIAS
-  const mapaFarmacias: Record<string, string> = {
-    "CONSULTORIOS EXTERNOS": "CONSULTA EXTERNA",
-    "FARMACIA EMERGENCIA": "EMERGENCIA",
-    "FARMACIA DOSIS UNITARIA": "HOSPITALIZACON", // ojo con la ortografía en tu data
-  };
-
-
   const opcionesBusqueda = [
     { value: "ingresoId", label: "Ingreso ID" },
     { value: "documento", label: "N° Proforma" },
     { value: "paciente", label: "Paciente" },
+    { value: "historiaClinica", label: "Historia Clínica" }
   ];
 
   // INICIALIZAR CUANDO CARGUE LA PÁGINA
@@ -1209,10 +1211,13 @@ export default function DevolucionesPage() {
             campo = devolucion.ingresoId;
             break;
           case "documento":
-            campo = devolucion.documento;
+            campo = devolucion.documentoProforma;
             break;
           case "paciente":
             campo = devolucion.nombrePaciente;
+            break;
+          case "historiaClinica":
+            campo = devolucion.historiaClinica;
             break;
           default:
             campo = "";
@@ -1377,7 +1382,7 @@ export default function DevolucionesPage() {
           </div>
 
           <div className="flex flex-col">
-            <Label htmlFor="fechaInicio" className="mb-1">Desde</Label>
+            <Label htmlFor="fechaInicio" className="mb-1">Desde:</Label>
             <Input
               id="fechaInicio"
               type="date"
@@ -1388,7 +1393,7 @@ export default function DevolucionesPage() {
           </div>
 
           <div className="flex flex-col">
-            <Label htmlFor="fechaFin" className="mb-1">Hasta</Label>
+            <Label htmlFor="fechaFin" className="mb-1">Hasta:</Label>
             <Input
               id="fechaFin"
               type="date"
@@ -1426,7 +1431,7 @@ export default function DevolucionesPage() {
             <TableRow className="bg-cyan-600 hover:bg-cyan-600">
               <TableHead className="font-semibold text-white hover:bg-transparent">Estado</TableHead>
               <TableHead className="font-semibold text-white hover:bg-transparent">Ingreso ID</TableHead>
-              <TableHead className="font-semibold text-white hover:bg-transparent">Documento</TableHead>
+              <TableHead className="font-semibold text-white hover:bg-transparent">Documento de Proforma</TableHead>
               <TableHead className="font-semibold text-white hover:bg-transparent">Paciente</TableHead>
               <TableHead className="font-semibold text-white hover:bg-transparent">Tipo de Transacción</TableHead>
               <TableHead className="font-semibold text-white hover:bg-transparent">Nombre de Transacción</TableHead>
@@ -1449,11 +1454,8 @@ export default function DevolucionesPage() {
                 <TableRow key={devolucion.id} className={selectedItems.includes(devolucion.id) ? "bg-primary/10" : ""}>
                   <TableCell>{getEstadoBadge(devolucion.estado)}</TableCell>
                   <TableCell className="font-medium">{devolucion.ingresoId}</TableCell>
-                  <TableCell className="font-medium">{devolucion.documento}</TableCell>
-                  <TableCell>
-                    <div className="font-mediunm">{devolucion.nombrePaciente}</div>
-                    <div className="text-sm text-gray-500">{devolucion.numPaciente}</div>
-                  </TableCell>
+                  <TableCell className="font-medium">{devolucion.documentoProforma}</TableCell>
+                  <TableCell className="font-medium">{devolucion.nombrePaciente}</TableCell>
                   <TableCell className="font-medium">{devolucion.tipoTransaccion}</TableCell>
                   <TableCell className="font-medium">{devolucion.nombreTransaccion}</TableCell>
                   <TableCell>
@@ -1529,7 +1531,7 @@ export default function DevolucionesPage() {
           <div className="bg-white rounded-md shadow-lg p-6 max-w-6xl w-full">
             {/* Encabezado con título y botón X */}
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold text-blue-900">Detalle de Proforma</h2>
+              <h2 className="text-lg font-bold text-blue-900">Detalle de la Devolución</h2>
               <button
                 onClick={() => setMostrarDetalle(false)}
                 className="text-gray-500 hover:text-gray-700"
@@ -1542,9 +1544,9 @@ export default function DevolucionesPage() {
             <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
               <div>
                 <p><strong>Paciente:</strong> {devolucionSeleccionada.nombrePaciente}</p>
-                <p><strong>Código de paciente:</strong> {devolucionSeleccionada.numPaciente}</p>
+                <p><strong>Historia Clínica:</strong> {devolucionSeleccionada.historiaClinica}</p>
                 <p><strong>ID Ingreso:</strong> {devolucionSeleccionada.ingresoId}</p>
-                <p><strong>Documento:</strong> {devolucionSeleccionada.documento}</p>
+                <p><strong>Documento de Proforma:</strong> {devolucionSeleccionada.documentoProforma}</p>
               </div>
               <div>
                 <p><strong>Fecha de registro:</strong> {devolucionSeleccionada.fecha}</p>
@@ -1565,7 +1567,7 @@ export default function DevolucionesPage() {
                     <th className="border px-3 py-2">Item</th>
                     <th className="border px-3 py-2">Producto</th>
                     <th className="border px-3 py-2">Presentación</th>
-                    <th className="border px-3 py-2">Cantidad</th>
+                    <th className="border px-3 py-2">Cantidad devuelta</th>
                     <th className="border px-3 py-2">Precio</th>
                     <th className="border px-3 py-2">Importe</th>
                     <th className="border px-3 py-2">Lote</th>
@@ -1581,6 +1583,7 @@ export default function DevolucionesPage() {
                       <td className="border px-3 py-2">{prod.cantidad}</td>
                       <td className="border px-3 py-2">{prod.precio}</td>
                       <td className="border px-3 py-2">
+                        {`S/ ${(prod.cantidad * parseFloat(prod.precio.replace("S/", "").trim())).toFixed(2)}`}
                       </td>
                       <td className="border px-3 py-2">{prod.lote}</td>
                       <td className="border px-3 py-2">{prod.fechaVenc}</td>
@@ -1591,7 +1594,7 @@ export default function DevolucionesPage() {
             </div>
 
             {/* Total */}
-            {/*<div className="flex justify-end mt-4">
+            <div className="flex justify-end mt-4">
               <div className="bg-blue-900 text-white font-bold px-6 py-2 rounded-md shadow">
                 Total: S/ {devolucionSeleccionada.productos
                   .reduce((acc, prod) => {
@@ -1600,7 +1603,7 @@ export default function DevolucionesPage() {
                   }, 0)
                   .toFixed(2)}
               </div>
-            </div>*/}
+            </div>
 
             {/* Botón cerrar */}
             <div className="flex justify-end mt-4">
@@ -3496,7 +3499,7 @@ export default function DevolucionesPage() {
                 </button>
                 <h2 className="text-lg font-semibold">Registrar Devolución</h2>
               </div>
-              
+
               <div className="flex items-center gap-4 bg-cyan-50 px-4 py-2 text-sm rounded-lg border border-cyan-200">
                 <div className="flex items-center gap-2">
                   <p><strong>N° de Orden:</strong> 26013396</p>
@@ -3593,7 +3596,7 @@ export default function DevolucionesPage() {
 
             {/* Botones de acción */}
             <div className="flex justify-end gap-2 mt-4">
-              <Button 
+              <Button
                 variant="outline"
                 onClick={() => {
                   resetForm();

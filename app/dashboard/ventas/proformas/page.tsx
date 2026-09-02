@@ -37,6 +37,7 @@ import {
     CheckCircleIcon,
     ClipboardList,
     FileSearch,
+    XCircle,
 
 } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -667,10 +668,10 @@ const proformasData = [
 ]
 
 const pacientesPrueba: Record<string, any> = {
-    "12345678": {
-        dni: "12345678",
+    "76516872": {
+        dni: "76516872",
         nombre: "CHUNGA HUAYLINOS LUIS DIEGO",
-        historia: "12345678",
+        historia: "76516872",
         sexo: "M",
         fechaNac: "08/03/1996",
         seguro: "SIS",
@@ -681,24 +682,24 @@ const pacientesPrueba: Record<string, any> = {
         receta: "270065000",
         cuenta: "3013144",
     },
-    "87654321": {
-        dni: "87654321",
+    "41877141": {
+        dni: "41877141",
         nombre: "HILARIO GARCIA MIGUEL ANGEL",
-        historia: "87654321",
+        historia: "41877141",
         sexo: "M",
         fechaNac: "16/02/1983",
         seguro: "PAGANTE",
-        tipoAtencion: "EMERGENCIA",
+        tipoAtencion: "CONSULTA EXTERNA",
         especialidad: "CIRUGÍA GENERAL",
         medico: "BASOMBRIO VELASQUEZ JORGE",
         transaccion: "VC - CONTADO",
         receta: "270065100",
         cuenta: "3013145",
     },
-    "11223344": {
-        dni: "11223344",
+    "76478385": {
+        dni: "76478385",
         nombre: "PRADO DAVILA CARLOS ENRIQUE ALBERTO",
-        historia: "11223344",
+        historia: "76478385",
         sexo: "M",
         fechaNac: "12/04/1997",
         seguro: "SIS",
@@ -709,10 +710,10 @@ const pacientesPrueba: Record<string, any> = {
         receta: "270065200",
         cuenta: "3013146",
     },
-    "55667788": {
-        dni: "55667788",
+    "70919488": {
+        dni: "70919488",
         nombre: "HUILLCAHUARI DURAND DANIEL",
-        historia: "55667788",
+        historia: "70919488",
         sexo: "M",
         fechaNac: "25/02/1998",
         seguro: "SOAT",
@@ -723,12 +724,12 @@ const pacientesPrueba: Record<string, any> = {
         receta: "270065300",
         cuenta: "3013147",
     },
-    "23456789": {
-        dni: "23456789",
+    "46428041": {
+        dni: "46428041",
         nombre: "LOPEZ ORTEGA JORGE GUILLERMO",
-        historia: "23456789",
+        historia: "46428041",
         sexo: "M",
-        fechaNac: "25/02/1998",
+        fechaNac: "26/07/1990",
         seguro: "SIS",
         tipoAtencion: "EMERGENCIA",
         especialidad: "CIRUGIA GENERAL",
@@ -740,7 +741,7 @@ const pacientesPrueba: Record<string, any> = {
 };
 
 const medicamentosPrueba: Record<string, any[]> = {
-    "12345678": [
+    "76516872": [
         {
             item: 1,
             producto: "PARACETAMOL 500 MG TAB",
@@ -776,7 +777,7 @@ const medicamentosPrueba: Record<string, any[]> = {
             ],
         },
     ],
-    "87654321": [
+    "41877141": [
         {
             item: 1,
             producto: "IBUPROFENO 400 MG TAB",
@@ -789,7 +790,7 @@ const medicamentosPrueba: Record<string, any[]> = {
             ],
         },
     ],
-    "11223344": [
+    "76478385": [
         {
             item: 1,
             producto: "TRAMADOL 50 MG",
@@ -803,7 +804,7 @@ const medicamentosPrueba: Record<string, any[]> = {
             ],
         },
     ],
-    "55667788": [
+    "70919488": [
         {
             item: 1,
             producto: "PARACETAMOL 500 MG TAB",
@@ -817,7 +818,7 @@ const medicamentosPrueba: Record<string, any[]> = {
             ],
         },
     ],
-    "23456789": [
+    "46428041": [
         {
             item: 1,
             producto: "IBUPROFENO 400 MG",
@@ -834,7 +835,7 @@ const medicamentosPrueba: Record<string, any[]> = {
 };
 
 const historialPrueba: Record<string, Receta[]> = {
-    "12345678": [
+    "76516872": [
         {
             fecha: "25/08/2026",
             seguro: "SIS",
@@ -875,7 +876,7 @@ const historialPrueba: Record<string, Receta[]> = {
             farmacia: "Consultorios Externos",
         },
     ],
-    "87654321": [
+    "41877141": [
         {
             fecha: "24/08/2026",
             seguro: "PAGANTE",
@@ -903,7 +904,7 @@ const historialPrueba: Record<string, Receta[]> = {
             farmacia: "Farmacia Emergencia",
         },
     ],
-    "11223344": [
+    "76478385": [
         {
             fecha: "13/08/2026",
             seguro: "SIS",
@@ -944,7 +945,7 @@ const historialPrueba: Record<string, Receta[]> = {
             farmacia: "Consultorios Externos",
         },
     ],
-    "55667788": [
+    "70919488": [
         {
             fecha: "13/08/2026",
             seguro: "SIS",
@@ -985,7 +986,7 @@ const historialPrueba: Record<string, Receta[]> = {
             farmacia: "Consultorios Externos",
         },
     ],
-    "23456789": [
+    "46428041": [
         {
             fecha: "24/08/2026",
             seguro: "SIS",
@@ -1168,6 +1169,7 @@ export default function ProformasPage() {
     // Estados de error
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [errorMedicamentos, setErrorMedicamentos] = useState("");
+    const [errorValidacion, setErrorValidacion] = useState("");
 
     // Formatear a yyyy-MM-dd para que el input type="date" lo acepte
     const formatoISO = (fecha: Date) => fecha.toISOString().split("T")[0];
@@ -1194,6 +1196,28 @@ export default function ProformasPage() {
             setDniValidado(true); // despliega datos solo si cumple
         }
     }
+
+    // Lógica del botón Validar
+    const validarPacientePorHistoria = () => {
+        if (historia.trim().length === 0) {
+            setErrorValidacion("Debe ingresar historia o DNI.");
+            setPaciente("");
+            setSeguro("");
+            return;
+        }
+
+        const pacienteEncontrado = pacientesPrueba[historia.trim()];
+        if (!pacienteEncontrado) {
+            setErrorValidacion("No se encontró paciente con esa historia/DNI.");
+            setPaciente("");
+            setSeguro("");
+            return;
+        }
+
+        setErrorValidacion("");
+        setPaciente(pacienteEncontrado.nombre);
+        setSeguro(pacienteEncontrado.seguro);
+    };
 
     // Parsear la fecha y duración
     const obtenerDiasDeIndicacion = (indicacion: string): number => {
@@ -1269,15 +1293,6 @@ export default function ProformasPage() {
         if (diferenciaMeses <= 6) return "bg-yellow-400 text-black";  // Amarillo
         return "bg-green-500 text-white";                             // Verde
     };
-
-    // Convertir el importe en número y sumar para obtener el total
-    const totalImporte = medicamentosData.reduce((acc, med) => {
-        return acc + med.subfilas.reduce((subAcc, subfila) => {
-            // quitar "S/" y convertir a número
-            const valor = parseFloat(subfila.importe.replace("S/", "").trim());
-            return subAcc + (isNaN(valor) ? 0 : valor);
-        }, 0);
-    }, 0);
 
     // Función dinámica para la suma de los importes en la receta externa
     const totalImporteRecExt = medicamentos.reduce((acc, med) => {
@@ -1441,6 +1456,17 @@ export default function ProformasPage() {
             }
             setError("");
             setResultadosBusqueda([paciente]); // tabla con un resultado
+        } else if (tipoBusqueda === "historia") {
+            const coincidencia = Object.values(pacientesPrueba).find(
+                (p) => p.historia === dni.trim()
+            );
+            if (!coincidencia) {
+                setError("No se encontró paciente con esa historia clínica en la data de prueba");
+                setResultadosBusqueda([]);
+                return;
+            }
+            setError("");
+            setResultadosBusqueda([coincidencia]);
         } else {
             const coincidencias = Object.values(pacientesPrueba).filter((p) =>
                 p.nombre.toLowerCase().includes(dni.trim().toLowerCase())
@@ -1548,7 +1574,7 @@ export default function ProformasPage() {
                             onClick={() => setModalRecetaExterna(true)}
                         >
                             <ClipboardList className="h-5 w-5" strokeWidth={2} />
-                            Receta Manual
+                            Proforma Manual
                         </Button>
 
                         <Button
@@ -1598,7 +1624,7 @@ export default function ProformasPage() {
                     </div>
 
                     <div className="flex flex-col">
-                        <Label htmlFor="fechaInicio" className="mb-1">Desde</Label>
+                        <Label htmlFor="fechaInicio" className="mb-1">Desde:</Label>
                         <Input
                             id="fechaInicio"
                             type="date"
@@ -1609,7 +1635,7 @@ export default function ProformasPage() {
                     </div>
 
                     <div className="flex flex-col">
-                        <Label htmlFor="fechaFin" className="mb-1">Hasta</Label>
+                        <Label htmlFor="fechaFin" className="mb-1">Hasta:</Label>
                         <Input
                             id="fechaFin"
                             type="date"
@@ -2115,13 +2141,20 @@ export default function ProformasPage() {
                                 >
                                     <option value="documento">Documento</option>
                                     <option value="nombres">Apellidos y Nombres</option>
+                                    <option value="historia">Historia Clínica</option>
                                 </select>
 
                                 {/* Contenedor vertical para input + error */}
                                 <Input
                                     id="documento"
                                     type="text"
-                                    placeholder={tipoBusqueda === "documento" ? "Ingrese número de documento" : "Ingrese apellidos y nombres"}
+                                    placeholder={
+                                        tipoBusqueda === "documento"
+                                            ? "Ingrese número de documento"
+                                            : tipoBusqueda === "nombres"
+                                                ? "Ingrese apellidos y nombres"
+                                                : "Ingrese historia clínica"
+                                    }
                                     autoComplete="off"
                                     className={`border p-2 h-10 flex-1 ${error ? "border-red-500" : ""}`}
                                     value={dni}
@@ -2142,7 +2175,6 @@ export default function ProformasPage() {
                                     type="button"
                                     className="bg-blue-600 hover:bg-blue-700 text-white h-10 px-4"
                                     onClick={validarBusqueda}
-                                    disabled={pacienteExterno}
                                 >
                                     Buscar
                                 </Button>
@@ -2302,6 +2334,16 @@ export default function ProformasPage() {
                                         </p>
                                     </div>
 
+                                    {pacienteData?.seguro !== "SIS" && (
+                                        <div className="flex items-center gap-2 bg-yellow-100 text-yellow-700 p-4 border border-yellow-300 rounded-md mb-4">
+                                            <AlertTriangle className="h-5 w-5 text-yellow-700" />
+                                            <span>
+                                                Este paciente no pertenece al SIS. Se trata de un paciente <strong>{pacienteData.seguro}</strong>.
+                                                Tenga cuidado al generar la proforma.
+                                            </span>
+                                        </div>
+                                    )}
+
                                     {/* Contenedor de datos del paciente */}
                                     <div className="border rounded-md p-4 mb-4 bg-gray-50 text-sm">
                                         <h3 className="text-md font-semibold mb-3">Datos del paciente</h3>
@@ -2413,6 +2455,7 @@ export default function ProformasPage() {
                                                 className="bg-red-600 hover:bg-red-700 text-white"
                                                 onClick={() => setShowConfirmAnular(true)}
                                             >
+                                                <XCircle className="h-4 w-4" />
                                                 Anular Receta
                                             </Button>
                                         </div>
@@ -2808,7 +2851,7 @@ export default function ProformasPage() {
                     <div className="bg-white rounded-md shadow-lg p-6 max-w-7xl w-full max-h-[90vh] overflow-y-auto relative">
                         <div className="flex justify-between items-center mb-4">
                             <div className="flex items-center gap-2">
-                                <h2 className="text-lg font-semibold">Registro manual de receta externa</h2>
+                                <h2 className="text-lg font-semibold">Registro manual de Proforma</h2>
                             </div>
 
                             {/* Bloque de fecha y hora */}
@@ -2835,7 +2878,7 @@ export default function ProformasPage() {
 
                         <div className="border rounded-md p-4 mb-4 bg-yellow-100">
                             <p className="text-yellow-900 font-semibold">
-                                Debe registrar manualmente los datos de la venta de medicamentos para la receta externa.
+                                Debe registrar los datos del paciente y los medicamentos para la proforma manual.
                             </p>
                         </div>
 
@@ -2845,48 +2888,47 @@ export default function ProformasPage() {
 
                             <div className="grid grid-cols-3 gap-4">
                                 <div>
-                                    <Label className="block mb-1">Paciente:</Label>
-                                    <Input
-                                        className="border-2 border-gray-500"
-                                        type="text"
-                                        placeholder="Ingrese nombre de paciente"
-                                        value={paciente}
-                                        onChange={(e) => {
-                                            setPaciente(e.target.value);
-                                            if (errors.seguro) {
-                                                setErrors(prev => ({ ...prev, paciente: "" }));
-                                            }
-                                        }}
-                                    />
+                                    <Label className="block mb-1">Historia/DNI:</Label>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            className="border-2 border-gray-500 flex-1"
+                                            type="text"
+                                            placeholder="Ingrese historia / DNI"
+                                            value={historia}
+                                            onChange={(e) => setHistoria(e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault();
+                                                    validarPacientePorHistoria();
+                                                }
+                                            }}
+                                        />
+                                        <Button
+                                            type="button"
+                                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                                            onClick={validarPacientePorHistoria}
+                                        >
+                                            Validar
+                                        </Button>
+                                    </div>
+                                    {errorValidacion && <p className="text-red-600 text-sm">{errorValidacion}</p>}
                                 </div>
                                 <div>
-                                    <Label className="block mb-1">Historia/DNI:</Label>
+                                    <Label className="block mb-1">Paciente:</Label>
                                     <Input
-                                        className="border-2 border-gray-500"
+                                        className="border-2 border-gray-500 bg-gray-100 text-gray-700"
                                         type="text"
-                                        placeholder="Ingrese historia / DNI"
-                                        value={historia}
-                                        onChange={(e) => {
-                                            setHistoria(e.target.value);
-                                            if (errors.seguro) {
-                                                setErrors(prev => ({ ...prev, historia: "" }));
-                                            }
-                                        }}
+                                        value={paciente}
+                                        disabled
                                     />
                                 </div>
                                 <div>
                                     <Label className="block mb-1">Seguro:</Label>
                                     <Input
-                                        className="border-2 border-gray-500"
+                                        className="border-2 border-gray-500 bg-gray-100 text-gray-700"
                                         type="text"
-                                        placeholder="Ingrese seguro"
                                         value={seguro}
-                                        onChange={(e) => {
-                                            setSeguro(e.target.value);
-                                            if (errors.seguro) {
-                                                setErrors(prev => ({ ...prev, seguro: "" }));
-                                            }
-                                        }}
+                                        disabled
                                     />
                                 </div>
                                 <div>
@@ -3057,6 +3099,7 @@ export default function ProformasPage() {
                                     <Input
                                         className="border-2 border-gray-500"
                                         type="number"
+                                        min={1}
                                         placeholder="Ingrese cantidad"
                                         value={cantidad}
                                         onChange={(e) => setCantidad(e.target.value)}
