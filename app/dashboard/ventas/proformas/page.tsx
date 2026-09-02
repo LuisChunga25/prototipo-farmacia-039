@@ -146,6 +146,7 @@ interface Paciente {
 interface ItemPaquete {
     nombre: string;
     presentacion: string;
+    cantidad: number;
     precio: string;
     stock: number;
 }
@@ -155,9 +156,6 @@ interface Paquete {
     descripcion: string;
     items: ItemPaquete[];
 }
-
-
-
 
 // DATOS DE EJEMPLO PARA LA TABLA
 const proformasData = [
@@ -1089,19 +1087,71 @@ const paquetesPrueba: Paquete[] = [
         tipo: "OBSTETRICIA",
         descripcion: "SET DE PARTO - PRIMIPARA",
         items: [
-            { nombre: "Guantes quirúrgicos Nº 6 1/2", presentacion: "PAR", precio: "S/ 0.90", stock: 289 },
-            { nombre: "Sonda nasogástrica Nº 12", presentacion: "UNI", precio: "S/ 1.30", stock: 11 },
+            { nombre: "Guantes quirúrgicos Nº 6 1/2", cantidad: 2, presentacion: "PAR", precio: "S/ 0.90", stock: 289 },
+            { nombre: "Sonda nasogástrica Nº 12", cantidad: 1, presentacion: "UNI", precio: "S/ 1.30", stock: 11 },
         ]
     },
     {
         tipo: "NEONATOLOGIA",
         descripcion: "KIT RN- POR PARTO EUTOCICO actualizado 2024",
         items: [
-            { nombre: "Compresa de gasa estéril", presentacion: "UNI", precio: "S/ 9.73", stock: 0 },
-            { nombre: "Bolsa aspiración secreciones", presentacion: "UNI", precio: "S/ 57.41", stock: 5 },
+            { nombre: "Compresa de gasa estéril", cantidad: 1, presentacion: "UNI", precio: "S/ 9.73", stock: 0 },
+            { nombre: "Bolsa aspiración secreciones", cantidad: 1, presentacion: "UNI", precio: "S/ 57.41", stock: 5 },
+        ]
+    },
+    {
+        tipo: "OBSTETRICIA",
+        descripcion: "SET DE PARTO MULTIPARA - actualizado 2026",
+        items: [
+            { nombre: "Compresa de gasa estéril", cantidad: 1, presentacion: "UNI", precio: "S/ 9.73", stock: 0 },
+            { nombre: "Bolsa aspiración secreciones", cantidad: 1, presentacion: "UNI", precio: "S/ 57.41", stock: 5 },
+        ]
+    },
+    {
+        tipo: "NEONATOLOGIA",
+        descripcion: "KIT RN- POR PARTO (DISTOCICO) actualizado 2024",
+        items: [
+            { nombre: "Compresa de gasa estéril", cantidad: 1, presentacion: "UNI", precio: "S/ 9.73", stock: 0 },
+            { nombre: "Bolsa aspiración secreciones", cantidad: 1, presentacion: "UNI", precio: "S/ 57.41", stock: 5 },
+        ]
+    },
+    {
+        tipo: "LABORATORIO",
+        descripcion: "PERFIL DE ANEMIA",
+        items: [
+            { nombre: "Compresa de gasa estéril", cantidad: 1, presentacion: "UNI", precio: "S/ 9.73", stock: 0 },
+            { nombre: "Bolsa aspiración secreciones", cantidad: 1, presentacion: "UNI", precio: "S/ 57.41", stock: 5 },
+        ]
+    },
+    {
+        tipo: "LABORATORIO",
+        descripcion: "EMG G-U-C",
+        items: [
+            { nombre: "Compresa de gasa estéril", cantidad: 1, presentacion: "UNI", precio: "S/ 9.73", stock: 0 },
+            { nombre: "Bolsa aspiración secreciones", cantidad: 1, presentacion: "UNI", precio: "S/ 57.41", stock: 5 },
+        ]
+    },
+    {
+        tipo: "LABORATORIO",
+        descripcion: "PERFIL HORMONAL FEMENINO",
+        items: [
+            { nombre: "Compresa de gasa estéril", cantidad: 1, presentacion: "UNI", precio: "S/ 9.73", stock: 0 },
+            { nombre: "Bolsa aspiración secreciones", cantidad: 1, presentacion: "UNI", precio: "S/ 57.41", stock: 5 },
+        ]
+    },
+    {
+        tipo: "LABORATORIO",
+        descripcion: "PERFIL ANCA",
+        items: [
+            { nombre: "Compresa de gasa estéril", cantidad: 1, presentacion: "UNI", precio: "S/ 9.73", stock: 0 },
+            { nombre: "Bolsa aspiración secreciones", cantidad: 1, presentacion: "UNI", precio: "S/ 57.41", stock: 5 },
         ]
     },
 ];
+
+const opcionesTipoAtencion = ["CONSULTA EXTERNA", "EMERGENCIA", "HOSPITALIZACION"];
+const opcionesEspecialidad = ["MEDICINA INTERNA", "CIRUGÍA GENERAL", "ANESTESIOLOGIA"];
+const opcionesMedico = ["DIONICIO IBAÑEZ LUIS FELIPE", "BASOMBRIO VELASQUEZ JORGE", "TOMANGUILLO VASQUEZ MIGUEL ALEJANDRO"];
 
 
 export default function ProformasPage() {
@@ -1165,6 +1215,11 @@ export default function ProformasPage() {
     const [cantidadesDispensar, setCantidadesDispensar] = useState<Record<string, number>>({});
     const [showConfirmAnular, setShowConfirmAnular] = useState(false);
     const [showSuccessAnular, setShowSuccessAnular] = useState(false);
+    const [showTipoAtencionOptions, setShowTipoAtencionOptions] = useState(false);
+    const [showEspecialidadOptions, setShowEspecialidadOptions] = useState(false);
+    const [showMedicoOptions, setShowMedicoOptions] = useState(false);
+    const [openStockModal, setOpenStockModal] = useState(false);
+    const [productoSeleccionado, setProductoSeleccionado] = useState<any | null>(null);
 
     // Estados de error
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -1886,6 +1941,7 @@ export default function ProformasPage() {
                                             <th className="border px-3 py-2">Precio (S/)</th>
                                             <th className="border px-3 py-2">Costo</th>
                                             <th className="border px-3 py-2">Stock</th>
+                                            <th className="border px-3 py-2">Acción</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -1902,6 +1958,18 @@ export default function ProformasPage() {
                                                     </td>
                                                     <td className="border px-3 py-2">{t.costo}</td>
                                                     <td className="border px-3 py-2">{t.stock}</td>
+                                                    <td className="border px-3 py-2 text-center">
+                                                        <Button
+                                                            variant="outline"
+                                                            className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                                                            onClick={() => {
+                                                                setProductoSeleccionado(t);
+                                                                setOpenStockModal(true);
+                                                            }}
+                                                        >
+                                                            Ver Stock
+                                                        </Button>
+                                                    </td>
                                                 </tr>
                                             ))}
                                     </tbody>
@@ -1911,6 +1979,65 @@ export default function ProformasPage() {
                     </Tabs>
                 </DialogContent>
             </Dialog>
+
+            {/* MODAL DE STOCK POR PRODUCTO EN CADA ALMACEN */}
+            {openStockModal && productoSeleccionado && (
+                <Dialog open={openStockModal} onOpenChange={setOpenStockModal}>
+                    <DialogContent
+                        onInteractOutside={(e) => e.preventDefault()}
+                        onEscapeKeyDown={(e) => e.preventDefault()}
+                        className="sm:max-w-xl bg-white rounded-lg shadow-lg p-6"
+                    >
+                        <DialogHeader>
+                            <DialogTitle className="text-lg font-bold text-gray-800">
+                                Stock de {productoSeleccionado.producto}
+                            </DialogTitle>
+                        </DialogHeader>
+
+                        <table className="min-w-full border-collapse border border-gray-300 text-sm mt-4">
+                            <thead className="bg-gray-100">
+                                <tr>
+                                    <th className="border px-3 py-2">Almacén</th>
+                                    <th className="border px-3 py-2">Nombre</th>
+                                    <th className="border px-3 py-2">Presentación</th>
+                                    <th className="border px-3 py-2">Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {/* Data de prueba: simular stock en distintos almacenes */}
+                                <tr>
+                                    <td className="border px-3 py-2">CE</td>
+                                    <td className="border px-3 py-2">Consultorios Externos</td>
+                                    <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                    <td className="border px-3 py-2">44</td>
+                                </tr>
+                                <tr>
+                                    <td className="border px-3 py-2">F</td>
+                                    <td className="border px-3 py-2">Farmacia Emergencia</td>
+                                    <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                    <td className="border px-3 py-2">28</td>
+                                </tr>
+                                <tr>
+                                    <td className="border px-3 py-2">DU</td>
+                                    <td className="border px-3 py-2">Farmacia Dosis Unitaria</td>
+                                    <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                    <td className="border px-3 py-2">12</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div className="flex justify-end mt-4">
+                            <Button
+                                variant="outline"
+                                className="border-gray-500 text-gray-700 hover:bg-gray-100"
+                                onClick={() => setOpenStockModal(false)}
+                            >
+                                Cerrar
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
+            )}
 
             {/* MODAL DE LISTADO DE PAQUETES */}
             <Dialog open={openPaquetes} onOpenChange={setOpenPaquetes}>
@@ -1967,8 +2094,9 @@ export default function ProformasPage() {
                             <tr>
                                 <th className="border px-3 py-2">Producto</th>
                                 <th className="border px-3 py-2">Presentación</th>
+                                <th className="border px-3 py-2">Stock actual</th>
+                                <th className="border px-3 py-2">Cantidad</th>
                                 <th className="border px-3 py-2">Precio</th>
-                                <th className="border px-3 py-2">Stock</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1976,8 +2104,9 @@ export default function ProformasPage() {
                                 <tr key={idx}>
                                     <td className="border px-3 py-2">{i.nombre}</td>
                                     <td className="border px-3 py-2">{i.presentacion}</td>
-                                    <td className="border px-3 py-2">{i.precio}</td>
                                     <td className="border px-3 py-2">{i.stock}</td>
+                                    <td className="border px-3 py-2">{i.cantidad}</td>
+                                    <td className="border px-3 py-2">{i.precio}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -1990,6 +2119,7 @@ export default function ProformasPage() {
                             <tr>
                                 <th className="border px-3 py-2">Producto</th>
                                 <th className="border px-3 py-2">Presentación</th>
+                                <th className="border px-3 py-2">Cantidad</th>
                                 <th className="border px-3 py-2">Precio</th>
                             </tr>
                         </thead>
@@ -1998,6 +2128,7 @@ export default function ProformasPage() {
                                 <tr key={idx}>
                                     <td className="border px-3 py-2">{i.nombre}</td>
                                     <td className="border px-3 py-2">{i.presentacion}</td>
+                                    <td className="border px-3 py-2">{i.cantidad}</td>
                                     <td className="border px-3 py-2">{i.precio}</td>
                                 </tr>
                             ))}
@@ -2305,10 +2436,10 @@ export default function ProformasPage() {
 
                             {/* Bloque de fecha y hora */}
                             <div className="text-right text-sm flex gap-4">
-                                <div className="bg-blue-100 text-blue-900 font-semibold px-3 py-1 rounded">
+                                <div className="bg-blue-100 text-blue-900 font-semibold px-3 py-2 rounded">
                                     Fecha: {fechaActual}
                                 </div>
-                                <div className="bg-blue-100 text-blue-900 font-semibold px-3 py-1 rounded">
+                                <div className="bg-blue-100 text-blue-900 font-semibold px-3 py-2 rounded">
                                     Hora: {horaActual}
                                 </div>
                             </div>
@@ -2856,10 +2987,10 @@ export default function ProformasPage() {
 
                             {/* Bloque de fecha y hora */}
                             <div className="text-right text-sm flex gap-4">
-                                <div className="bg-blue-100 text-blue-900 font-semibold px-3 py-1 rounded">
+                                <div className="bg-blue-100 text-blue-900 font-semibold px-3 py-2 rounded">
                                     Fecha: {fechaActual}
                                 </div>
-                                <div className="bg-blue-100 text-blue-900 font-semibold px-3 py-1 rounded">
+                                <div className="bg-blue-100 text-blue-900 font-semibold px-3 py-2 rounded">
                                     Hora: {horaActual}
                                 </div>
                             </div>
@@ -2931,53 +3062,92 @@ export default function ProformasPage() {
                                         disabled
                                     />
                                 </div>
-                                <div>
+                                <div className="relative">
                                     <Label>Tipo de Atención:</Label>
                                     <Input
                                         className="border-2 border-gray-500"
                                         type="text"
-                                        placeholder="Ingrese tipo de atención"
+                                        placeholder="Seleccione tipo de atención"
                                         value={tipoAtencion}
-                                        onChange={(e) => {
-                                            setTipoAtencion(e.target.value);
-                                            if (errors.tipoAtencion) {
-                                                setErrors(prev => ({ ...prev, tipoAtencion: "" }));
-                                            }
-                                        }}
+                                        onFocus={() => setShowTipoAtencionOptions(true)}
+                                        onChange={(e) => setTipoAtencion(e.target.value)}
                                     />
-                                    {errors.tipoAtencion && <p className="text-red-600 text-sm">{errors.tipoAtencion}</p>}
+                                    {showTipoAtencionOptions && (
+                                        <div className="absolute z-10 bg-white border rounded-md mt-1 w-full max-h-40 overflow-y-auto">
+                                            {opcionesTipoAtencion
+                                                .filter((opt) => opt.toLowerCase().includes(tipoAtencion.toLowerCase()))
+                                                .map((opt, idx) => (
+                                                    <div
+                                                        key={idx}
+                                                        className="p-2 hover:bg-blue-100 cursor-pointer"
+                                                        onClick={() => {
+                                                            setTipoAtencion(opt);
+                                                            setShowTipoAtencionOptions(false);
+                                                        }}
+                                                    >
+                                                        {opt}
+                                                    </div>
+                                                ))}
+                                        </div>
+                                    )}
                                 </div>
-                                <div>
+                                <div className="relative">
                                     <Label>Especialidad:</Label>
                                     <Input
                                         className="border-2 border-gray-500"
                                         type="text"
-                                        placeholder="Ingrese especialidad"
+                                        placeholder="Seleccione especialidad"
                                         value={especialidad}
-                                        onChange={(e) => {
-                                            setEspecialidad(e.target.value);
-                                            if (errors.especialidad) {
-                                                setErrors(prev => ({ ...prev, especialidad: "" }));
-                                            }
-                                        }}
+                                        onFocus={() => setShowEspecialidadOptions(true)}
+                                        onChange={(e) => setEspecialidad(e.target.value)}
                                     />
-                                    {errors.especialidad && <p className="text-red-600 text-sm">{errors.especialidad}</p>}
+                                    {showEspecialidadOptions && (
+                                        <div className="absolute z-10 bg-white border rounded-md mt-1 w-full max-h-40 overflow-y-auto">
+                                            {opcionesEspecialidad
+                                                .filter((opt) => opt.toLowerCase().includes(especialidad.toLowerCase()))
+                                                .map((opt, idx) => (
+                                                    <div
+                                                        key={idx}
+                                                        className="p-2 hover:bg-blue-100 cursor-pointer"
+                                                        onClick={() => {
+                                                            setEspecialidad(opt);
+                                                            setShowEspecialidadOptions(false);
+                                                        }}
+                                                    >
+                                                        {opt}
+                                                    </div>
+                                                ))}
+                                        </div>
+                                    )}
                                 </div>
-                                <div>
+                                <div className="relative">
                                     <Label>Médico:</Label>
                                     <Input
                                         className="border-2 border-gray-500"
                                         type="text"
-                                        placeholder="Ingrese médico"
+                                        placeholder="Seleccione médico"
                                         value={medico}
-                                        onChange={(e) => {
-                                            setMedico(e.target.value);
-                                            if (errors.medico) {
-                                                setErrors(prev => ({ ...prev, medico: "" }));
-                                            }
-                                        }}
+                                        onFocus={() => setShowMedicoOptions(true)}
+                                        onChange={(e) => setMedico(e.target.value)}
                                     />
-                                    {errors.medico && <p className="text-red-600 text-sm">{errors.medico}</p>}
+                                    {showMedicoOptions && (
+                                        <div className="absolute z-10 bg-white border rounded-md mt-1 w-full max-h-40 overflow-y-auto">
+                                            {opcionesMedico
+                                                .filter((opt) => opt.toLowerCase().includes(medico.toLowerCase()))
+                                                .map((opt, idx) => (
+                                                    <div
+                                                        key={idx}
+                                                        className="p-2 hover:bg-blue-100 cursor-pointer"
+                                                        onClick={() => {
+                                                            setMedico(opt);
+                                                            setShowMedicoOptions(false);
+                                                        }}
+                                                    >
+                                                        {opt}
+                                                    </div>
+                                                ))}
+                                        </div>
+                                    )}
                                 </div>
                                 <div>
                                     <Label>Transacción:</Label>
