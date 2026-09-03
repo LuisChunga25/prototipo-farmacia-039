@@ -14,14 +14,14 @@ const medicamentosPrueba: any[] = [
     presentacion: "TAB",
     subfilas: [
       { lote: "LTPAR22222", venc: "31/10/2026" },
-      { lote: "LTPAR33333", venc: "31/12/2026" },
+      { lote: "LTPAR33333", venc: "31/05/2027" },
     ],
   },
   {
     producto: "AMOXICILINA 500 MG",
     presentacion: "TAB",
     subfilas: [
-      { lote: "LTAMOX210702", venc: "30/09/2026" },
+      { lote: "LTAMOX210702", venc: "30/11/2027" },
     ],
   },
 ]
@@ -42,8 +42,8 @@ const obtenerColorVencimiento = (fechaVenc: string) => {
     (fechaVencimiento.getFullYear() - hoy.getFullYear()) * 12 +
     (fechaVencimiento.getMonth() - hoy.getMonth())
 
-  if (diferenciaMeses <= 3) return "bg-red-500 text-white"
-  if (diferenciaMeses <= 6) return "bg-yellow-400 text-black"
+  if (diferenciaMeses <= 7) return "bg-red-500 text-white"
+  if (diferenciaMeses >= 8 && diferenciaMeses <= 12) return "bg-yellow-400 text-black"
   return "bg-green-500 text-white"
 }
 

@@ -1060,15 +1060,40 @@ const medicamentosDisponibles: MedicamentoBase[] = [
 
 const tarifariosPrueba = {
     SIS: [
-        { producto: "Paracetamol 500mg", presentacion: "TAB", precio: 0.07, costo: 0.06, stock: 87000 },
-        { producto: "Amoxicilina 500mg", presentacion: "TAB", precio: 0.18, costo: 0.14, stock: 32800 },
+        { producto: "Amoxicilina 250 mg/5 mL 60mL", presentacion: "SUS", precio: 3.47, costo: 2.78, stock: 67 },
+        { producto: "Amoxicilina 500 mg", presentacion: "TAB", precio: 0.18, costo: 0.14, stock: 341 },
+        { producto: "Orfenadrina 3mg/mL iny 2mL", presentacion: "INY", precio: 0.61, costo: 0.49, stock: 328 },
+        { producto: "Orfenadrina Citrato tab 100 mg (S)", presentacion: "TAB", precio: 0.28, costo: 0.22, stock: 957 },
+        { producto: "Paracetamol 100mg/mL sol. 10 mL gts", presentacion: "SOL", precio: 1.95, costo: 1.56, stock: 59 },
+        { producto: "Paracetamol 120 mg/ 5 mL 60 mL", presentacion: "JBE", precio: 1.91, costo: 1.53, stock: 216 },
+        { producto: "Paracetamol 500mg (S)", presentacion: "TAB", precio: 0.07, costo: 0.06, stock: 1553 },
+        { producto: "Tramadol 50 mg tab", presentacion: "TAB", precio: 0.62, costo: 0.50, stock: 1050 },
+        { producto: "Tramadol Clorh. 100 mg / 2 mL (S)", presentacion: "INY", precio: 0.49, costo: 0.40, stock: 75 },
+        { producto: "Tramadol Clorhidrato 50 mg/mL 1 mL (S)", presentacion: "INY", precio: 0.45, costo: 0.36, stock: 129 },
     ],
     SOAT: [
-        { producto: "Paracetamol 500mg", presentacion: "TAB", precio: 0.07, costo: 0.06, stock: 87000 },
+        { producto: "Amoxicilina 250 mg/5 mL 60mL", presentacion: "SUS", precio: 3.47, costo: 2.78, stock: 67 },
+        { producto: "Amoxicilina 500 mg", presentacion: "TAB", precio: 0.18, costo: 0.14, stock: 341 },
+        { producto: "Orfenadrina 3mg/mL iny 2mL", presentacion: "INY", precio: 0.61, costo: 0.49, stock: 328 },
+        { producto: "Orfenadrina Citrato tab 100 mg (S)", presentacion: "TAB", precio: 0.28, costo: 0.22, stock: 957 },
+        { producto: "Paracetamol 100mg/mL sol. 10 mL gts", presentacion: "SOL", precio: 1.95, costo: 1.56, stock: 59 },
+        { producto: "Paracetamol 120 mg/ 5 mL 60 mL", presentacion: "JBE", precio: 1.91, costo: 1.53, stock: 216 },
+        { producto: "Paracetamol 500mg (S)", presentacion: "TAB", precio: 0.07, costo: 0.06, stock: 1553 },
+        { producto: "Tramadol 50 mg tab", presentacion: "TAB", precio: 0.62, costo: 0.50, stock: 1050 },
+        { producto: "Tramadol Clorh. 100 mg / 2 mL (S)", presentacion: "INY", precio: 0.49, costo: 0.40, stock: 75 },
+        { producto: "Tramadol Clorhidrato 50 mg/mL 1 mL (S)", presentacion: "INY", precio: 0.45, costo: 0.36, stock: 129 },
     ],
     Pagante: [
-        { producto: "Paracetamol 500mg", presentacion: "TAB", precio: 0.07, costo: 0.06, stock: 87000 },
-        { producto: "Amoxicilina 500mg", presentacion: "TAB", precio: 0.18, costo: 0.14, stock: 32800 },
+        { producto: "Amoxicilina 250 mg/5 mL 60mL", presentacion: "SUS", precio: 3.47, costo: 2.78, stock: 67 },
+        { producto: "Amoxicilina 500 mg", presentacion: "TAB", precio: 0.18, costo: 0.14, stock: 341 },
+        { producto: "Orfenadrina 3mg/mL iny 2mL", presentacion: "INY", precio: 0.61, costo: 0.49, stock: 328 },
+        { producto: "Orfenadrina Citrato tab 100 mg (S)", presentacion: "TAB", precio: 0.28, costo: 0.22, stock: 957 },
+        { producto: "Paracetamol 100mg/mL sol. 10 mL gts", presentacion: "SOL", precio: 1.95, costo: 1.56, stock: 59 },
+        { producto: "Paracetamol 120 mg/ 5 mL 60 mL", presentacion: "JBE", precio: 1.91, costo: 1.53, stock: 216 },
+        { producto: "Paracetamol 500mg (S)", presentacion: "TAB", precio: 0.07, costo: 0.06, stock: 1553 },
+        { producto: "Tramadol 50 mg tab", presentacion: "TAB", precio: 0.62, costo: 0.50, stock: 1050 },
+        { producto: "Tramadol Clorh. 100 mg / 2 mL (S)", presentacion: "INY", precio: 0.49, costo: 0.40, stock: 75 },
+        { producto: "Tramadol Clorhidrato 50 mg/mL 1 mL (S)", presentacion: "INY", precio: 0.45, costo: 0.36, stock: 129 },
     ],
     Estrategia: [
         { producto: "(DES.) Azitromicina 200 mg/5 mL 60 mL", presentacion: "SUS", precio: 6.21, costo: 4.98, stock: 2999 },
@@ -1149,9 +1174,9 @@ const paquetesPrueba: Paquete[] = [
     },
 ];
 
-const opcionesTipoAtencion = ["CONSULTA EXTERNA", "EMERGENCIA", "HOSPITALIZACION"];
-const opcionesEspecialidad = ["MEDICINA INTERNA", "CIRUGÍA GENERAL", "ANESTESIOLOGIA"];
-const opcionesMedico = ["DIONICIO IBAÑEZ LUIS FELIPE", "BASOMBRIO VELASQUEZ JORGE", "TOMANGUILLO VASQUEZ MIGUEL ALEJANDRO"];
+const opcionesTipoAtencion = ["APOYO AL DIAGNOSTICO", "ATENCION AMBULATORIA", "CONSULTA EXTERNA", "EMERGENCIA", "ESTABLECIMIENTO DE SALUD", "HOSPITALIZACION", "INTERCONSULTA", "LABORATORIO", "OTROS", "PRIVADO", "RECIÉN NACIDO"];
+const opcionesEspecialidad = ["ANESTESIOLOGIA", "APOYO AL DIAGNOSTICO", "CARDIOLOGIA", "DERMATOLOGIA", "ENDOCRINOLOGIA", "GASTROENTEROLOGIA", "GINECOLOGIA", "HEMATOLOGIA", "INFECCIOLOGIA", "NEUROLOGIA", "MEDICINA INTERNA", "NEUMOLOGIA", "NUTRICION", "OBSTETRICIA", "OFTALMOLOGIA", "OTORRINOLARINGOLOGIA", "PEDIATRIA", "PSIQUIATRIA", "REUMATOLOGIA", "TRAUMATOLOGIA Y ORTOPEDIA"];
+const opcionesMedico = ["ABAD BARREDO PEDRO MANUEL", "ABANTO ARDILES YAZMIN ANDREA", "ACHA SULCA CINTHIA JHOSSAN", "AGUILAR MENDIVIL JOSE LUIS", "AGUILAR SEOPA NORKA GIOVANA", "ALIAGA RAMOS JOSUE JESUS", "ALIAGA RAMOS MILUSKA MARIA DEL PILAR", "ALIAGA RIVERA MARIELA ALEJANDRA", "ALZAMORA ONETO JUAN CARLOS MARIANO", "BASOMBRIO VELASQUEZ JORGE", "DIONICIO IBAÑEZ LUIS FELIPE", "TOMANGUILLO VASQUEZ MIGUEL ALEJANDRO"];
 
 
 export default function ProformasPage() {
@@ -1406,6 +1431,20 @@ export default function ProformasPage() {
         }
     }, [medicamentosData]);
 
+    // MANEJO DE CLIC FUERA
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (!(event.target as HTMLElement).closest(".options-container")) {
+                setShowTipoAtencionOptions(false);
+                setShowEspecialidadOptions(false);
+                setShowMedicoOptions(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     const getEstadoBadge = (estado: string) => {
         const variants = {
@@ -1933,47 +1972,49 @@ export default function ProformasPage() {
 
                         {Object.entries(tarifariosPrueba).map(([tipo, items]) => (
                             <TabsContent key={tipo} value={tipo}>
-                                <table className="min-w-full border-collapse border border-gray-300 text-sm">
-                                    <thead className="bg-gray-100">
-                                        <tr>
-                                            <th className="border px-3 py-2">Producto</th>
-                                            <th className="border px-3 py-2">Presentación</th>
-                                            <th className="border px-3 py-2">Precio (S/)</th>
-                                            <th className="border px-3 py-2">Costo</th>
-                                            <th className="border px-3 py-2">Stock</th>
-                                            <th className="border px-3 py-2">Acción</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {items
-                                            .filter((t) =>
-                                                t.producto.toLowerCase().includes(busqueda.toLowerCase())
-                                            )
-                                            .map((t, idx) => (
-                                                <tr key={idx} className="hover:bg-blue-50 transition-colors">
-                                                    <td className="border px-3 py-2">{t.producto}</td>
-                                                    <td className="border px-3 py-2">{t.presentacion}</td>
-                                                    <td className="border px-3 py-2 text-right">
-                                                        {t.precio.toFixed(2)}
-                                                    </td>
-                                                    <td className="border px-3 py-2">{t.costo}</td>
-                                                    <td className="border px-3 py-2">{t.stock}</td>
-                                                    <td className="border px-3 py-2 text-center">
-                                                        <Button
-                                                            variant="outline"
-                                                            className="text-blue-600 border-blue-600 hover:bg-blue-50"
-                                                            onClick={() => {
-                                                                setProductoSeleccionado(t);
-                                                                setOpenStockModal(true);
-                                                            }}
-                                                        >
-                                                            Ver Stock
-                                                        </Button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                    </tbody>
-                                </table>
+                                <div className="max-h-[400px] overflow-y-auto border rounded">
+                                    <table className="min-w-full border-collapse border border-gray-300 text-sm">
+                                        <thead className="bg-gray-100">
+                                            <tr>
+                                                <th className="border px-3 py-2">Producto</th>
+                                                <th className="border px-3 py-2">Presentación</th>
+                                                <th className="border px-3 py-2">Precio (S/)</th>
+                                                <th className="border px-3 py-2">Costo</th>
+                                                <th className="border px-3 py-2">Stock</th>
+                                                <th className="border px-3 py-2">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {items
+                                                .filter((t) =>
+                                                    t.producto.toLowerCase().includes(busqueda.toLowerCase())
+                                                )
+                                                .map((t, idx) => (
+                                                    <tr key={idx} className="hover:bg-blue-50 transition-colors">
+                                                        <td className="border px-3 py-2">{t.producto}</td>
+                                                        <td className="border px-3 py-2">{t.presentacion}</td>
+                                                        <td className="border px-3 py-2 text-right">
+                                                            {t.precio.toFixed(2)}
+                                                        </td>
+                                                        <td className="border px-3 py-2">{t.costo}</td>
+                                                        <td className="border px-3 py-2">{t.stock}</td>
+                                                        <td className="border px-3 py-2 text-center">
+                                                            <Button
+                                                                variant="outline"
+                                                                className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                                                                onClick={() => {
+                                                                    setProductoSeleccionado(t);
+                                                                    setOpenStockModal(true);
+                                                                }}
+                                                            >
+                                                                Ver Stock
+                                                            </Button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </TabsContent>
                         ))}
                     </Tabs>
@@ -2041,7 +2082,11 @@ export default function ProformasPage() {
 
             {/* MODAL DE LISTADO DE PAQUETES */}
             <Dialog open={openPaquetes} onOpenChange={setOpenPaquetes}>
-                <DialogContent className="sm:max-w-2xl bg-white rounded-lg shadow-lg p-6">
+                <DialogContent 
+                    onInteractOutside={(e) => e.preventDefault()}
+                    onEscapeKeyDown={(e) => e.preventDefault()}
+                    className="sm:max-w-2xl bg-white rounded-lg shadow-lg p-6"
+                >
                     <DialogHeader>
                         <DialogTitle className="text-lg font-bold text-gray-800">Listado de Paquetes</DialogTitle>
                     </DialogHeader>
@@ -2080,7 +2125,11 @@ export default function ProformasPage() {
 
             {/* MODAL DE ITEMS DE PAQUETE */}
             <Dialog open={openItemsPaquete} onOpenChange={setOpenItemsPaquete}>
-                <DialogContent className="sm:max-w-3xl bg-white rounded-lg shadow-lg p-6">
+                <DialogContent
+                    onInteractOutside={(e) => e.preventDefault()}
+                    onEscapeKeyDown={(e) => e.preventDefault()}
+                    className="sm:max-w-3xl bg-white rounded-lg shadow-lg p-6"
+                >
                     <DialogHeader>
                         <DialogTitle className="text-lg font-bold text-gray-800">
                             Items del Paquete: {paqueteSeleccionado?.descripcion}
@@ -3073,21 +3122,19 @@ export default function ProformasPage() {
                                         onChange={(e) => setTipoAtencion(e.target.value)}
                                     />
                                     {showTipoAtencionOptions && (
-                                        <div className="absolute z-10 bg-white border rounded-md mt-1 w-full max-h-40 overflow-y-auto">
-                                            {opcionesTipoAtencion
-                                                .filter((opt) => opt.toLowerCase().includes(tipoAtencion.toLowerCase()))
-                                                .map((opt, idx) => (
-                                                    <div
-                                                        key={idx}
-                                                        className="p-2 hover:bg-blue-100 cursor-pointer"
-                                                        onClick={() => {
-                                                            setTipoAtencion(opt);
-                                                            setShowTipoAtencionOptions(false);
-                                                        }}
-                                                    >
-                                                        {opt}
-                                                    </div>
-                                                ))}
+                                        <div className="options-container absolute z-10 bg-white border rounded-md mt-1 w-full max-h-40 overflow-y-auto">
+                                            {opcionesTipoAtencion.map((opt, idx) => (
+                                                <div
+                                                    key={idx}
+                                                    className="p-2 hover:bg-blue-100 cursor-pointer"
+                                                    onClick={() => {
+                                                        setTipoAtencion(opt);
+                                                        setShowTipoAtencionOptions(false);
+                                                    }}
+                                                >
+                                                    {opt}
+                                                </div>
+                                            ))}
                                         </div>
                                     )}
                                 </div>
@@ -3102,21 +3149,19 @@ export default function ProformasPage() {
                                         onChange={(e) => setEspecialidad(e.target.value)}
                                     />
                                     {showEspecialidadOptions && (
-                                        <div className="absolute z-10 bg-white border rounded-md mt-1 w-full max-h-40 overflow-y-auto">
-                                            {opcionesEspecialidad
-                                                .filter((opt) => opt.toLowerCase().includes(especialidad.toLowerCase()))
-                                                .map((opt, idx) => (
-                                                    <div
-                                                        key={idx}
-                                                        className="p-2 hover:bg-blue-100 cursor-pointer"
-                                                        onClick={() => {
-                                                            setEspecialidad(opt);
-                                                            setShowEspecialidadOptions(false);
-                                                        }}
-                                                    >
-                                                        {opt}
-                                                    </div>
-                                                ))}
+                                        <div className="options-container absolute z-10 bg-white border rounded-md mt-1 w-full max-h-40 overflow-y-auto">
+                                            {opcionesEspecialidad.map((opt, idx) => (
+                                                <div
+                                                    key={idx}
+                                                    className="p-2 hover:bg-blue-100 cursor-pointer"
+                                                    onClick={() => {
+                                                        setEspecialidad(opt);
+                                                        setShowEspecialidadOptions(false);
+                                                    }}
+                                                >
+                                                    {opt}
+                                                </div>
+                                            ))}
                                         </div>
                                     )}
                                 </div>
@@ -3131,21 +3176,19 @@ export default function ProformasPage() {
                                         onChange={(e) => setMedico(e.target.value)}
                                     />
                                     {showMedicoOptions && (
-                                        <div className="absolute z-10 bg-white border rounded-md mt-1 w-full max-h-40 overflow-y-auto">
-                                            {opcionesMedico
-                                                .filter((opt) => opt.toLowerCase().includes(medico.toLowerCase()))
-                                                .map((opt, idx) => (
-                                                    <div
-                                                        key={idx}
-                                                        className="p-2 hover:bg-blue-100 cursor-pointer"
-                                                        onClick={() => {
-                                                            setMedico(opt);
-                                                            setShowMedicoOptions(false);
-                                                        }}
-                                                    >
-                                                        {opt}
-                                                    </div>
-                                                ))}
+                                        <div className="options-container absolute z-10 bg-white border rounded-md mt-1 w-full max-h-40 overflow-y-auto">
+                                            {opcionesMedico.map((opt, idx) => (
+                                                <div
+                                                    key={idx}
+                                                    className="p-2 hover:bg-blue-100 cursor-pointer"
+                                                    onClick={() => {
+                                                        setMedico(opt);
+                                                        setShowMedicoOptions(false);
+                                                    }}
+                                                >
+                                                    {opt}
+                                                </div>
+                                            ))}
                                         </div>
                                     )}
                                 </div>
@@ -3376,27 +3419,29 @@ export default function ProformasPage() {
                                                         <td className="border px-3 py-2">{lote.venc}</td>
                                                         {idx === 0 && (
                                                             <td className="border px-3 py-2 text-center" rowSpan={med.lotes.length}>
-                                                                <button
-                                                                    onClick={() => {
-                                                                        setMedicamentoEditando(index);
-                                                                        setNuevaCantidad(med.cantidadSolicitada?.toString() || "");
-                                                                        setModalEditarCantidadMed(true);
-                                                                    }}
-                                                                    className="border border-blue-600 rounded-md p-2 text-blue-600 hover:bg-blue-50"
-                                                                    title="Editar cantidad"
-                                                                >
-                                                                    <FileEdit className="h-5 w-5" />
-                                                                </button>
+                                                                <div className="flex justify-center gap-2">
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setMedicamentoEditando(index);
+                                                                            setNuevaCantidad(med.cantidadSolicitada?.toString() || "");
+                                                                            setModalEditarCantidadMed(true);
+                                                                        }}
+                                                                        className="border border-blue-600 rounded-md p-2 text-blue-600 hover:bg-blue-50"
+                                                                        title="Editar cantidad"
+                                                                    >
+                                                                        <FileEdit className="h-5 w-5" />
+                                                                    </button>
 
-                                                                <button
-                                                                    onClick={() => {
-                                                                        setMedicamentos(medicamentos.filter((_, i) => i !== index));
-                                                                    }}
-                                                                    className="border border-red-600 rounded-md p-2 text-red-600 hover:bg-red-50"
-                                                                    title="Eliminar registro"
-                                                                >
-                                                                    <Trash2 className="h-5 w-5" />
-                                                                </button>
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setMedicamentos(medicamentos.filter((_, i) => i !== index));
+                                                                        }}
+                                                                        className="border border-red-600 rounded-md p-2 text-red-600 hover:bg-red-50"
+                                                                        title="Eliminar registro"
+                                                                    >
+                                                                        <Trash2 className="h-5 w-5" />
+                                                                    </button>
+                                                                </div>
                                                             </td>
                                                         )}
                                                     </tr>
@@ -3628,9 +3673,9 @@ export default function ProformasPage() {
                                         <h2 className="text-lg font-semibold">Proforma generada</h2>
                                     </div>
                                     <p className="mb-4 text-gray-700">
-                                        La proforma se generó con éxito. <br /><br />
-                                        Se generó el siguiente código: <span className="font-semibold">2025000001</span>. <br /><br />
-                                        Acuda a caja para pagar por los medicamentos y así proceder con su respectivo despacho.
+                                        ¡La proforma se generó con éxito! <br /><br />
+                                        Código N°: <span className="font-semibold text-blue-600">17-26-152465</span> <br /><br />
+                                        Total: <span className="font-semibold text-blue-600"> S/ {totalImporteRecExt.toFixed(2)}</span> <br /><br />
                                     </p>
                                     <div className="flex justify-end">
                                         <Button
