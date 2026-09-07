@@ -38,6 +38,7 @@ import {
     ClipboardList,
     FileSearch,
     XCircle,
+    Package,
 
 } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -126,21 +127,6 @@ interface MedicamentoBase {
     presentacion: string;
     cantidadSolicitada?: number;
     lotes: Lote[];
-}
-
-interface Paciente {
-    dni: string;
-    historia: string;
-    nombre: string;
-    sexo: string;
-    fechaNac: string;
-    medico: string;
-    seguro?: string;
-    tipoAtencion?: string;
-    especialidad?: string;
-    transaccion?: string;
-    receta?: string;
-    cuenta?: string;
 }
 
 interface ItemPaquete {
@@ -669,6 +655,7 @@ const pacientesPrueba: Record<string, any> = {
     "76516872": {
         dni: "76516872",
         nombre: "CHUNGA HUAYLINOS LUIS DIEGO",
+        codPaciente: "2025352638",
         historia: "76516872",
         sexo: "M",
         fechaNac: "08/03/1996",
@@ -683,6 +670,7 @@ const pacientesPrueba: Record<string, any> = {
     "41877141": {
         dni: "41877141",
         nombre: "HILARIO GARCIA MIGUEL ANGEL",
+        codPaciente: "2008083192",
         historia: "41877141",
         sexo: "M",
         fechaNac: "16/02/1983",
@@ -697,6 +685,7 @@ const pacientesPrueba: Record<string, any> = {
     "76478385": {
         dni: "76478385",
         nombre: "PRADO DAVILA CARLOS ENRIQUE ALBERTO",
+        codPaciente: "2008055195",
         historia: "76478385",
         sexo: "M",
         fechaNac: "12/04/1997",
@@ -711,6 +700,7 @@ const pacientesPrueba: Record<string, any> = {
     "70919488": {
         dni: "70919488",
         nombre: "HUILLCAHUARI DURAND DANIEL",
+        codPaciente: "2024345809",
         historia: "70919488",
         sexo: "M",
         fechaNac: "25/02/1998",
@@ -724,7 +714,8 @@ const pacientesPrueba: Record<string, any> = {
     },
     "46428041": {
         dni: "46428041",
-        nombre: "LOPEZ ORTEGA JORGE GUILLERMO",
+        nombre: "QUISPE JAVIER TERRY ANFONI",
+        codPaciente: "2009169865",
         historia: "46428041",
         sexo: "M",
         fechaNac: "26/07/1990",
@@ -1218,6 +1209,7 @@ export default function ProformasPage() {
     const [paciente, setPaciente] = useState("");
     const [historia, setHistoria] = useState("");
     const [seguro, setSeguro] = useState("");
+    const [codigoPaciente, setCodigoPaciente] = useState("");
     const [tipoAtencion, setTipoAtencion] = useState("");
     const [especialidad, setEspecialidad] = useState("");
     const [medico, setMedico] = useState("");
@@ -1245,6 +1237,7 @@ export default function ProformasPage() {
     const [showMedicoOptions, setShowMedicoOptions] = useState(false);
     const [openStockModal, setOpenStockModal] = useState(false);
     const [productoSeleccionado, setProductoSeleccionado] = useState<any | null>(null);
+    const [pacienteEditable, setPacienteEditable] = useState(false);
 
     // Estados de error
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -1256,33 +1249,23 @@ export default function ProformasPage() {
     const [fechaInicio, setFechaInicio] = useState(formatoISO(primerDiaMes));
     const [fechaFin, setFechaFin] = useState(formatoISO(hoy));
 
-    // Función validar DNI
-    const validarDni = () => {
-        if (dni.trim().length === 0) {
-            setError("Debe ingresar un número de documento.");
-            setDniValidado(false);
-        } else if (dni.trim().length < 8) {
-            setError("El documento debe tener al menos 8 caracteres");
-            setDniValidado(false);
-        } else if (!pacientesPrueba[dni.trim()]) {
-            setError("No se encontró paciente con ese DNI en la data de prueba");
-            setDniValidado(false);
-        } else {
-            setError("");
-            setPacienteData(pacientesPrueba[dni.trim()]);
-            setMedicamentosData(medicamentosPrueba[dni.trim()] || []);
-            setMedicoReceta(pacientesPrueba[dni.trim()].medico);
-            setHistorialData(historialPrueba[dni.trim()] || []);
-            setDniValidado(true); // despliega datos solo si cumple
-        }
-    }
-
     // Lógica del botón Validar
     const validarPacientePorHistoria = () => {
         if (historia.trim().length === 0) {
             setErrorValidacion("Debe ingresar historia o DNI.");
             setPaciente("");
             setSeguro("");
+            setCodigoPaciente("");
+            setPacienteEditable(false);
+            return;
+        }
+
+        if (historia.trim() === "0") {
+            setErrorValidacion("");
+            setSeguro("PAGANTE");
+            setPaciente("");
+            setCodigoPaciente("0");
+            setPacienteEditable(true);
             return;
         }
 
@@ -1291,12 +1274,16 @@ export default function ProformasPage() {
             setErrorValidacion("No se encontró paciente con esa historia/DNI.");
             setPaciente("");
             setSeguro("");
+            setCodigoPaciente("");
+            setPacienteEditable(false);
             return;
         }
 
         setErrorValidacion("");
         setPaciente(pacienteEncontrado.nombre);
         setSeguro(pacienteEncontrado.seguro);
+        setCodigoPaciente(pacienteEncontrado.codPaciente);
+        setPacienteEditable(false);
     };
 
     // Parsear la fecha y duración
@@ -1601,6 +1588,7 @@ export default function ProformasPage() {
         setTipoBusqueda("documento");
         setMostrarExito(false);
         setCantidadesDispensar({});
+        setErrorValidacion("");
     };
 
     // LIMPIAR FILTROS DE BÚSQUEDA
@@ -1940,15 +1928,20 @@ export default function ProformasPage() {
                         <DialogTitle className="text-lg font-bold text-gray-800 flex items-center gap-2">
                             <Search className="h-5 w-5 text-blue-600" />
                             Consultar Tarifario
+                            <span className="ml-2 text-blue-700 font-semibold">
+                                ({filtroFarmacia})
+                            </span>
                         </DialogTitle>
-                        <Button
-                            variant="outline"
-                            className="ml-auto border-blue-600 text-blue-600 hover:bg-blue-50"
-                            onClick={() => setOpenPaquetes(true)}
-                        >
-                            Paquetes
-                        </Button>
                     </DialogHeader>
+
+                    <Button
+                        variant="outline"
+                        className="ml-auto flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold px-4 py-2 rounded-md"
+                        onClick={() => setOpenPaquetes(true)}
+                    >
+                        <Package className="h-5 w-5" />
+                        Paquetes
+                    </Button>
 
                     {/* Buscador */}
                     <div className="p-3">
@@ -1974,7 +1967,7 @@ export default function ProformasPage() {
                             <TabsContent key={tipo} value={tipo}>
                                 <div className="max-h-[400px] overflow-y-auto border rounded">
                                     <table className="min-w-full border-collapse border border-gray-300 text-sm">
-                                        <thead className="bg-gray-100">
+                                        <thead className="bg-gray-100 sticky top-0 z-10">
                                             <tr>
                                                 <th className="border px-3 py-2">Producto</th>
                                                 <th className="border px-3 py-2">Presentación</th>
@@ -2035,37 +2028,123 @@ export default function ProformasPage() {
                             </DialogTitle>
                         </DialogHeader>
 
-                        <table className="min-w-full border-collapse border border-gray-300 text-sm mt-4">
-                            <thead className="bg-gray-100">
-                                <tr>
-                                    <th className="border px-3 py-2">Almacén</th>
-                                    <th className="border px-3 py-2">Nombre</th>
-                                    <th className="border px-3 py-2">Presentación</th>
-                                    <th className="border px-3 py-2">Stock</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {/* Data de prueba: simular stock en distintos almacenes */}
-                                <tr>
-                                    <td className="border px-3 py-2">CE</td>
-                                    <td className="border px-3 py-2">Consultorios Externos</td>
-                                    <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
-                                    <td className="border px-3 py-2">44</td>
-                                </tr>
-                                <tr>
-                                    <td className="border px-3 py-2">F</td>
-                                    <td className="border px-3 py-2">Farmacia Emergencia</td>
-                                    <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
-                                    <td className="border px-3 py-2">28</td>
-                                </tr>
-                                <tr>
-                                    <td className="border px-3 py-2">DU</td>
-                                    <td className="border px-3 py-2">Farmacia Dosis Unitaria</td>
-                                    <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
-                                    <td className="border px-3 py-2">12</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div className="max-h-[400px] overflow-y-auto mt-4 border rounded">
+                            <table className="min-w-full border-collapse border border-gray-300 text-sm">
+                                <thead className="bg-gray-100 sticky top-0 z-10">
+                                    <tr>
+                                        <th className="border px-3 py-2">Almacén</th>
+                                        <th className="border px-3 py-2">Nombre</th>
+                                        <th className="border px-3 py-2">Presentación</th>
+                                        <th className="border px-3 py-2">Stock</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {/* Data de prueba: simular stock en distintos almacenes */}
+                                    <tr>
+                                        <td className="border px-3 py-2">A</td>
+                                        <td className="border px-3 py-2">Almacén de Medicamentos</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">AI</td>
+                                        <td className="border px-3 py-2">Almacén Insumos</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">AM</td>
+                                        <td className="border px-3 py-2">C.P. AMBULANCIA</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">CI</td>
+                                        <td className="border px-3 py-2">C.P. CIRUGIA</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">EM</td>
+                                        <td className="border px-3 py-2">C.P. EMERGENCIA</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">GO</td>
+                                        <td className="border px-3 py-2">C.P. GINCEO OBSTETRICIA</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">ME</td>
+                                        <td className="border px-3 py-2">C.P. MEDICINA</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">NE</td>
+                                        <td className="border px-3 py-2">C.P. NEONATOLOGIA</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">CB</td>
+                                        <td className="border px-3 py-2">C.P. OBSERVACION COVID</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">PE</td>
+                                        <td className="border px-3 py-2">C.P. PEDIATRÍA</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">SO</td>
+                                        <td className="border px-3 py-2">C.P. SALA DE OPERACIONES</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">UC</td>
+                                        <td className="border px-3 py-2">C.P. UCI</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">CU</td>
+                                        <td className="border px-3 py-2">C.P. UCI COVID-19</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">CE</td>
+                                        <td className="border px-3 py-2">Consultorios Externos</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">44</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">DU</td>
+                                        <td className="border px-3 py-2">FARMACIA DOSIS UNITARIA</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">12</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">F</td>
+                                        <td className="border px-3 py-2">FARMACIA EMERGENCIA</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">28</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border px-3 py-2">C</td>
+                                        <td className="border px-3 py-2">FARMACIA INMUNIZACIONES</td>
+                                        <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
+                                        <td className="border px-3 py-2">0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
                         <div className="flex justify-end mt-4">
                             <Button
@@ -2082,7 +2161,7 @@ export default function ProformasPage() {
 
             {/* MODAL DE LISTADO DE PAQUETES */}
             <Dialog open={openPaquetes} onOpenChange={setOpenPaquetes}>
-                <DialogContent 
+                <DialogContent
                     onInteractOutside={(e) => e.preventDefault()}
                     onEscapeKeyDown={(e) => e.preventDefault()}
                     className="sm:max-w-2xl bg-white rounded-lg shadow-lg p-6"
@@ -2110,6 +2189,7 @@ export default function ProformasPage() {
                                             className="bg-blue-600 text-white hover:bg-blue-700"
                                             onClick={() => {
                                                 setPaqueteSeleccionado(paq);
+                                                setOpenPaquetes(false);
                                                 setOpenItemsPaquete(true);
                                             }}
                                         >
@@ -2528,10 +2608,14 @@ export default function ProformasPage() {
                                     <div className="border rounded-md p-4 mb-4 bg-gray-50 text-sm">
                                         <h3 className="text-md font-semibold mb-3">Datos del paciente</h3>
 
-                                        <div className="grid grid-cols-3 gap-4">
+                                        <div className="grid grid-cols-4 gap-4">
                                             <div>
                                                 <Label className="block mb-1">Paciente:</Label>
                                                 <p className="text-gray-700 font-medium">{pacienteData.nombre}</p>
+                                            </div>
+                                            <div>
+                                                <Label className="block mb-1">Código de paciente:</Label>
+                                                <p className="text-gray-700 font-medium">{pacienteData.codPaciente}</p>
                                             </div>
                                             <div>
                                                 <Label className="block mb-1">Historia/DNI:</Label>
@@ -2565,7 +2649,7 @@ export default function ProformasPage() {
                                                 <Label className="block mb-1">Cuenta:</Label>
                                                 <p className="text-gray-700 font-medium">{pacienteData.cuenta}</p>
                                             </div>
-                                            <div className="col-span-3 flex items-center gap-6">
+                                            <div className="col-span-4 flex items-center gap-6">
                                                 <div className="flex items-center gap-2">
                                                     <input
                                                         id="activarRecetaEspecial"
@@ -2599,7 +2683,7 @@ export default function ProformasPage() {
                                                 </div>
                                             </div>
                                             {/* Comentario ocupa toda la fila */}
-                                            <div className="col-span-3">
+                                            <div className="col-span-4">
                                                 <Label className="block mb-1">Comentario:</Label>
                                                 <input
                                                     className="border-2 border-gray-500 rounded-md p-2 w-full"
@@ -3066,14 +3150,14 @@ export default function ProformasPage() {
                         <div className="border rounded-md p-4 mb-4 bg-gray-50">
                             <h3 className="text-md font-semibold mb-3">Datos del paciente</h3>
 
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-4 gap-4">
                                 <div>
                                     <Label className="block mb-1">Historia/DNI:</Label>
                                     <div className="flex gap-2">
                                         <Input
-                                            className="border-2 border-gray-500 flex-1"
+                                            className="border-2 border-gray-500 w-48"
                                             type="text"
-                                            placeholder="Ingrese historia / DNI"
+                                            placeholder="Ingrese Historia/DNI"
                                             value={historia}
                                             onChange={(e) => setHistoria(e.target.value)}
                                             onKeyDown={(e) => {
@@ -3093,24 +3177,42 @@ export default function ProformasPage() {
                                     </div>
                                     {errorValidacion && <p className="text-red-600 text-sm">{errorValidacion}</p>}
                                 </div>
-                                <div>
+
+                                <div className="col-span-2">
                                     <Label className="block mb-1">Paciente:</Label>
                                     <Input
-                                        className="border-2 border-gray-500 bg-gray-100 text-gray-700"
+                                        className={`border-2 border-gray-500 ${pacienteEditable ? "bg-white text-black" : "bg-gray-100 text-gray-700"}`}
                                         type="text"
                                         value={paciente}
-                                        disabled
+                                        onChange={(e) => setPaciente(e.target.value)}
+                                        disabled={!pacienteEditable}
                                     />
                                 </div>
-                                <div>
-                                    <Label className="block mb-1">Seguro:</Label>
-                                    <Input
-                                        className="border-2 border-gray-500 bg-gray-100 text-gray-700"
-                                        type="text"
-                                        value={seguro}
-                                        disabled
-                                    />
+
+                                <div className="flex gap-2">
+                                    <div>
+                                        <Label className="block mb-1">Código Paciente:</Label>
+                                        <Input
+                                            className="border-2 border-gray-500 w-32 bg-gray-100 text-gray-700"
+                                            type="text"
+                                            value={codigoPaciente}
+                                            disabled
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label className="block mb-1">Seguro:</Label>
+                                        <Input
+                                            className="border-2 border-gray-500 w-32 bg-gray-100 text-gray-700"
+                                            type="text"
+                                            value={seguro}
+                                            disabled
+                                        />
+                                    </div>
                                 </div>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4 mt-4">
                                 <div className="relative">
                                     <Label>Tipo de Atención:</Label>
                                     <Input
@@ -3192,6 +3294,9 @@ export default function ProformasPage() {
                                         </div>
                                     )}
                                 </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4 mt-4">
                                 <div>
                                     <Label>Transacción:</Label>
                                     <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese transacción" />
@@ -3200,45 +3305,46 @@ export default function ProformasPage() {
                                     <Label>N° Receta:</Label>
                                     <Input className="border-2 border-gray-500" type="text" placeholder="Ingrese número de receta" />
                                 </div>
-                                <div className="col-span-3 flex items-center gap-6">
-                                    <div className="flex items-center gap-2">
-                                        <input
-                                            id="activarRecetaEspecial"
-                                            type="checkbox"
-                                            checked={activarRecetaEspecial}
-                                            onChange={(e) => {
-                                                const checked = e.target.checked;
-                                                setActivarRecetaEspecial(checked);
-                                                if (!checked) {
-                                                    setRecetaEspecial("");
-                                                }
-                                            }}
-                                            className="w-5 h-5"
-                                        />
-                                        <Label htmlFor="activarRecetaEspecial" className="mb-0">
-                                            Activar Receta Especial
-                                        </Label>
-                                    </div>
+                            </div>
 
-                                    <div className="flex items-center gap-2 flex-1">
-                                        <Label className="mb-0">N° Receta Especial:</Label>
-                                        <input
-                                            type="text"
-                                            className={`border-2 rounded-md p-2 flex-1 ${activarRecetaEspecial
-                                                ? "border-gray-500 bg-white text-black"
-                                                : "border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed"}`}
-                                            value={recetaEspecial}
-                                            onChange={(e) => setRecetaEspecial(e.target.value)}
-                                            disabled={!activarRecetaEspecial}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col-span-3">
-                                    <Label className="block mb-1">Comentario:</Label>
+                            <div className="col-span-3 flex items-center gap-6 mt-6">
+                                <div className="flex items-center gap-2">
                                     <input
-                                        className="border-2 border-gray-500 rounded-md p-2 w-full"
+                                        id="activarRecetaEspecial"
+                                        type="checkbox"
+                                        checked={activarRecetaEspecial}
+                                        onChange={(e) => {
+                                            const checked = e.target.checked;
+                                            setActivarRecetaEspecial(checked);
+                                            if (!checked) {
+                                                setRecetaEspecial("");
+                                            }
+                                        }}
+                                        className="w-5 h-5"
+                                    />
+                                    <Label htmlFor="activarRecetaEspecial" className="mb-0">
+                                        Activar Receta Especial
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center gap-2 flex-1">
+                                    <Label className="mb-0">N° Receta Especial:</Label>
+                                    <input
+                                        type="text"
+                                        className={`border-2 rounded-md p-2 flex-1 ${activarRecetaEspecial
+                                            ? "border-gray-500 bg-white text-black"
+                                            : "border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed"}`}
+                                        value={recetaEspecial}
+                                        onChange={(e) => setRecetaEspecial(e.target.value)}
+                                        disabled={!activarRecetaEspecial}
                                     />
                                 </div>
+                            </div>
+                            <div className="col-span-3 mt-4">
+                                <Label className="block mb-1">Comentario:</Label>
+                                <input
+                                    className="border-2 border-gray-500 rounded-md p-2 w-full"
+                                />
                             </div>
                         </div>
 

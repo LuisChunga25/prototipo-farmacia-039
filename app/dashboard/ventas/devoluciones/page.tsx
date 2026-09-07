@@ -479,10 +479,10 @@ const devolucionesData = [
 ]
 
 const pacientesPrueba: Record<string, any> = {
-  "12345678": {
-    dni: "12345678",
+  "76516872": {
+    dni: "76516872",
     nombre: "CHUNGA HUAYLINOS LUIS DIEGO",
-    historia: "12345678",
+    historia: "76516872",
     sexo: "M",
     fechaNac: "08/03/1996",
     seguro: "SIS",
@@ -493,10 +493,10 @@ const pacientesPrueba: Record<string, any> = {
     receta: "270065000",
     cuenta: "3013144",
   },
-  "87654321": {
-    dni: "87654321",
+  "41877141": {
+    dni: "41877141",
     nombre: "HILARIO GARCIA MIGUEL ANGEL",
-    historia: "87654321",
+    historia: "41877141",
     sexo: "M",
     fechaNac: "16/02/1983",
     seguro: "PAGANTE",
@@ -507,10 +507,10 @@ const pacientesPrueba: Record<string, any> = {
     receta: "270065100",
     cuenta: "3013145",
   },
-  "11223344": {
-    dni: "11223344",
+  "76478385": {
+    dni: "76478385",
     nombre: "PRADO DAVILA CARLOS ENRIQUE ALBERTO",
-    historia: "11223344",
+    historia: "76478385",
     sexo: "M",
     fechaNac: "12/04/1997",
     seguro: "SIS",
@@ -521,10 +521,10 @@ const pacientesPrueba: Record<string, any> = {
     receta: "270065200",
     cuenta: "3013146",
   },
-  "55667788": {
-    dni: "55667788",
+  "70919488": {
+    dni: "70919488",
     nombre: "HUILLCAHUARI DURAND DANIEL",
-    historia: "55667788",
+    historia: "70919488",
     sexo: "M",
     fechaNac: "25/02/1998",
     seguro: "SOAT",
@@ -535,10 +535,10 @@ const pacientesPrueba: Record<string, any> = {
     receta: "270065300",
     cuenta: "3013147",
   },
-  "23456789": {
-    dni: "23456789",
-    nombre: "LOPEZ ORTEGA JORGE GUILLERMO",
-    historia: "23456789",
+  "73101361": {
+    dni: "73101361",
+    nombre: "HOLGUIN CUCALON JORGE ALBERTO",
+    historia: "73101361",
     sexo: "M",
     fechaNac: "25/02/1998",
     seguro: "SIS",
@@ -552,7 +552,7 @@ const pacientesPrueba: Record<string, any> = {
 };
 
 const medicamentosPrueba: Record<string, any[]> = {
-  "12345678": [
+  "76516872": [
     {
       item: 1,
       producto: "PARACETAMOL 500 MG TAB",
@@ -588,7 +588,7 @@ const medicamentosPrueba: Record<string, any[]> = {
       ],
     },
   ],
-  "87654321": [
+  "41877141": [
     {
       item: 1,
       producto: "IBUPROFENO 400 MG TAB",
@@ -601,7 +601,7 @@ const medicamentosPrueba: Record<string, any[]> = {
       ],
     },
   ],
-  "11223344": [
+  "76478385": [
     {
       item: 1,
       producto: "TRAMADOL 50 MG",
@@ -615,7 +615,7 @@ const medicamentosPrueba: Record<string, any[]> = {
       ],
     },
   ],
-  "55667788": [
+  "70919488": [
     {
       item: 1,
       producto: "PARACETAMOL 500 MG TAB",
@@ -629,7 +629,7 @@ const medicamentosPrueba: Record<string, any[]> = {
       ],
     },
   ],
-  "23456789": [
+  "73101361": [
     {
       item: 1,
       producto: "IBUPROFENO 400 MG",
@@ -646,7 +646,7 @@ const medicamentosPrueba: Record<string, any[]> = {
 };
 
 const kardexPrueba: Record<string, any[]> = {
-  "12345678": [
+  "76516872": [
     {
       proforma: "1726151436",
       fecha: "28/08/2026",
@@ -668,7 +668,7 @@ const kardexPrueba: Record<string, any[]> = {
       ],
     },
   ],
-  "87654321": [
+  "41877141": [
     {
       proforma: "1726152001",
       fecha: "28/08/2026",
@@ -681,7 +681,7 @@ const kardexPrueba: Record<string, any[]> = {
 };
 
 const historialPrueba: Record<string, Receta[]> = {
-  "12345678": [
+  "76516872": [
     {
       fecha: "15/08/2026",
       seguro: "SIS",
@@ -719,7 +719,7 @@ const historialPrueba: Record<string, Receta[]> = {
       medico: "BASOMBRIO VELASQUEZ JORGE",
     },
   ],
-  "87654321": [
+  "41877141": [
     {
       fecha: "24/08/2026",
       seguro: "PAGANTE",
@@ -745,7 +745,7 @@ const historialPrueba: Record<string, Receta[]> = {
       medico: "BASOMBRIO VELASQUEZ JORGE",
     },
   ],
-  "11223344": [
+  "76478385": [
     {
       fecha: "13/08/2026",
       seguro: "SIS",
@@ -783,7 +783,7 @@ const historialPrueba: Record<string, Receta[]> = {
       medico: "PACHAS CABREJOS MIGUEL ROLANDO",
     },
   ],
-  "55667788": [
+  "70919488": [
     {
       fecha: "13/08/2026",
       seguro: "SIS",
@@ -821,7 +821,7 @@ const historialPrueba: Record<string, Receta[]> = {
       medico: "PACHAS CABREJOS MIGUEL ROLANDO",
     },
   ],
-  "23456789": [
+  "73101361": [
     {
       fecha: "24/08/2026",
       seguro: "SIS",
@@ -3544,7 +3544,7 @@ export default function DevolucionesPage() {
                 <option value="motivo05">Cambio de Terapia</option>
                 <option value="motivo06">Alta Paciente</option>
                 <option value="motivo07">Fallecimiento de Paciente</option>
-                <option value="motivo08">Sobrestock</option>
+                {/*<option value="motivo08">Sobrestock</option>*/}
                 <option value="motivo09">Otros</option>
               </select>
             </div>
@@ -3562,7 +3562,7 @@ export default function DevolucionesPage() {
                 <tr>
                   <th className="border px-2 py-1">Item</th>
                   <th className="border px-2 py-1">Nombre</th>
-                  <th className="border px-2 py-1">Cantidad</th>
+                  <th className="border px-2 py-1">Cantidad atendida</th>
                   <th className="border px-2 py-1">Precio</th>
                   <th className="border px-2 py-1">Importe</th>
                   <th className="border px-2 py-1">Cantidad a devolver</th>
