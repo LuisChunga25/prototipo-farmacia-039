@@ -826,7 +826,7 @@ const medicamentosPrueba: Record<string, any[]> = {
 const historialPrueba: Record<string, Receta[]> = {
     "76516872": [
         {
-            fecha: "25/08/2026",
+            fecha: "10/09/2026",
             seguro: "SIS",
             servicio: "CE",
             farmaco: "PARACETAMOL 500 MG TAB",
@@ -839,7 +839,7 @@ const historialPrueba: Record<string, Receta[]> = {
             farmacia: "Consultorios Externos",
         },
         {
-            fecha: "20/08/2026",
+            fecha: "09/09/2026",
             seguro: "SIS",
             servicio: "EM",
             farmaco: "AMOXICILINA 500 MG",
@@ -852,7 +852,7 @@ const historialPrueba: Record<string, Receta[]> = {
             farmacia: "Farmacia Emergencia",
         },
         {
-            fecha: "08/08/2026",
+            fecha: "24/08/2026",
             seguro: "SIS",
             servicio: "CE",
             farmaco: "NAPROXENO 500 MG TAB",
@@ -867,7 +867,7 @@ const historialPrueba: Record<string, Receta[]> = {
     ],
     "41877141": [
         {
-            fecha: "24/08/2026",
+            fecha: "10/09/2026",
             seguro: "PAGANTE",
             servicio: "EM",
             farmaco: "IBUPROFENO 400 MG",
@@ -880,7 +880,7 @@ const historialPrueba: Record<string, Receta[]> = {
             farmacia: "Farmacia Emergencia",
         },
         {
-            fecha: "13/08/2026",
+            fecha: "09/09/2026",
             seguro: "PAGANTE",
             servicio: "EM",
             farmaco: "ORFENADRINA CITRATO 100 MG",
@@ -895,7 +895,7 @@ const historialPrueba: Record<string, Receta[]> = {
     ],
     "76478385": [
         {
-            fecha: "13/08/2026",
+            fecha: "10/09/2026",
             seguro: "SIS",
             servicio: "CE",
             farmaco: "IBUPROFENO 400 MG",
@@ -908,7 +908,7 @@ const historialPrueba: Record<string, Receta[]> = {
             farmacia: "Consultorios Externos",
         },
         {
-            fecha: "13/08/2026",
+            fecha: "09/09/2026",
             seguro: "SIS",
             servicio: "CE",
             farmaco: "ORFENADRINA CITRATO 100 MG",
@@ -921,7 +921,7 @@ const historialPrueba: Record<string, Receta[]> = {
             farmacia: "Consultorios Externos",
         },
         {
-            fecha: "12/08/2026",
+            fecha: "08/09/2026",
             seguro: "SIS",
             servicio: "CE",
             farmaco: "LORATADINA 10MG TABLETA",
@@ -936,7 +936,7 @@ const historialPrueba: Record<string, Receta[]> = {
     ],
     "70919488": [
         {
-            fecha: "13/08/2026",
+            fecha: "10/09/2026",
             seguro: "SIS",
             servicio: "CE",
             farmaco: "IBUPROFENO 400 MG",
@@ -949,7 +949,7 @@ const historialPrueba: Record<string, Receta[]> = {
             farmacia: "Consultorios Externos",
         },
         {
-            fecha: "13/08/2026",
+            fecha: "09/09/2026",
             seguro: "SIS",
             servicio: "CE",
             farmaco: "ORFENADRINA CITRATO 100 MG",
@@ -962,7 +962,7 @@ const historialPrueba: Record<string, Receta[]> = {
             farmacia: "Consultorios Externos",
         },
         {
-            fecha: "12/08/2026",
+            fecha: "08/09/2026",
             seguro: "SIS",
             servicio: "CE",
             farmaco: "LORATADINA 10MG TABLETA",
@@ -977,7 +977,7 @@ const historialPrueba: Record<string, Receta[]> = {
     ],
     "46428041": [
         {
-            fecha: "24/08/2026",
+            fecha: "10/09/2026",
             seguro: "SIS",
             servicio: "EM",
             farmaco: "IBUPROFENO 400 MG",
@@ -990,7 +990,7 @@ const historialPrueba: Record<string, Receta[]> = {
             farmacia: "Farmacia Emergencia",
         },
         {
-            fecha: "13/08/2026",
+            fecha: "09/09/2026",
             seguro: "SIS",
             servicio: "EM",
             farmaco: "ORFENADRINA CITRATO 100 MG",
@@ -1003,7 +1003,7 @@ const historialPrueba: Record<string, Receta[]> = {
             farmacia: "Farmacia Emergencia",
         },
         {
-            fecha: "12/08/2026",
+            fecha: "08/09/2026",
             seguro: "SIS",
             servicio: "CE",
             farmaco: "LORATADINA 10MG TABLETA",
@@ -1103,8 +1103,22 @@ const paquetesPrueba: Paquete[] = [
         tipo: "OBSTETRICIA",
         descripcion: "SET DE PARTO - PRIMIPARA",
         items: [
-            { nombre: "Guantes quirúrgicos Nº 6 1/2", cantidad: 2, presentacion: "PAR", precio: "S/ 0.90", stock: 289 },
-            { nombre: "Sonda nasogástrica Nº 12", cantidad: 1, presentacion: "UNI", precio: "S/ 1.30", stock: 11 },
+            { nombre: "Sodio Cloruro (1 L) 900 MG/100 ML (0.9 %)", cantidad: 2, presentacion: "INY", precio: "S/ 5.430", stock: 289 },
+            { nombre: "Cateter 18 G X 1 1/4", cantidad: 1, presentacion: "UNI", precio: "S/ 7.300", stock: 289 },
+            { nombre: "Aposito Trans. ADH. 6 CM X 7CM (S)", cantidad: 1, presentacion: "UNI", precio: "S/ 1.270", stock: 289 },
+            { nombre: "Guante Quirurg. N° 6 1/2", cantidad: 4, presentacion: "PAR", precio: "S/ 0.900", stock: 289 },
+            { nombre: "Catgut Cromico 2/0 MR 40", cantidad: 2, presentacion: "UNI", precio: "S/ 4.990", stock: 289 },
+            { nombre: "Lidocaina Clorh. (SP) 2 G/100 ML (2 %) 20 ML", cantidad: 1, presentacion: "INY", precio: "S/ 1.470", stock: 289 },
+            { nombre: "Jeringa 10 ML con aguja 21G X 1 1/2", cantidad: 2, presentacion: "UNI", precio: "S/ 0.270", stock: 289 },
+            { nombre: "Jeringa 5 ML con aguja 21 G X 1 1/2", cantidad: 2, presentacion: "UNI", precio: "S/ 0.150", stock: 289 },
+            { nombre: "Ibuprofeno 400 MG TAB", cantidad: 3, presentacion: "TAB", precio: "S/ 0.080", stock: 289 },
+            { nombre: "Oxitocina 10 UI 1 ML", cantidad: 3, presentacion: "INY", precio: "S/ 5.620", stock: 289 },
+            { nombre: "Equipo de Venoclisis con filtro (S)", cantidad: 1, presentacion: "UNI", precio: "S/ 9.170", stock: 0 },
+            { nombre: "Guante Quirurg. N° 7", cantidad: 6, presentacion: "PAR", precio: "S/ 0.870", stock: 289 },
+            { nombre: "Llave de triple via con extension x 10 cm (S)", cantidad: 1, presentacion: "UNI", precio: "S/ 1.110", stock: 289 },
+            { nombre: "Aguja descartable H. N° 20 G X 1 1/2", cantidad: 1, presentacion: "UNI", precio: "S/ 0.060", stock: 289 },
+            { nombre: "Aposito de gasa y algodon esteril 10 xm X 10 cm", cantidad: 3, presentacion: "UNI", precio: "S/ 1.910", stock: 289 },
+            { nombre: "Gasa Esteril 10 cm X 10 cm X 5", cantidad: 6, presentacion: "UNI", precio: "S/ 1.560", stock: 289 },
         ]
     },
     {
@@ -1158,6 +1172,46 @@ const paquetesPrueba: Paquete[] = [
     {
         tipo: "LABORATORIO",
         descripcion: "PERFIL ANCA",
+        items: [
+            { nombre: "Compresa de gasa estéril", cantidad: 1, presentacion: "UNI", precio: "S/ 9.73", stock: 0 },
+            { nombre: "Bolsa aspiración secreciones", cantidad: 1, presentacion: "UNI", precio: "S/ 57.41", stock: 5 },
+        ]
+    },
+    {
+        tipo: "GINECOLOGIA",
+        descripcion: "SET QUISTECTOMIA actualizado 2026",
+        items: [
+            { nombre: "Compresa de gasa estéril", cantidad: 1, presentacion: "UNI", precio: "S/ 9.73", stock: 0 },
+            { nombre: "Bolsa aspiración secreciones", cantidad: 1, presentacion: "UNI", precio: "S/ 57.41", stock: 5 },
+        ]
+    },
+    {
+        tipo: "OBSTETRICIA",
+        descripcion: "SET DE CESAREA actualizado 2026",
+        items: [
+            { nombre: "Compresa de gasa estéril", cantidad: 1, presentacion: "UNI", precio: "S/ 9.73", stock: 0 },
+            { nombre: "Bolsa aspiración secreciones", cantidad: 1, presentacion: "UNI", precio: "S/ 57.41", stock: 5 },
+        ]
+    },
+    {
+        tipo: "GINECO OBSTETRICIA",
+        descripcion: "SET LAPAROTOMIA: EMB.ECT 2026",
+        items: [
+            { nombre: "Compresa de gasa estéril", cantidad: 1, presentacion: "UNI", precio: "S/ 9.73", stock: 0 },
+            { nombre: "Bolsa aspiración secreciones", cantidad: 1, presentacion: "UNI", precio: "S/ 57.41", stock: 5 },
+        ]
+    },
+    {
+        tipo: "CIRUGIA",
+        descripcion: "INCISIÓN Y DRENAJE (ANESTECIA LOCAL)",
+        items: [
+            { nombre: "Compresa de gasa estéril", cantidad: 1, presentacion: "UNI", precio: "S/ 9.73", stock: 0 },
+            { nombre: "Bolsa aspiración secreciones", cantidad: 1, presentacion: "UNI", precio: "S/ 57.41", stock: 5 },
+        ]
+    },
+    {
+        tipo: "LABORATORIO",
+        descripcion: "CLORO EN ORINA DE 24 HORAS",
         items: [
             { nombre: "Compresa de gasa estéril", cantidad: 1, presentacion: "UNI", precio: "S/ 9.73", stock: 0 },
             { nombre: "Bolsa aspiración secreciones", cantidad: 1, presentacion: "UNI", precio: "S/ 57.41", stock: 5 },
@@ -2170,36 +2224,38 @@ export default function ProformasPage() {
                         <DialogTitle className="text-lg font-bold text-gray-800">Listado de Paquetes</DialogTitle>
                     </DialogHeader>
 
-                    <table className="min-w-full border-collapse border border-gray-300 text-sm">
-                        <thead className="bg-gray-100">
-                            <tr>
-                                <th className="border px-3 py-2">Tipo</th>
-                                <th className="border px-3 py-2">Descripción</th>
-                                <th className="border px-3 py-2">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paquetesPrueba.map((paq, idx) => (
-                                <tr key={idx} className="hover:bg-blue-50 transition-colors">
-                                    <td className="border px-3 py-2">{paq.tipo}</td>
-                                    <td className="border px-3 py-2">{paq.descripcion}</td>
-                                    <td className="border px-3 py-2 text-center">
-                                        <Button
-                                            size="sm"
-                                            className="bg-blue-600 text-white hover:bg-blue-700"
-                                            onClick={() => {
-                                                setPaqueteSeleccionado(paq);
-                                                setOpenPaquetes(false);
-                                                setOpenItemsPaquete(true);
-                                            }}
-                                        >
-                                            Seleccionar
-                                        </Button>
-                                    </td>
+                    <div className="max-h-[400px] overflow-y-auto mt-4 border rounded">
+                        <table className="min-w-full border-collapse border border-gray-300 text-sm">
+                            <thead className="bg-gray-100 sticky top-0 z-10">
+                                <tr>
+                                    <th className="border px-3 py-2">Tipo</th>
+                                    <th className="border px-3 py-2">Descripción</th>
+                                    <th className="border px-3 py-2">Acción</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {paquetesPrueba.map((paq, idx) => (
+                                    <tr key={idx} className="hover:bg-blue-50 transition-colors">
+                                        <td className="border px-3 py-2">{paq.tipo}</td>
+                                        <td className="border px-3 py-2">{paq.descripcion}</td>
+                                        <td className="border px-3 py-2 text-center">
+                                            <Button
+                                                size="sm"
+                                                className="bg-blue-600 text-white hover:bg-blue-700"
+                                                onClick={() => {
+                                                    setPaqueteSeleccionado(paq);
+                                                    setOpenPaquetes(false);
+                                                    setOpenItemsPaquete(true);
+                                                }}
+                                            >
+                                                Seleccionar
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </DialogContent>
             </Dialog>
 
@@ -2208,7 +2264,7 @@ export default function ProformasPage() {
                 <DialogContent
                     onInteractOutside={(e) => e.preventDefault()}
                     onEscapeKeyDown={(e) => e.preventDefault()}
-                    className="sm:max-w-3xl bg-white rounded-lg shadow-lg p-6"
+                    className="sm:max-w-4xl bg-white rounded-lg shadow-lg p-6"
                 >
                     <DialogHeader>
                         <DialogTitle className="text-lg font-bold text-gray-800">
@@ -2218,28 +2274,50 @@ export default function ProformasPage() {
 
                     {/* Ítems con stock */}
                     <h3 className="text-md font-semibold text-green-700 mb-2">Con Stock</h3>
-                    <table className="min-w-full border-collapse border border-gray-300 text-sm mb-4">
-                        <thead className="bg-gray-100">
-                            <tr>
-                                <th className="border px-3 py-2">Producto</th>
-                                <th className="border px-3 py-2">Presentación</th>
-                                <th className="border px-3 py-2">Stock actual</th>
-                                <th className="border px-3 py-2">Cantidad</th>
-                                <th className="border px-3 py-2">Precio</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paqueteSeleccionado?.items.filter(i => i.stock > 0).map((i, idx) => (
-                                <tr key={idx}>
-                                    <td className="border px-3 py-2">{i.nombre}</td>
-                                    <td className="border px-3 py-2">{i.presentacion}</td>
-                                    <td className="border px-3 py-2">{i.stock}</td>
-                                    <td className="border px-3 py-2">{i.cantidad}</td>
-                                    <td className="border px-3 py-2">{i.precio}</td>
+                    <div className="max-h-[400px] overflow-y-auto mt-4 border rounded">
+                        <table className="min-w-full border-collapse border border-gray-300 text-sm mb-4">
+                            <thead className="bg-gray-100 sticky top-0 z-10">
+                                <tr>
+                                    <th className="border px-3 py-2">Producto</th>
+                                    <th className="border px-3 py-2">Presentación</th>
+                                    <th className="border px-3 py-2">Stock actual</th>
+                                    <th className="border px-3 py-2">Cantidad</th>
+                                    <th className="border px-3 py-2">Precio</th>
+                                    <th className="border px-3 py-2">Importe</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {paqueteSeleccionado?.items.filter(i => i.stock > 0).map((i, idx) => (
+                                    <tr key={idx}>
+                                        <td className="border px-3 py-2">{i.nombre}</td>
+                                        <td className="border px-3 py-2">{i.presentacion}</td>
+                                        <td className="border px-3 py-2">{i.stock}</td>
+                                        <td className="border px-3 py-2">{i.cantidad}</td>
+                                        <td className="border px-3 py-2">{i.precio}</td>
+                                        <td className="border px-3 py-2">
+                                            {(() => {
+                                                const precioNum = parseFloat(i.precio.replace("S/", "").trim());
+                                                return `S/ ${(i.cantidad * precioNum).toFixed(3)}`;
+                                            })()}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="flex justify-end">
+                        <div className="bg-green-700 text-white font-bold px-6 py-2 rounded-md shadow">
+                            Total Con Stock: S/ {
+                                paqueteSeleccionado?.items
+                                    .filter(i => i.stock > 0)
+                                    .reduce((acc, i) => {
+                                        const precioNum = parseFloat(i.precio.replace("S/", "").trim());
+                                        return acc + (i.cantidad * precioNum);
+                                    }, 0).toFixed(2)
+                            }
+                        </div>
+                    </div>
 
                     {/* Ítems sin stock */}
                     <h3 className="text-md font-semibold text-red-700 mb-2">Sin Stock</h3>
@@ -2250,6 +2328,7 @@ export default function ProformasPage() {
                                 <th className="border px-3 py-2">Presentación</th>
                                 <th className="border px-3 py-2">Cantidad</th>
                                 <th className="border px-3 py-2">Precio</th>
+                                <th className="border px-3 py-2">Importe</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -2259,10 +2338,40 @@ export default function ProformasPage() {
                                     <td className="border px-3 py-2">{i.presentacion}</td>
                                     <td className="border px-3 py-2">{i.cantidad}</td>
                                     <td className="border px-3 py-2">{i.precio}</td>
+                                    <td className="border px-3 py-2">
+                                        {(() => {
+                                            const precioNum = parseFloat(i.precio.replace("S/", "").trim());
+                                            return `S/ ${(i.cantidad * precioNum).toFixed(2)}`;
+                                        })()}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
+
+                    <div className="flex justify-end">
+                        <div className="bg-red-700 text-white font-bold px-6 py-2 rounded-md shadow">
+                            Total Sin Stock: S/ {
+                                paqueteSeleccionado?.items
+                                    .filter(i => i.stock === 0)
+                                    .reduce((acc, i) => {
+                                        const precioNum = parseFloat(i.precio.replace("S/", "").trim());
+                                        return acc + (i.cantidad * precioNum);
+                                    }, 0).toFixed(2)
+                            }
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end">
+                        <div className="bg-blue-900 text-white font-bold px-6 py-2 rounded-md shadow">
+                            Total General: S/ {
+                                paqueteSeleccionado?.items.reduce((acc, i) => {
+                                    const precioNum = parseFloat(i.precio.replace("S/", "").trim());
+                                    return acc + (i.cantidad * precioNum);
+                                }, 0).toFixed(2)
+                            }
+                        </div>
+                    </div>
                 </DialogContent>
             </Dialog>
 

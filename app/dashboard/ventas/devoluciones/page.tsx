@@ -3456,7 +3456,12 @@ export default function DevolucionesPage() {
                         <td className="border px-2 py-1">{item.nombre}</td>
                         <td className="border px-2 py-1">{item.cantidad}</td>
                         <td className="border px-2 py-1">{item.precio}</td>
-                        <td className="border px-2 py-1">{item.importe}</td>
+                        <td className="border px-2 py-1">
+                          {(() => {
+                            const precioNum = parseFloat(item.precio.replace("S/", "").trim());
+                            return `S/ ${(item.cantidad * precioNum).toFixed(3)}`;
+                          })()}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -3575,7 +3580,12 @@ export default function DevolucionesPage() {
                     <td className="border px-2 py-1">{item.nombre}</td>
                     <td className="border px-2 py-1">{item.cantidad}</td>
                     <td className="border px-2 py-1">{item.precio}</td>
-                    <td className="border px-2 py-1">{item.importe}</td>
+                    <td className="border px-2 py-1">
+                      {(() => {
+                        const precioNum = parseFloat(item.precio.replace("S/", "").trim());
+                        return `S/ ${(item.cantidad * precioNum).toFixed(3)}`;
+                      })()}
+                    </td>
                     <td className="border px-2 py-1">
                       <Input
                         type="number"
@@ -3634,7 +3644,10 @@ export default function DevolucionesPage() {
             <div className="flex justify-end">
               <Button
                 className="bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={() => setModalConfirmacion(false)}
+                onClick={() => {
+                  resetForm();
+                  setModalConfirmacion(false);
+                }}
               >
                 Finalizar
               </Button>
