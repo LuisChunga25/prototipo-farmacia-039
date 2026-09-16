@@ -2704,10 +2704,10 @@ export default function ProformasPage() {
                                     </div>
 
                                     {pacienteData?.seguro !== "SIS" && (
-                                        <div className="flex items-center gap-2 bg-yellow-100 text-yellow-700 p-4 border border-yellow-300 rounded-md mb-4">
+                                        <div className="flex items-center gap-2 bg-yellow-100 text-yellow-700 p-4 border border-yellow-300 rounded-md mb-4 animate-parpadeo-alerta-pagante">
                                             <AlertTriangle className="h-5 w-5 text-yellow-700" />
                                             <span>
-                                                Este paciente no pertenece al SIS. Se trata de un paciente <strong>{pacienteData.seguro}</strong>.
+                                                Este paciente <strong> no pertenece al SIS.</strong> Se trata de un paciente <strong>{pacienteData.seguro}</strong>.
                                                 Tenga cuidado al generar la proforma.
                                             </span>
                                         </div>

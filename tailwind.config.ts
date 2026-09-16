@@ -92,12 +92,17 @@ const config: Config = {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0.3' },
 				},
+				'parpadeo-alerta-pagante': {
+					'0%, 100%': { opacity: '1', backgroundColor: 'rgb(254 249 195)' },
+					'50%': { opacity: '0.3', backgroundColor: 'rgb(253 230 138)' },
+				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'parpadeo': 'parpadeo 2s infinite',
 				'parpadeo-alertas': 'parpadeo-alertas 1.5s infinite',
+				'parpadeo-alerta-pagante': 'parpadeo-alerta-pagante 2.5s infinite',
 			}
 		}
 	},
