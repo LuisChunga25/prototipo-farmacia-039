@@ -454,7 +454,7 @@ const proformasData = [
         nombrePaciente: "PACHECO MENDOZA XIMENA GABRIELA",
         tipoSeguro: "SIS",
         medico: "SOTO ESCALANTE MARIA EUGENIA",
-        nombreAlmacen: "FARMACIA DOSIS UNITARIA",
+        nombreAlmacen: "FARMACIA HOSPITALIZACION",
         nombreConsultorio: "MEDICINA HOSPITALIZACION",
         tipoPago: "R",
         total: 7.90,
@@ -496,7 +496,7 @@ const proformasData = [
         nombrePaciente: "CASAS GARCIA SUSANA LETICIA",
         tipoSeguro: "SIS",
         medico: "DIONICIO IBAÑEZ LUIS FELIPE",
-        nombreAlmacen: "FARMACIA DOSIS UNITARIA",
+        nombreAlmacen: "FARMACIA HOSPITALIZACION",
         nombreConsultorio: "MEDICINA HOSPITALIZACION",
         tipoPago: "R",
         total: 8.20,
@@ -538,7 +538,7 @@ const proformasData = [
         nombrePaciente: "ORTIGOSA GUTIERREZ REBECA MARIANA",
         tipoSeguro: "SIS",
         medico: "BASOMBRIO VELASQUEZ JORGE",
-        nombreAlmacen: "FARMACIA DOSIS UNITARIA",
+        nombreAlmacen: "FARMACIA HOSPITALIZACION",
         nombreConsultorio: "CIRUGIA HOSPITALIZACION",
         tipoPago: "R",
         total: 4.10,
@@ -622,7 +622,7 @@ const proformasData = [
         nombrePaciente: "PRADO DAVILA CARLOS ENRIQUE ALBERTO",
         tipoSeguro: "SIS",
         medico: "TOMANGUILLO VASQUEZ MIGUEL ALEJANDRO",
-        nombreAlmacen: "FARMACIA DOSIS UNITARIA",
+        nombreAlmacen: "FARMACIA HOSPITALIZACION",
         nombreConsultorio: "ANESTESIOLOGIA",
         tipoPago: "R",
         total: 45.0,
@@ -1281,7 +1281,9 @@ export default function ProformasPage() {
     const [modalEditarCantidadMed, setModalEditarCantidadMed] = useState(false);
     const [errorStock, setErrorStock] = useState("");
     const [openPaquetes, setOpenPaquetes] = useState(false);
+    const [openPaquetesProforma, setOpenPaquetesProforma] = useState(false);
     const [openItemsPaquete, setOpenItemsPaquete] = useState(false);
+    const [openItemsPaqueteProforma, setOpenItemsPaqueteProforma] = useState(false);
     const [paqueteSeleccionado, setPaqueteSeleccionado] = useState<Paquete | null>(null);
     const [cantidadesDispensar, setCantidadesDispensar] = useState<Record<string, number>>({});
     const [showConfirmAnular, setShowConfirmAnular] = useState(false);
@@ -1445,7 +1447,7 @@ export default function ProformasPage() {
     const mapaFarmacias: Record<string, string> = {
         "CONSULTORIOS EXTERNOS": "CONSULTA EXTERNA",
         "FARMACIA EMERGENCIA": "EMERGENCIA",
-        "FARMACIA DOSIS UNITARIA": "HOSPITALIZACON", // ojo con la ortografía en tu data
+        "FARMACIA HOSPITALIZACION": "HOSPITALIZACION", // ojo con la ortografía en tu data
     };
 
 
@@ -1689,7 +1691,7 @@ export default function ProformasPage() {
                     >
                         <option value="CONSULTORIOS EXTERNOS">Consultorios Externos</option>
                         <option value="FARMACIA EMERGENCIA">Farmacia Emergencia</option>
-                        <option value="FARMACIA DOSIS UNITARIA">Farmacia Dosis Unitaria</option>
+                        <option value="FARMACIA HOSPITALIZACION">Farmacia Hospitalización</option>
                     </select>
                 </div>
             </div>
@@ -2180,7 +2182,7 @@ export default function ProformasPage() {
                                     </tr>
                                     <tr>
                                         <td className="border px-3 py-2">DU</td>
-                                        <td className="border px-3 py-2">FARMACIA DOSIS UNITARIA</td>
+                                        <td className="border px-3 py-2">FARMACIA HOSPITALIZACION</td>
                                         <td className="border px-3 py-2">{productoSeleccionado.presentacion}</td>
                                         <td className="border px-3 py-2">12</td>
                                     </tr>
@@ -2371,6 +2373,218 @@ export default function ProformasPage() {
                                 }, 0).toFixed(2)
                             }
                         </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* MODAL DE LISTADO DE PAQUETES PARA GENERACION DE PROFORMA*/}
+            <Dialog open={openPaquetesProforma} onOpenChange={setOpenPaquetesProforma}>
+                <DialogContent
+                    onInteractOutside={(e) => e.preventDefault()}
+                    onEscapeKeyDown={(e) => e.preventDefault()}
+                    className="sm:max-w-2xl bg-white rounded-lg shadow-lg p-6"
+                >
+                    <DialogHeader>
+                        <DialogTitle className="text-lg font-bold text-gray-800">Listado de Paquetes</DialogTitle>
+                    </DialogHeader>
+
+                    <div className="max-h-[400px] overflow-y-auto mt-4 border rounded">
+                        <table className="min-w-full border-collapse border border-gray-300 text-sm">
+                            <thead className="bg-gray-100 sticky top-0 z-10">
+                                <tr>
+                                    <th className="border px-3 py-2">Tipo</th>
+                                    <th className="border px-3 py-2">Descripción</th>
+                                    <th className="border px-3 py-2">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {paquetesPrueba.map((paq, idx) => (
+                                    <tr key={idx} className="hover:bg-blue-50 transition-colors">
+                                        <td className="border px-3 py-2">{paq.tipo}</td>
+                                        <td className="border px-3 py-2">{paq.descripcion}</td>
+                                        <td className="border px-3 py-2 text-center">
+                                            <Button
+                                                size="sm"
+                                                className="bg-blue-600 text-white hover:bg-blue-700"
+                                                onClick={() => {
+                                                    setPaqueteSeleccionado(paq);
+                                                    setOpenPaquetesProforma(false);
+                                                    setOpenItemsPaqueteProforma(true);
+                                                }}
+                                            >
+                                                Seleccionar
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* MODAL DE ITEMS DE PAQUETE PARA PONERLOS DENTRO DEL REGISTRO DE LA PROFORMA*/}
+            <Dialog open={openItemsPaqueteProforma} onOpenChange={setOpenItemsPaqueteProforma}>
+                <DialogContent
+                    onInteractOutside={(e) => e.preventDefault()}
+                    onEscapeKeyDown={(e) => e.preventDefault()}
+                    className="sm:max-w-4xl bg-white rounded-lg shadow-lg p-6 max-h-[85vh] overflow-y-auto"
+                >
+                    <DialogHeader>
+                        <DialogTitle className="text-lg font-bold text-gray-800">
+                            Items del Paquete: {paqueteSeleccionado?.descripcion}
+                        </DialogTitle>
+                    </DialogHeader>
+
+                    {/* Ítems con stock */}
+                    <h3 className="text-md font-semibold text-green-700 mb-2">Con Stock</h3>
+                    <div className="max-h-[220px] overflow-y-auto mt-4 border rounded">
+                        <table className="min-w-full border-collapse border border-gray-300 text-sm mb-4">
+                            <thead className="bg-gray-100 sticky top-0 z-10">
+                                <tr>
+                                    <th className="border px-3 py-2">Producto</th>
+                                    <th className="border px-3 py-2">Presentación</th>
+                                    <th className="border px-3 py-2">Stock actual</th>
+                                    <th className="border px-3 py-2">Cantidad</th>
+                                    <th className="border px-3 py-2">Precio</th>
+                                    <th className="border px-3 py-2">Importe</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {paqueteSeleccionado?.items.filter(i => i.stock > 0).map((i, idx) => (
+                                    <tr key={idx}>
+                                        <td className="border px-3 py-2">{i.nombre}</td>
+                                        <td className="border px-3 py-2">{i.presentacion}</td>
+                                        <td className="border px-3 py-2">{i.stock}</td>
+                                        <td className="border px-3 py-2">{i.cantidad}</td>
+                                        <td className="border px-3 py-2">{i.precio}</td>
+                                        <td className="border px-3 py-2">
+                                            {(() => {
+                                                const precioNum = parseFloat(i.precio.replace("S/", "").trim());
+                                                return `S/ ${(i.cantidad * precioNum).toFixed(3)}`;
+                                            })()}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="flex justify-end">
+                        <div className="bg-green-700 text-white font-bold px-6 py-2 rounded-md shadow">
+                            Total Con Stock: S/ {
+                                paqueteSeleccionado?.items
+                                    .filter(i => i.stock > 0)
+                                    .reduce((acc, i) => {
+                                        const precioNum = parseFloat(i.precio.replace("S/", "").trim());
+                                        return acc + (i.cantidad * precioNum);
+                                    }, 0).toFixed(2)
+                            }
+                        </div>
+                    </div>
+
+                    {/* Ítems sin stock */}
+                    <h3 className="text-md font-semibold text-red-700 mb-2">Sin Stock</h3>
+                    <table className="min-w-full border-collapse border border-gray-300 text-sm">
+                        <thead className="bg-gray-100">
+                            <tr>
+                                <th className="border px-3 py-2">Producto</th>
+                                <th className="border px-3 py-2">Presentación</th>
+                                <th className="border px-3 py-2">Cantidad</th>
+                                <th className="border px-3 py-2">Precio</th>
+                                <th className="border px-3 py-2">Importe</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {paqueteSeleccionado?.items.filter(i => i.stock === 0).map((i, idx) => (
+                                <tr key={idx}>
+                                    <td className="border px-3 py-2">{i.nombre}</td>
+                                    <td className="border px-3 py-2">{i.presentacion}</td>
+                                    <td className="border px-3 py-2">{i.cantidad}</td>
+                                    <td className="border px-3 py-2">{i.precio}</td>
+                                    <td className="border px-3 py-2">
+                                        {(() => {
+                                            const precioNum = parseFloat(i.precio.replace("S/", "").trim());
+                                            return `S/ ${(i.cantidad * precioNum).toFixed(2)}`;
+                                        })()}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    <div className="flex justify-end">
+                        <div className="bg-red-700 text-white font-bold px-6 py-2 rounded-md shadow">
+                            Total Sin Stock: S/ {
+                                paqueteSeleccionado?.items
+                                    .filter(i => i.stock === 0)
+                                    .reduce((acc, i) => {
+                                        const precioNum = parseFloat(i.precio.replace("S/", "").trim());
+                                        return acc + (i.cantidad * precioNum);
+                                    }, 0).toFixed(2)
+                            }
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end">
+                        <div className="bg-blue-900 text-white font-bold px-6 py-2 rounded-md shadow">
+                            Total General: S/ {
+                                paqueteSeleccionado?.items.reduce((acc, i) => {
+                                    const precioNum = parseFloat(i.precio.replace("S/", "").trim());
+                                    return acc + (i.cantidad * precioNum);
+                                }, 0).toFixed(2)
+                            }
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-3 border-t">
+                        <Button
+                            variant="outline"
+                            onClick={() => setOpenItemsPaqueteProforma(false)}
+                        >
+                            Cancelar
+                        </Button>
+                        <Button
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold"
+                            onClick={() => {
+                                if (!paqueteSeleccionado) return;
+
+                                // Filtrar solo los ítems con stock
+                                const itemsConStock = paqueteSeleccionado.items.filter((item) => item.stock > 0);
+
+                                // Mapear a la estructura de MedicamentoBase
+                                const nuevosMedicamentos: MedicamentoBase[] = itemsConStock.map((item) => {
+                                    const precioLimpio = item.precio.replace("S/", "").trim();
+                                    const precioNum = parseFloat(precioLimpio) || 0;
+                                    const importeTotal = (precioNum * item.cantidad).toFixed(2);
+
+                                    return {
+                                        producto: item.nombre,
+                                        presentacion: item.presentacion,
+                                        sisMed: "00000",
+                                        siga: "000000000000",
+                                        cantidadSolicitada: item.cantidad,
+                                        lotes: [
+                                            {
+                                                cantAsignada: item.cantidad,
+                                                precio: `S/ ${precioNum.toFixed(2)}`,
+                                                importe: `S/ ${importeTotal}`,
+                                                lote: "LOTE-PAQ",
+                                                venc: "31/12/2026",
+                                            },
+                                        ],
+                                    };
+                                });
+
+                                // Concatenar con los medicamentos ya registrados en la proforma manual
+                                setMedicamentos((prev) => [...prev, ...nuevosMedicamentos]);
+
+                                // Cerrar el modal
+                                setOpenItemsPaqueteProforma(false);
+                            }}
+                        >
+                            Agregar a la proforma
+                        </Button>
                     </div>
                 </DialogContent>
             </Dialog>
@@ -3475,7 +3689,7 @@ export default function ProformasPage() {
 
                             <div className="flex items-start gap-4 mb-4">
                                 <div className="relative">
-                                    <Label>Producto:</Label>
+                                    <Label className="block h-6 mb-1">Producto:</Label>
                                     <Input
                                         className="border-2 border-gray-500 w-[600px]"
                                         type="text"
@@ -3523,7 +3737,7 @@ export default function ProformasPage() {
                                     </div>
                                 </div>
                                 <div>
-                                    <Label>Cantidad:</Label>
+                                    <Label className="block h-6 mb-1">Cantidad:</Label>
                                     <Input
                                         className="border-2 border-gray-500"
                                         type="number"
@@ -3534,7 +3748,7 @@ export default function ProformasPage() {
                                     />
                                 </div>
                                 <div>
-                                    <Label className="invisible">Acción</Label>
+                                    <Label className="block h-6 mb-1 invisible">Acción</Label>
                                     <Button
                                         type="button"
                                         className="bg-green-600 hover:bg-green-700 text-white h-10 px-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
@@ -3575,10 +3789,24 @@ export default function ProformasPage() {
                                         Agregar
                                     </Button>
                                 </div>
+
+                                <div>
+                                    <Label className="block h-6 mb-1 invisible">Acción</Label>
+
+                                    <Button
+                                        variant="outline"
+                                        className="ml-auto flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold px-4 py-2 rounded-md"
+                                        onClick={() => setOpenPaquetesProforma(true)}
+                                    >
+                                        <Package className="h-5 w-5" />
+                                        Paquetes
+                                    </Button>
+                                </div>
+
                             </div>
 
                             {/* Tabla de medicamentos registrados */}
-                            <table className="w-full border-collapse border border-gray-300">
+                            <table className="w-full border-collapse border border-gray-300 text-sm">
                                 <thead className="bg-blue-100">
                                     <tr>
                                         <th className="border border-gray-300 px-2 py-1">Item</th>

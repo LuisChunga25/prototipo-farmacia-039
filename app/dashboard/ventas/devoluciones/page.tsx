@@ -370,7 +370,7 @@ const devolucionesData = [
     hora: "11:05:28",
     fecha_proceso: "01/09/2026",
     hora_proceso: "11:08:52",
-    nombreAlmacen: "FARMACIA DOSIS UNITARIA",
+    nombreAlmacen: "FARMACIA HOSPITALIZACION",
     usuario: "10170704",
     nombreUsuario: "LAURA HUAMAN MIRTA",
     motivo: "OTROS",
@@ -410,7 +410,7 @@ const devolucionesData = [
     hora: "11:02:01",
     fecha_proceso: "01/09/2026",
     hora_proceso: "11:02:35",
-    nombreAlmacen: "FARMACIA DOSIS UNITARIA",
+    nombreAlmacen: "FARMACIA HOSPITALIZACION",
     usuario: "10170704",
     nombreUsuario: "LAURA HUAMAN MIRTA",
     motivo: "OTROS",
@@ -450,7 +450,7 @@ const devolucionesData = [
     hora: "11:00:15",
     fecha_proceso: "01/09/2026",
     hora_proceso: "11:02:19",
-    nombreAlmacen: "FARMACIA DOSIS UNITARIA",
+    nombreAlmacen: "FARMACIA HOSPITALIZACION",
     usuario: "10170704",
     nombreUsuario: "LAURA HUAMAN MIRTA",
     motivo: "OTROS",
@@ -649,7 +649,7 @@ const kardexPrueba: Record<string, any[]> = {
   "76516872": [
     {
       proforma: "1726151436",
-      fecha: "28/08/2026",
+      fecha: "18/09/2026",
       usuario: "RIVAS BRAVO FLOR DE MARIA",
       items: [
         { codItem: "170073", nombre: "MIDAZOLAM 5 MG 5 ML (S)", cantidad: 3, precio: "S/ 10.910", importe: "S/ 32.730" },
@@ -661,7 +661,7 @@ const kardexPrueba: Record<string, any[]> = {
     },
     {
       proforma: "1726151435",
-      fecha: "28/08/2026",
+      fecha: "17/09/2026",
       usuario: "YALOPOMA POMA JHENRY",
       items: [
         { codItem: "170073", nombre: "MIDAZOLAM 5 MG 5 ML (S)", cantidad: 1, precio: "S/ 10.910", importe: "S/ 10.910" },
@@ -671,7 +671,7 @@ const kardexPrueba: Record<string, any[]> = {
   "41877141": [
     {
       proforma: "1726152001",
-      fecha: "28/08/2026",
+      fecha: "18/09/2026",
       usuario: "BASOMBRIO",
       items: [
         { codItem: "170093", nombre: "IBUPROFENO 400 MG TAB", cantidad: 12, precio: "S/ 1.80", importe: "S/ 21.60" },
@@ -1339,7 +1339,7 @@ export default function DevolucionesPage() {
           >
             <option value="CONSULTORIOS EXTERNOS">Consultorios Externos</option>
             <option value="FARMACIA EMERGENCIA">Farmacia Emergencia</option>
-            <option value="FARMACIA DOSIS UNITARIA">Farmacia Dosis Unitaria</option>
+            <option value="FARMACIA HOSPITALIZACION">Farmacia Hospitalización</option>
           </select>
         </div>
       </div>
@@ -3428,16 +3428,17 @@ export default function DevolucionesPage() {
             </div>
 
             {pacienteData && (
-              <div className="mb-4 text-sm">
+              <div className="mb-4 text-md font-semibold bg-gray-100 p-4 rounded-md border border-gray-300">
                 <p><strong>Paciente:</strong> {pacienteData.nombre}</p>
                 <p><strong>Historia Clínica:</strong> {pacienteData.historia}</p>
+                <p><strong>Rango de fecha:</strong> Del {fechaInicioKardex} al {fechaFinKardex}</p>
               </div>
             )}
 
             {kardexData.map((proforma, idx) => (
               <div key={idx} className="border rounded-md p-4 mb-6 bg-gray-50">
                 <h3 className="text-md font-semibold mb-2">
-                  Proforma {proforma.proforma} - Fecha: {proforma.fecha} - Usuario: {proforma.usuario}
+                  Proforma: {proforma.proforma} - Fecha: {proforma.fecha} - Usuario: {proforma.usuario}
                 </h3>
                 <table className="w-full border-collapse border border-gray-300 text-sm mb-3">
                   <thead className="bg-gray-100">
@@ -3446,6 +3447,7 @@ export default function DevolucionesPage() {
                       <th className="border px-2 py-1">Nombre</th>
                       <th className="border px-2 py-1">Cantidad</th>
                       <th className="border px-2 py-1">Precio</th>
+                      <th className="border px-2 py-1">Descuento</th>
                       <th className="border px-2 py-1">Importe</th>
                     </tr>
                   </thead>
@@ -3456,6 +3458,7 @@ export default function DevolucionesPage() {
                         <td className="border px-2 py-1">{item.nombre}</td>
                         <td className="border px-2 py-1">{item.cantidad}</td>
                         <td className="border px-2 py-1">{item.precio}</td>
+                        <td className="border px-2 py-1">0.000</td>
                         <td className="border px-2 py-1">
                           {(() => {
                             const precioNum = parseFloat(item.precio.replace("S/", "").trim());
@@ -3466,6 +3469,18 @@ export default function DevolucionesPage() {
                     ))}
                   </tbody>
                 </table>
+                <div className="flex justify-end">
+                  <div className="font-bold px-6 py-2">
+                    Subtotal: S/ {
+                      proforma?.items
+                        .filter(i => i.cantidad > 0)
+                        .reduce((acc, i) => {
+                          const precioNum = parseFloat(i.precio.replace("S/", "").trim());
+                          return acc + (i.cantidad * precioNum);
+                        }, 0).toFixed(2)
+                    }
+                  </div>
+                </div>
                 <Button
                   type="button"
                   className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
