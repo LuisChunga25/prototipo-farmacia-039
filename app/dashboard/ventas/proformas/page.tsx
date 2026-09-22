@@ -39,6 +39,7 @@ import {
     FileSearch,
     XCircle,
     Package,
+    Pencil,
 
 } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -118,6 +119,7 @@ interface Lote {
     importe: string;
     lote: string;
     venc: string;
+    stock?: number;
 }
 
 interface MedicamentoBase {
@@ -660,6 +662,9 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "08/03/1996",
         seguro: "SIS",
+        fechaReceta: "22/09/2026",
+        horaReceta: "11:12",
+        estadoReceta: "3",
         tipoAtencion: "CONSULTA EXTERNA",
         especialidad: "MEDICINA INTERNA",
         medico: "DIONICIO IBAÑEZ LUIS FELIPE",
@@ -675,6 +680,9 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "16/02/1983",
         seguro: "PAGANTE",
+        fechaReceta: "22/09/2026",
+        horaReceta: "10:40",
+        estadoReceta: "3",
         tipoAtencion: "CONSULTA EXTERNA",
         especialidad: "CIRUGÍA GENERAL",
         medico: "BASOMBRIO VELASQUEZ JORGE",
@@ -690,6 +698,9 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "12/04/1997",
         seguro: "SIS",
+        fechaReceta: "22/09/2026",
+        horaReceta: "09:23",
+        estadoReceta: "3",
         tipoAtencion: "HOSPITALIZACION",
         especialidad: "ANESTESIOLOGIA",
         medico: "TOMANGUILLO VASQUEZ MIGUEL ALEJANDRO",
@@ -704,6 +715,9 @@ const pacientesPrueba: Record<string, any> = {
         historia: "70919488",
         sexo: "M",
         fechaNac: "25/02/1998",
+        fechaReceta: "22/09/2026",
+        horaReceta: "09:12",
+        estadoReceta: "3",
         seguro: "SOAT",
         tipoAtencion: "EMERGENCIA",
         especialidad: "CIRUGIA GENERAL",
@@ -720,6 +734,9 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "26/07/1990",
         seguro: "SIS",
+        fechaReceta: "22/09/2026",
+        horaReceta: "08:53",
+        estadoReceta: "3",
         tipoAtencion: "EMERGENCIA",
         especialidad: "CIRUGIA GENERAL",
         medico: "PINEDA CUSIHUAMAN EDSON GUSTAVO",
@@ -1294,6 +1311,14 @@ export default function ProformasPage() {
     const [openStockModal, setOpenStockModal] = useState(false);
     const [productoSeleccionado, setProductoSeleccionado] = useState<any | null>(null);
     const [pacienteEditable, setPacienteEditable] = useState(false);
+    const [openObservacion, setOpenObservacion] = useState(false);
+    const [observacion, setObservacion] = useState("");
+    const [motivoAnulacionReceta, setMotivoAnulacionReceta] = useState("");
+    const [modalImpresion, setModalImpresion] = useState(false);
+    const [recetaSeleccionada, setRecetaSeleccionada] = useState<string | null>(null);
+    const fechaHoy = new Date().toISOString().split("T")[0];
+    const [fechaFiltro, setFechaFiltro] = useState(fechaHoy);
+    const [pacienteImpresion, setPacienteImpresion] = useState<string | null>(null);
 
     // Estados de error
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -1304,6 +1329,37 @@ export default function ProformasPage() {
     const formatoISO = (fecha: Date) => fecha.toISOString().split("T")[0];
     const [fechaInicio, setFechaInicio] = useState(formatoISO(primerDiaMes));
     const [fechaFin, setFechaFin] = useState(formatoISO(hoy));
+
+    // Convertir pacientesPrueba en arreglo
+    const pacientesArray = Object.values(pacientesPrueba);
+    const [filtro, setFiltro] = useState("");
+    const [tipoBusquedaReceta, setTipoBusquedaReceta] = useState("documento");
+
+    const formatDateToDDMMYYYY = (date: string) => {
+        const [year, month, day] = date.split("-");
+        return `${day}/${month}/${year}`;
+    };
+
+    // Filtrar pacientes según el buscador
+    const filteredPacientes = pacientesArray.filter((p) => {
+        let coincideBusqueda = true;
+
+        if (tipoBusqueda === "documento") {
+            coincideBusqueda = p.dni.includes(filtro);
+        } else if (tipoBusqueda === "historia") {
+            coincideBusqueda = p.historia.includes(filtro);
+        } else if (tipoBusqueda === "nombres") {
+            coincideBusqueda = p.nombre.toLowerCase().includes(filtro.toLowerCase());
+        }
+
+        let coincideFecha = true;
+        if (fechaFiltro) {
+            coincideFecha = p.fechaReceta === formatDateToDDMMYYYY(fechaFiltro);
+        }
+
+        return coincideBusqueda && coincideFecha;
+    });
+
 
     // Lógica del botón Validar
     const validarPacientePorHistoria = () => {
@@ -1396,7 +1452,7 @@ export default function ProformasPage() {
 
             const fechaFinFormateada = fechaFin.toLocaleDateString("es-PE");
 
-            return `Este medicamento ya fue recetado el ${recetaPrev.fecha} por ${diasTratamiento} días. Tratamiento vigente hasta el ${fechaFinFormateada}.`;
+            return `Recetado el ${recetaPrev.fecha} por ${diasTratamiento} días, hasta el ${fechaFinFormateada}.`;
         }
 
         return null;
@@ -1500,6 +1556,26 @@ export default function ProformasPage() {
             "1": "REGISTRADO",
             "2": "PROCESADO",
             "3": "ANULADO",
+        }
+
+        return <Badge className={`${variants[estado as keyof typeof variants]}`}>{nombreEstado[estado as keyof typeof nombreEstado]}</Badge>
+    }
+
+    const getEstadoRecetaBadge = (estado: string) => {
+        const variants = {
+            "1": "bg-yellow-100 text-yellow-800 border-yellow-300",
+            "2": "bg-green-100 text-green-800 border-green-300",
+            "3": "bg-red-100 text-red-800 border-red-300",
+            "4": "bg-gray-100 text-gray-800 border-gray-300",
+            "5": "bg-black-100 text-black-800 border-black-300",
+        }
+
+        const nombreEstado = {
+            "1": "REGISTRADO",
+            "2": "ENTREGADO",
+            "3": "NO ATENDIDO",
+            "4": "PARCIALMENTE ATENDIDO",
+            "5": "ANULADO",
         }
 
         return <Badge className={`${variants[estado as keyof typeof variants]}`}>{nombreEstado[estado as keyof typeof nombreEstado]}</Badge>
@@ -1645,6 +1721,7 @@ export default function ProformasPage() {
         setMostrarExito(false);
         setCantidadesDispensar({});
         setErrorValidacion("");
+        setMotivoAnulacionReceta("");
     };
 
     // LIMPIAR FILTROS DE BÚSQUEDA
@@ -2678,9 +2755,14 @@ export default function ProformasPage() {
             {/* MODAL DE REGISTRO DE NUEVA PROFORMA DE VENTA */}
             {modalNuevaProforma && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-                    <div className="bg-white rounded-md shadow-lg p-6 max-w-5xl w-full max-h-[90vh] overflow-y-auto relative">
+                    <div className="bg-white rounded-md shadow-lg p-6 max-w-7xl w-full max-h-[90vh] overflow-y-auto relative">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-lg font-semibold">Registrar Proforma</h2>
+                            <h2 className="text-lg font-semibold">
+                                Registrar Proforma
+                                <span className="ml-2 text-blue-700 font-semibold">
+                                    ({filtroFarmacia})
+                                </span>
+                            </h2>
 
                             <button
                                 type="button"
@@ -2694,14 +2776,14 @@ export default function ProformasPage() {
                         {/* Aquí va tu formulario */}
                         <form>
                             <div className="mb-6 mt-6 flex justify-between items-center">
-                                <h3 className="text-md font-semibold">Buscar Paciente</h3>
+                                <h3 className="text-md font-semibold">Listado de Recetas Médicas</h3>
 
-                                {resultadosBusqueda.length > 0 && (
+                                {/*{resultadosBusqueda.length > 0 && (
                                     <Button
                                         type="button"
                                         className="bg-gray-500 hover:bg-gray-600 text-white h-9 px-3"
                                         onClick={() => {
-                                            setDni("");
+                                            setFiltro("");
                                             setError("");
                                             setResultadosBusqueda([]);
                                             setPacienteData(null);
@@ -2714,54 +2796,165 @@ export default function ProformasPage() {
                                     >
                                         Nueva Búsqueda
                                     </Button>
-                                )}
+                                )}*/}
                             </div>
-                            <div className="flex items-center gap-4 mb-4 text-sm">
-                                <select
-                                    value={tipoBusqueda}
-                                    onChange={(e) => setTipoBusqueda(e.target.value)}
-                                    className="border p-2 h-10 w-56"
-                                >
-                                    <option value="documento">Documento</option>
-                                    <option value="nombres">Apellidos y Nombres</option>
-                                    <option value="historia">Historia Clínica</option>
-                                </select>
+                            <div className="flex items-end gap-4 border border-cyan-300 rounded-md px-6 py-4 mb-4 shadow-sm">
+                                <div className="flex flex-col">
+                                    <label className="text-sm font-medium mb-1">Buscar por:</label>
+                                    <div className="flex gap-2">
+                                        <select
+                                            value={tipoBusqueda}
+                                            onChange={(e) => setTipoBusqueda(e.target.value)}
+                                            className="border p-2 h-10 w-52 text-sm"
+                                        >
+                                            <option value="documento">Documento</option>
+                                            <option value="nombres">Apellidos y Nombres</option>
+                                            <option value="historia">Historia Clínica</option>
+                                        </select>
 
-                                {/* Contenedor vertical para input + error */}
-                                <Input
-                                    id="documento"
-                                    type="text"
-                                    placeholder={
-                                        tipoBusqueda === "documento"
-                                            ? "Ingrese número de documento"
-                                            : tipoBusqueda === "nombres"
-                                                ? "Ingrese apellidos y nombres"
-                                                : "Ingrese historia clínica"
-                                    }
-                                    autoComplete="off"
-                                    className={`border p-2 h-10 flex-1 ${error ? "border-red-500" : ""}`}
-                                    value={dni}
-                                    onChange={(e) => {
-                                        setDni(e.target.value);
-                                        setError(""); // limpia error al escribir
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            e.preventDefault();
-                                            validarBusqueda();
-                                        }
-                                    }}
-                                    disabled={pacienteExterno}
-                                />
+                                        {/* Contenedor vertical para input + error */}
+                                        <Input
+                                            id="documento"
+                                            type="text"
+                                            placeholder={
+                                                tipoBusqueda === "documento"
+                                                    ? "Ingrese número de documento"
+                                                    : tipoBusqueda === "nombres"
+                                                        ? "Ingrese apellidos y nombres"
+                                                        : "Ingrese historia clínica"
+                                            }
+                                            autoComplete="off"
+                                            className={`border p-2 h-10 w-64 ${error ? "border-red-500" : ""}`}
+                                            value={filtro}
+                                            onChange={(e) => setFiltro(e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault();
+                                                    validarBusqueda();
+                                                }
+                                            }}
+                                            disabled={pacienteExterno}
+                                        />
+                                    </div>
+                                </div>
 
-                                <Button
+                                {/*<Button
                                     type="button"
                                     className="bg-blue-600 hover:bg-blue-700 text-white h-10 px-4"
                                     onClick={validarBusqueda}
                                 >
                                     Buscar
-                                </Button>
+                                </Button>*/}
+
+                                {/* Filtro de fecha */}
+                                <div className="flex flex-col">
+                                    <label className="text-sm font-medium mb-1">Fecha:</label>
+                                    <Input
+                                        type="date"
+                                        className="border p-2 h-10 w-40"
+                                        value={fechaFiltro}
+                                        onChange={(e) => setFechaFiltro(e.target.value)}
+                                    />
+                                </div>
                             </div>
+
+                            <div className="overflow-x-auto border rounded-md">
+                                <Table className="text-xs">
+                                    <TableHeader>
+                                        <TableRow className="bg-cyan-600 hover:bg-cyan-600">
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Estado</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Num. Receta</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Fecha</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Hora</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Historia</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Nombres</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">DNI</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Seguro</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Consultorio</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Acciones</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {filteredPacientes.map((p) => (
+                                            <TableRow key={p.dni}>
+                                                <TableCell>{getEstadoRecetaBadge(p.estadoReceta)}</TableCell>
+                                                <TableCell>{p.receta}</TableCell>
+                                                <TableCell>{p.fechaReceta}</TableCell>
+                                                <TableCell>{p.horaReceta}</TableCell>
+                                                <TableCell>{p.historia}</TableCell>
+                                                <TableCell>{p.nombre}</TableCell>
+                                                <TableCell>{p.dni}</TableCell>
+                                                <TableCell>{p.seguro}</TableCell>
+                                                <TableCell>{p.especialidad}</TableCell>
+                                                <TableCell className="flex gap-2">
+                                                    <Button
+                                                        type="button"
+                                                        title="Validar Receta"
+                                                        variant="outline"
+                                                        className="h-8 w-10 p-1.5 border-green-600 text-green-600 hover:bg-green-50 flex items-center justify-center"
+                                                        onClick={() => {
+                                                            const farmaciaEsperada = mapaFarmacias[filtroFarmacia];
+                                                            if (p.tipoAtencion === farmaciaEsperada) {
+                                                                setPacienteData(p);
+                                                                setMedicamentosData(medicamentosPrueba[p.dni] || []);
+                                                                setMedicoReceta(p.medico);
+                                                                setHistorialData(historialPrueba[p.dni] || []);
+                                                                setDniValidado(true);
+                                                                setModalNuevaProforma(false);
+                                                                setModalDetallePaciente(true);
+                                                            } else {
+                                                                setMensajeAviso(`No se tiene registro de una receta para ${filtroFarmacia}.`);
+                                                                setModalAviso(true);
+                                                            }
+
+                                                        }}
+                                                    >
+                                                        <CheckCircleIcon className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        type="button"
+                                                        title="Imprimir Receta"
+                                                        variant="outline"
+                                                        className="h-8 w-10 p-1.5 border-purple-600 text-purple-600 hover:bg-purple-50 flex items-center justify-center"
+                                                        onClick={() => {
+                                                            setRecetaSeleccionada("/Modelo Receta CE.pdf");
+                                                            setPacienteImpresion(p.nombre);
+                                                            setModalImpresion(true);
+                                                        }}
+                                                    >
+                                                        <Printer className="h-4 w-4" />
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
+
+                            <Dialog open={modalImpresion} onOpenChange={setModalImpresion}>
+                                <DialogContent
+                                    onInteractOutside={(e) => e.preventDefault()}
+                                    onEscapeKeyDown={(e) => e.preventDefault()}
+                                    className="max-w-7xl h-[80vh] flex flex-col"
+                                >
+                                    <DialogHeader>
+                                        <DialogTitle>Impresión de Receta</DialogTitle>
+                                        <DialogDescription>
+                                            <span className="font-semibold text-gray-800">
+                                                Paciente: {pacienteImpresion}
+                                            </span>
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    {recetaSeleccionada ? (
+                                        <iframe
+                                            src={recetaSeleccionada}
+                                            className="w-full h-full border rounded-md"
+                                        />
+                                    ) : (
+                                        <p>No se ha seleccionado ninguna receta.</p>
+                                    )}
+                                </DialogContent>
+                            </Dialog>
 
                             {resultadosBusqueda.length > 0 && (
                                 <div className="mt-8">
@@ -2883,7 +3076,7 @@ export default function ProformasPage() {
                                 >
                                     <ArrowLeft className="h-5 w-5" />
                                 </button>
-                                <h2 className="text-lg font-semibold">Validación de receta</h2>
+                                <h2 className="text-lg font-semibold">Validación de receta para generación de proforma</h2>
                             </div>
 
                             {/* Bloque de fecha y hora */}
@@ -3047,7 +3240,7 @@ export default function ProformasPage() {
                                             </Button>
                                         </div>
 
-                                        <div className="overflow-x-auto">
+                                        <div className="overflow-x-auto text-xs">
                                             <table className="min-w-full border-collapse border border-gray-300">
                                                 <thead className="bg-blue-900 text-white">
                                                     <tr>
@@ -3055,12 +3248,13 @@ export default function ProformasPage() {
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Producto</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">SISMED / SIGA</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Cantidad solicitada</th>
-                                                        <th className="border border-gray-300 px-3 py-2 text-left">Cantidad a dispensar</th>
+                                                        {/*<th className="border border-gray-300 px-3 py-2 text-left">Cantidad a dispensar</th>*/}
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Cantidad por lote</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Precio de Operación</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Importe</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">Lote</th>
                                                         <th className="border border-gray-300 px-3 py-2 text-left">F. Venc.</th>
+                                                        <th className="border border-gray-300 px-3 py-2 text-left">Acción</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -3085,7 +3279,7 @@ export default function ProformasPage() {
                                                                             <div><span className="font-semibold">SIGA:</span> {med.siga}</div>
                                                                         </td>
                                                                         <td className="border px-3 py-2" rowSpan={med.subfilas.length}>{med.cantSolicitada}</td>
-                                                                        <td className="border px-3 py-2" rowSpan={med.subfilas.length}>
+                                                                        {/*<td className="border px-3 py-2" rowSpan={med.subfilas.length}>
                                                                             <input
                                                                                 type="number"
                                                                                 min={0}
@@ -3102,7 +3296,7 @@ export default function ProformasPage() {
                                                                                 }}
                                                                                 className="border rounded-md p-1 w-20 text-center"
                                                                             />
-                                                                        </td>
+                                                                        </td>*/}
                                                                     </>
                                                                 )}
                                                                 <td className="border px-3 py-2">
@@ -3131,6 +3325,21 @@ export default function ProformasPage() {
                                                                         </span>
                                                                     </div>
                                                                 </td>
+                                                                {idx === 0 && (
+                                                                    <>
+                                                                        <td className="border px-3 py-2 text-center" rowSpan={med.subfilas.length}>
+                                                                            <button
+                                                                                type="button"
+                                                                                className="flex items-center gap-2 border border-blue-600 rounded-md px-3 py-2 text-blue-600 hover:bg-blue-50"
+                                                                                title="Agregar Observación"
+                                                                                onClick={() => setOpenObservacion(true)}
+                                                                            >
+                                                                                <Pencil className="h-5 w-5" />
+                                                                                Agregar observación
+                                                                            </button>
+                                                                        </td>
+                                                                    </>
+                                                                )}
                                                             </tr>
                                                         ))
                                                     )}
@@ -3143,67 +3352,6 @@ export default function ProformasPage() {
                                             </div>
                                         </div>
                                     </div>
-
-                                    {modalEditarCantidad && (
-                                        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-                                            <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full relative">
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <h2 className="text-lg font-semibold">Editar cantidad</h2>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setModalEditarCantidad(false)}
-                                                        className="text-gray-500 hover:text-red-600"
-                                                    >
-                                                        <X className="h-5 w-5" />
-                                                    </button>
-                                                </div>
-
-                                                {medicamentoSeleccionado && (
-                                                    <div className="space-y-4">
-                                                        <p className="text-gray-700">
-                                                            <span className="font-semibold">Medicamento:</span> {medicamentoSeleccionado.nombre}
-                                                        </p>
-                                                        <p className="text-gray-700">
-                                                            <span className="font-semibold">Cantidad actual:</span> {medicamentoSeleccionado.cantidad}
-                                                        </p>
-
-                                                        {/* Nueva cantidad */}
-                                                        <div className="flex items-center gap-2">
-                                                            <Label className="w-32">Nueva cantidad:</Label>
-                                                            <input
-                                                                type="number"
-                                                                className="border-2 border-gray-400 rounded-md p-2 w-32"
-                                                                placeholder="Ingrese nueva cantidad"
-                                                            />
-                                                        </div>
-
-                                                        {/* Motivo */}
-                                                        <div>
-                                                            <Label className="block mb-1">Motivo:</Label>
-                                                            <textarea
-                                                                className="border-2 border-gray-400 rounded-md p-2 w-full h-24"
-                                                                placeholder="Explique el motivo del cambio..."
-                                                            />
-                                                        </div>
-
-                                                        {/* Botón confirmar */}
-                                                        <div className="flex justify-end">
-                                                            <Button
-                                                                type="button"
-                                                                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
-                                                                onClick={() => {
-                                                                    console.log("Confirmar cambio de cantidad");
-                                                                    setModalEditarCantidad(false);
-                                                                }}
-                                                            >
-                                                                Confirmar
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )}
 
                                     {modalHistorial && (
                                         <div className="fixed inset-0 flex items-center justify-center bg-black/50">
@@ -3262,6 +3410,54 @@ export default function ProformasPage() {
                                             </div>
                                         </div>
                                     )}
+
+                                    {/* Registrar Observación */}
+                                    <Dialog open={openObservacion} onOpenChange={setOpenObservacion}>
+                                        <DialogContent
+                                            onInteractOutside={(e) => e.preventDefault()}
+                                            onEscapeKeyDown={(e) => e.preventDefault()}
+                                            className="sm:max-w-md bg-white rounded-lg shadow-lg p-6"
+                                        >
+                                            <DialogHeader>
+                                                <DialogTitle className="text-lg font-bold text-gray-800">
+                                                    Registrar Observación
+                                                </DialogTitle>
+                                            </DialogHeader>
+
+                                            <div className="mt-4">
+                                                <Label htmlFor="observacion">Observación:</Label>
+                                                <textarea
+                                                    id="observacion"
+                                                    className="border border-gray-400 rounded-md p-2 w-full h-24 resize-none mt-2"
+                                                    placeholder="Ingrese observación..."
+                                                    value={observacion}
+                                                    onChange={(e) => setObservacion(e.target.value)}
+                                                />
+                                            </div>
+
+                                            <div className="flex justify-end gap-2 mt-4">
+                                                <Button
+                                                    variant="outline"
+                                                    onClick={() => {
+                                                        setOpenObservacion(false)
+                                                        setObservacion("");
+                                                    }}
+                                                >
+                                                    Cancelar
+                                                </Button>
+                                                <Button
+                                                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                                                    onClick={() => {
+                                                        console.log("Observación registrada:", observacion);
+                                                        setOpenObservacion(false);
+                                                        setObservacion("");
+                                                    }}
+                                                >
+                                                    Guardar
+                                                </Button>
+                                            </div>
+                                        </DialogContent>
+                                    </Dialog>
                                 </>
                             )}
 
@@ -3379,6 +3575,7 @@ export default function ProformasPage() {
                                 </div>
                             )}
 
+                            {/* Confirmar Anulación de receta */}
                             {showConfirmAnular && (
                                 <div className="fixed inset-0 flex items-center justify-center bg-black/50">
                                     <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full relative">
@@ -3386,13 +3583,33 @@ export default function ProformasPage() {
                                         <p className="text-sm text-gray-700 mb-6">
                                             ¿Está seguro de anular la receta? Esta acción no podrá revertirse.
                                         </p>
+                                        <div className="mb-6">
+                                            <Label htmlFor="motivo" className="font-semibold text-gray-700">Motivo de anulación:</Label>
+                                            <textarea
+                                                id="motivo"
+                                                className="border border-gray-300 rounded-md p-2 w-full h-20 resize-none mt-2"
+                                                placeholder="Ingrese el motivo..."
+                                                value={motivoAnulacionReceta}
+                                                onChange={(e) => setMotivoAnulacionReceta(e.target.value)}
+                                            />
+                                        </div>
                                         <div className="flex justify-end gap-2">
-                                            <Button variant="outline" onClick={() => setShowConfirmAnular(false)}>Cancelar</Button>
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => {
+                                                    setShowConfirmAnular(false);
+                                                    setMotivoAnulacionReceta("");
+                                                }}
+                                            >
+                                                Cancelar
+                                            </Button>
                                             <Button
                                                 className="bg-red-600 hover:bg-red-700 text-white"
                                                 onClick={() => {
+                                                    console.log("Motivo de anulación:", motivoAnulacion);
                                                     setShowConfirmAnular(false);
                                                     setShowSuccessAnular(true);
+                                                    setMotivoAnulacionReceta("");
                                                 }}
                                             >
                                                 Confirmar
@@ -3844,7 +4061,44 @@ export default function ProformasPage() {
                                                                     <div><span className="font-semibold">SISMED:</span> {med.sisMed}</div>
                                                                     <div><span className="font-semibold">SIGA:</span> {med.siga}</div>
                                                                 </td>
-                                                                <td className="border px-3 py-2" rowSpan={med.lotes.length}>{med.cantidadSolicitada}</td>
+                                                                <td className="border px-3 py-2" rowSpan={med.lotes.length}>
+                                                                    <Input
+                                                                        type="number"
+                                                                        min={1}
+                                                                        className="w-20 border-2 border-gray-400 rounded-md text-center"
+                                                                        value={med.cantidadSolicitada}
+                                                                        onChange={(e) => {
+                                                                            const nuevaCantidad = parseInt(e.target.value, 10) || 0;
+
+                                                                            const nuevosMedicamentos = [...medicamentos];
+                                                                            let cantidadSolicitada = nuevaCantidad;
+                                                                            let lotesDistribuidos: Lote[] = [];
+
+                                                                            for (const lote of med.lotes) {
+                                                                                if (cantidadSolicitada <= 0) break;
+
+                                                                                const capacidadLote = lote.stock ?? lote.cantAsignada;
+                                                                                const asignar = Math.min(capacidadLote, cantidadSolicitada);
+
+                                                                                lotesDistribuidos.push({
+                                                                                    ...lote,
+                                                                                    cantAsignada: asignar,
+                                                                                    importe: `S/ ${(asignar * parseFloat(lote.precio.replace("S/ ", ""))).toFixed(2)}`
+                                                                                });
+                                                                                cantidadSolicitada -= asignar;
+                                                                            }
+
+                                                                            // Actualizar el medicamento en la posición correspondiente
+                                                                            nuevosMedicamentos[index] = {
+                                                                                ...med,
+                                                                                cantidadSolicitada: nuevaCantidad,
+                                                                                lotes: lotesDistribuidos
+                                                                            };
+
+                                                                            setMedicamentos(nuevosMedicamentos);
+                                                                        }}
+                                                                    />
+                                                                </td>
                                                             </>
                                                         )}
                                                         <td className="border px-3 py-2">
@@ -3863,7 +4117,7 @@ export default function ProformasPage() {
                                                         {idx === 0 && (
                                                             <td className="border px-3 py-2 text-center" rowSpan={med.lotes.length}>
                                                                 <div className="flex justify-center gap-2">
-                                                                    <button
+                                                                    {/*<button
                                                                         onClick={() => {
                                                                             setMedicamentoEditando(index);
                                                                             setNuevaCantidad(med.cantidadSolicitada?.toString() || "");
@@ -3873,7 +4127,7 @@ export default function ProformasPage() {
                                                                         title="Editar cantidad"
                                                                     >
                                                                         <FileEdit className="h-5 w-5" />
-                                                                    </button>
+                                                                    </button>*/}
 
                                                                     <button
                                                                         onClick={() => {
