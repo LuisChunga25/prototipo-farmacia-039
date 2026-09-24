@@ -662,7 +662,7 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "08/03/1996",
         seguro: "SIS",
-        fechaReceta: "22/09/2026",
+        fechaReceta: "24/09/2026",
         horaReceta: "11:12",
         estadoReceta: "3",
         tipoAtencion: "CONSULTA EXTERNA",
@@ -680,7 +680,7 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "16/02/1983",
         seguro: "PAGANTE",
-        fechaReceta: "22/09/2026",
+        fechaReceta: "24/09/2026",
         horaReceta: "10:40",
         estadoReceta: "3",
         tipoAtencion: "CONSULTA EXTERNA",
@@ -698,7 +698,7 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "12/04/1997",
         seguro: "SIS",
-        fechaReceta: "22/09/2026",
+        fechaReceta: "24/09/2026",
         horaReceta: "09:23",
         estadoReceta: "3",
         tipoAtencion: "HOSPITALIZACION",
@@ -715,7 +715,7 @@ const pacientesPrueba: Record<string, any> = {
         historia: "70919488",
         sexo: "M",
         fechaNac: "25/02/1998",
-        fechaReceta: "22/09/2026",
+        fechaReceta: "24/09/2026",
         horaReceta: "09:12",
         estadoReceta: "3",
         seguro: "SOAT",
@@ -734,7 +734,7 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "26/07/1990",
         seguro: "SIS",
-        fechaReceta: "22/09/2026",
+        fechaReceta: "24/09/2026",
         horaReceta: "08:53",
         estadoReceta: "3",
         tipoAtencion: "EMERGENCIA",
@@ -1245,17 +1245,13 @@ export default function ProformasPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchBy, setSearchBy] = useState("ordenId");
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
-    const [proformasVisibles, setProformasVisibles] = useState<any[]>([]);
     const [modalNuevaProforma, setModalNuevaProforma] = useState(false);
     const [modalDetallePaciente, setModalDetallePaciente] = useState(false);
-    const [modalPacienteExterno, setModalPacienteExterno] = useState(false);
     const [modalRecetaExterna, setModalRecetaExterna] = useState(false);
     const [dni, setDni] = useState("");
     const [dniValidado, setDniValidado] = useState(false);
     const [error, setError] = useState("");
     const [modalHistorial, setModalHistorial] = useState(false);
-    const [modalEditarCantidad, setModalEditarCantidad] = useState(false);
-    const [medicamentoSeleccionado, setMedicamentoSeleccionado] = useState<any>(null);
     const router = useRouter();
     const hoy = new Date();
     const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
@@ -1333,7 +1329,6 @@ export default function ProformasPage() {
     // Convertir pacientesPrueba en arreglo
     const pacientesArray = Object.values(pacientesPrueba);
     const [filtro, setFiltro] = useState("");
-    const [tipoBusquedaReceta, setTipoBusquedaReceta] = useState("documento");
 
     const formatDateToDDMMYYYY = (date: string) => {
         const [year, month, day] = date.split("-");
@@ -1516,7 +1511,6 @@ export default function ProformasPage() {
 
     // INICIALIZAR CUANDO CARGUE LA PÁGINA
     useEffect(() => {
-        setProformasVisibles(proformasData);
     }, [proformasData]);
 
     // INICIALIZAR CON LA CANTIDAD SOLICITADA
@@ -1722,6 +1716,7 @@ export default function ProformasPage() {
         setCantidadesDispensar({});
         setErrorValidacion("");
         setMotivoAnulacionReceta("");
+       setFiltro("");
     };
 
     // LIMPIAR FILTROS DE BÚSQUEDA
