@@ -40,6 +40,7 @@ import {
     XCircle,
     Package,
     Pencil,
+    Book,
 
 } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -662,10 +663,11 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "08/03/1996",
         seguro: "SIS",
-        fechaReceta: "24/09/2026",
+        fechaReceta: "28/09/2026",
         horaReceta: "11:12",
         estadoReceta: "3",
         tipoAtencion: "CONSULTA EXTERNA",
+        nombreAlmacen: "CONSULTORIOS EXTERNOS",
         especialidad: "MEDICINA INTERNA",
         medico: "DIONICIO IBAÑEZ LUIS FELIPE",
         transaccion: "VRS - SIS",
@@ -680,10 +682,11 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "16/02/1983",
         seguro: "PAGANTE",
-        fechaReceta: "24/09/2026",
+        fechaReceta: "28/09/2026",
         horaReceta: "10:40",
         estadoReceta: "3",
         tipoAtencion: "CONSULTA EXTERNA",
+        nombreAlmacen: "CONSULTORIOS EXTERNOS",
         especialidad: "CIRUGÍA GENERAL",
         medico: "BASOMBRIO VELASQUEZ JORGE",
         transaccion: "VC - CONTADO",
@@ -698,11 +701,12 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "12/04/1997",
         seguro: "SIS",
-        fechaReceta: "24/09/2026",
+        fechaReceta: "28/09/2026",
         horaReceta: "09:23",
         estadoReceta: "3",
         tipoAtencion: "HOSPITALIZACION",
-        especialidad: "ANESTESIOLOGIA",
+        nombreAlmacen: "FARMACIA HOSPITALIZACION",
+        especialidad: "UCI",
         medico: "TOMANGUILLO VASQUEZ MIGUEL ALEJANDRO",
         transaccion: "VRD - SIS (DOSIS UNITARIA)",
         receta: "270065200",
@@ -715,11 +719,12 @@ const pacientesPrueba: Record<string, any> = {
         historia: "70919488",
         sexo: "M",
         fechaNac: "25/02/1998",
-        fechaReceta: "24/09/2026",
+        fechaReceta: "28/09/2026",
         horaReceta: "09:12",
         estadoReceta: "3",
         seguro: "SOAT",
         tipoAtencion: "EMERGENCIA",
+        nombreAlmacen: "FARMACIA EMERGENCIA",
         especialidad: "CIRUGIA GENERAL",
         medico: "PINEDA CUSIHUAMAN EDSON GUSTAVO",
         transaccion: "VRO - SOAT",
@@ -734,10 +739,11 @@ const pacientesPrueba: Record<string, any> = {
         sexo: "M",
         fechaNac: "26/07/1990",
         seguro: "SIS",
-        fechaReceta: "24/09/2026",
+        fechaReceta: "28/09/2026",
         horaReceta: "08:53",
         estadoReceta: "3",
         tipoAtencion: "EMERGENCIA",
+        nombreAlmacen: "FARMACIA EMERGENCIA",
         especialidad: "CIRUGIA GENERAL",
         medico: "PINEDA CUSIHUAMAN EDSON GUSTAVO",
         transaccion: "VRS - SIS",
@@ -1289,10 +1295,6 @@ export default function ProformasPage() {
     const [mensajeAviso, setMensajeAviso] = useState("");
     const [openTarifario, setOpenTarifario] = useState(false);
     const [busqueda, setBusqueda] = useState("");
-    const [medicamentoEditando, setMedicamentoEditando] = useState<number | null>(null);
-    const [nuevaCantidad, setNuevaCantidad] = useState("");
-    const [modalEditarCantidadMed, setModalEditarCantidadMed] = useState(false);
-    const [errorStock, setErrorStock] = useState("");
     const [openPaquetes, setOpenPaquetes] = useState(false);
     const [openPaquetesProforma, setOpenPaquetesProforma] = useState(false);
     const [openItemsPaquete, setOpenItemsPaquete] = useState(false);
@@ -1315,6 +1317,7 @@ export default function ProformasPage() {
     const fechaHoy = new Date().toISOString().split("T")[0];
     const [fechaFiltro, setFechaFiltro] = useState(fechaHoy);
     const [pacienteImpresion, setPacienteImpresion] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Estados de error
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -1352,7 +1355,12 @@ export default function ProformasPage() {
             coincideFecha = p.fechaReceta === formatDateToDDMMYYYY(fechaFiltro);
         }
 
-        return coincideBusqueda && coincideFecha;
+        let coincideFarmacia = true;
+        if (filtroFarmacia) {
+            coincideFarmacia = p.nombreAlmacen.toLowerCase().includes(filtroFarmacia.toLowerCase());
+        }
+
+        return coincideBusqueda && coincideFecha && coincideFarmacia;
     });
 
 
@@ -1575,6 +1583,7 @@ export default function ProformasPage() {
         return <Badge className={`${variants[estado as keyof typeof variants]}`}>{nombreEstado[estado as keyof typeof nombreEstado]}</Badge>
     }
 
+    // Filtrar Proformas
     const filtrarProformas = () => {
         return proformasData.filter((proforma) => {
             // --- FILTRO POR FECHA ---
@@ -1716,10 +1725,10 @@ export default function ProformasPage() {
         setCantidadesDispensar({});
         setErrorValidacion("");
         setMotivoAnulacionReceta("");
-       setFiltro("");
+        setFiltro("");
     };
 
-    // LIMPIAR FILTROS DE BÚSQUEDA
+    // LIMPIAR FILTROS DE BÚSQUEDA DE PROFORMAS
     const limpiarFiltros = () => {
         // resetear búsqueda
         setSearchBy("ordenId"); // valor inicial del combobox
@@ -1750,7 +1759,7 @@ export default function ProformasPage() {
                     </Button>
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Módulo de Proformas Web</h1>
-                        <p className="text-muted-foreground">Gestión de la emisión de proformas</p>
+                        <p className="text-muted-foreground">Generación de la proforma a partir de una receta médica</p>
                     </div>
                 </div>
                 <div className="bg-cyan-50 border border-cyan-200 border-2 p-4 rounded-md">
@@ -1791,72 +1800,66 @@ export default function ProformasPage() {
                             className="bg-teal-600 hover:bg-teal-700 text-white gap-2 font-semibold h-11 px-4"
                             onClick={() => setModalNuevaProforma(true)}
                         >
-                            <Plus className="h-5 w-5" strokeWidth={3} />
-                            Nueva Proforma
+                            <Book className="h-5 w-5" strokeWidth={3} />
+                            Historial de Proformas
                         </Button>
                     </div>
                 </div>
 
-                <div className="flex items-end gap-4 border border-cyan-300 rounded-md px-6 py-4 mb-6 shadow-sm">
-                    <div className="flex flex-col flex-1">
-                        <Label htmlFor="buscar" className="mb-1">Buscar por:</Label>
-
+                {/* FILTROS DE BUSQUEDA DE RECETAS MEDICAS */}
+                <div className="flex items-end gap-4 border border-cyan-300 rounded-md px-6 py-4 mb-4 shadow-sm">
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium mb-1">Buscar por:</label>
                         <div className="flex gap-2">
-
-                            {/* Combobox */}
                             <select
-                                className="h-10 w-44 rounded-md border border-input bg-background px-3 text-sm"
-                                value={searchBy}
-                                onChange={(e) => setSearchBy(e.target.value)}
+                                value={tipoBusqueda}
+                                onChange={(e) => setTipoBusqueda(e.target.value)}
+                                className="border p-2 h-10 w-52 text-sm"
                             >
-                                {opcionesBusqueda.map((opcion) => (
-                                    <option
-                                        key={opcion.value}
-                                        value={opcion.value}
-                                    >
-                                        {opcion.label}
-                                    </option>
-                                ))}
+                                <option value="documento">Documento</option>
+                                <option value="nombres">Apellidos y Nombres</option>
+                                <option value="historia">Historia Clínica</option>
                             </select>
 
-                            {/* Caja de búsqueda */}
-                            <div className="relative flex-1">
-                                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-
-                                <Input
-                                    className="pl-9 h-10"
-                                    placeholder={`Ingrese ${opcionesBusqueda.find(o => o.value === searchBy)?.label}`}
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                            </div>
+                            {/* Contenedor vertical para input + error */}
+                            <Input
+                                id="documento"
+                                type="text"
+                                placeholder={
+                                    tipoBusqueda === "documento"
+                                        ? "Ingrese número de documento"
+                                        : tipoBusqueda === "nombres"
+                                            ? "Ingrese apellidos y nombres"
+                                            : "Ingrese historia clínica"
+                                }
+                                autoComplete="off"
+                                className={`border p-2 h-10 w-64 ${error ? "border-red-500" : ""}`}
+                                value={filtro}
+                                onChange={(e) => setFiltro(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        e.preventDefault();
+                                        validarBusqueda();
+                                    }
+                                }}
+                                disabled={pacienteExterno}
+                            />
                         </div>
                     </div>
 
+                    {/* Filtro de fecha */}
                     <div className="flex flex-col">
-                        <Label htmlFor="fechaInicio" className="mb-1">Desde:</Label>
+                        <label className="text-sm font-medium mb-1">Fecha:</label>
                         <Input
-                            id="fechaInicio"
                             type="date"
-                            className="h-10 w-40"
-                            value={fechaInicio}
-                            onChange={(e) => setFechaInicio(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="flex flex-col">
-                        <Label htmlFor="fechaFin" className="mb-1">Hasta:</Label>
-                        <Input
-                            id="fechaFin"
-                            type="date"
-                            className="h-10 w-40"
-                            value={fechaFin}
-                            onChange={(e) => setFechaFin(e.target.value)}
+                            className="border p-2 h-10 w-40"
+                            value={fechaFiltro}
+                            onChange={(e) => setFechaFiltro(e.target.value)}
                         />
                     </div>
 
                     <div className="flex gap-2">
-                        <Button variant="outline" size="sm" className="h-10 gap-1" onClick={limpiarFiltros}>
+                        <Button variant="outline" size="sm" className="h-10 gap-1">
                             <Eraser className="h-4 w-4" />
                             Limpiar Filtros
                         </Button>
@@ -1869,181 +1872,132 @@ export default function ProformasPage() {
                 </div>
             </div>
 
+            <div className="mb-4 mt-8">
+                <h3>Recetas Emitidas</h3>
+            </div>
+
+            {/* TABLA PRINCIPAL DEL LISTADO DE RECETAS EMITIDAS */}
             <div className="overflow-x-auto border rounded-md">
-                <Table>
+                <Table className="text-xs">
                     <TableHeader>
                         <TableRow className="bg-cyan-600 hover:bg-cyan-600">
                             <TableHead className="font-semibold text-white hover:bg-transparent">Estado</TableHead>
-                            <TableHead className="font-semibold text-white hover:bg-transparent">Orden ID</TableHead>
-                            <TableHead className="font-semibold text-white hover:bg-transparent">Número de Receta</TableHead>
-                            <TableHead className="font-semibold text-white hover:bg-transparent">Paciente</TableHead>
-                            <TableHead className="font-semibold text-white hover:bg-transparent">Historia</TableHead>
-                            <TableHead className="font-semibold text-white hover:bg-transparent">Tipo de Seguro</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Num. Receta</TableHead>
                             <TableHead className="font-semibold text-white hover:bg-transparent">Fecha</TableHead>
-                            <TableHead className="font-semibold text-white hover:bg-transparent">Almacén</TableHead>
-                            <TableHead className="font-semibold text-white hover:bg-transparent">Total (S/.)</TableHead>
-                            <TableHead className="font-semibold text-white hover:bg-transparent">Usuario</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Hora</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Historia</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Nombres</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">DNI</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Seguro</TableHead>
+                            <TableHead className="font-semibold text-white hover:bg-transparent">Consultorio</TableHead>
                             <TableHead className="font-semibold text-white hover:bg-transparent">Acciones</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filtrarProformas().length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={10} className="text-center text-gray-500 italic">
-                                    No se hallaron registros según los filtros de búsqueda
+                        {filteredPacientes.map((p) => (
+                            <TableRow key={p.dni}>
+                                <TableCell>{getEstadoRecetaBadge(p.estadoReceta)}</TableCell>
+                                <TableCell>{p.receta}</TableCell>
+                                <TableCell>{p.fechaReceta}</TableCell>
+                                <TableCell>{p.horaReceta}</TableCell>
+                                <TableCell>{p.historia}</TableCell>
+                                <TableCell>{p.nombre}</TableCell>
+                                <TableCell>{p.dni}</TableCell>
+                                <TableCell>{p.seguro}</TableCell>
+                                <TableCell>{p.especialidad}</TableCell>
+                                <TableCell className="flex gap-2">
+                                    <Button
+                                        type="button"
+                                        title="Validar Receta"
+                                        variant="outline"
+                                        className="h-8 w-10 p-1.5 border-green-600 text-green-600 hover:bg-green-50 flex items-center justify-center"
+                                        onClick={() => {
+                                            const farmaciaEsperada = mapaFarmacias[filtroFarmacia];
+                                            if (p.tipoAtencion === farmaciaEsperada) {
+                                                setPacienteData(p);
+                                                setMedicamentosData(medicamentosPrueba[p.dni] || []);
+                                                setMedicoReceta(p.medico);
+                                                setHistorialData(historialPrueba[p.dni] || []);
+                                                setDniValidado(true);
+                                                setModalNuevaProforma(false);
+                                                setModalDetallePaciente(true);
+                                            } else {
+                                                setMensajeAviso(`No se tiene registro de una receta para ${filtroFarmacia}.`);
+                                                setModalAviso(true);
+                                            }
+
+                                        }}
+                                    >
+                                        <CheckCircleIcon className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        title="Imprimir Receta"
+                                        variant="outline"
+                                        className="h-8 w-10 p-1.5 border-purple-600 text-purple-600 hover:bg-purple-50 flex items-center justify-center"
+                                        onClick={() => {
+                                            setRecetaSeleccionada("/Modelo Receta CE.pdf");
+                                            setPacienteImpresion(p.nombre);
+                                            setModalImpresion(true);
+                                        }}
+                                    >
+                                        <Printer className="h-4 w-4" />
+                                    </Button>
                                 </TableCell>
                             </TableRow>
-                        ) : (
-                            filtrarProformas().map((proforma) => (
-                                <TableRow key={proforma.id} className={selectedItems.includes(proforma.id) ? "bg-primary/10" : ""}>
-                                    <TableCell>{getEstadoBadge(proforma.estado)}</TableCell>
-                                    <TableCell className="font-medium">{proforma.ordenId}</TableCell>
-                                    <TableCell className="font-medium">{proforma.numReceta}</TableCell>
-                                    <TableCell>
-                                        <div className="font-mediunm">{proforma.nombrePaciente}</div>
-                                        <div className="text-sm text-gray-500">{proforma.numPaciente}</div>
-                                    </TableCell>
-                                    <TableCell className="font-medium">{proforma.historia}</TableCell>
-                                    <TableCell className="font-medium">{proforma.tipoSeguro}</TableCell>
-                                    <TableCell>
-                                        <div className="font-medium">{proforma.fecha}</div>
-                                        <div className="text-sm text-gray-500">{proforma.hora}</div>
-                                    </TableCell>
-                                    <TableCell className="font-medium">{proforma.nombreAlmacen}</TableCell>
-                                    <TableCell>
-                                        {proforma.medicamentos
-                                            .reduce((acc, med) => {
-                                                const precio = parseFloat(med.precio.replace("S/", "").trim());
-                                                return acc + (med.cantAsignada * precio);
-                                            }, 0)
-                                            .toFixed(2)}
-                                    </TableCell>
-                                    <TableCell>{proforma.usuario}</TableCell>
-                                    <TableCell>
-                                        <div className="flex space-x-2">
-                                            <Button
-                                                title="Ver detalle"
-                                                variant="outline"
-                                                className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50 flex items-center justify-center"
-                                                onClick={() => {
-                                                    setProformaSeleccionada(proforma);
-                                                    setMostrarDetalle(true);
-                                                }}
-                                            >
-                                                <Eye className="w-4 h-4" />
-                                            </Button>
-                                            <Button
-                                                title="Anular documento"
-                                                variant="outline"
-                                                className="h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50 flex items-center justify-center"
-                                                onClick={() => {
-                                                    setProformaSeleccionada(proforma);
-                                                    setMostrarConfirmacionAnular(true);
-                                                }}
-                                                disabled={proforma.estado === "3"}
-                                            >
-                                                <X className="w-4 h-4" />
-                                            </Button>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        )}
+                        ))}
                     </TableBody>
                 </Table>
             </div>
 
-            {/* MODAL DE DETALLE DE LA PROFORMA GENERADA */}
-            {mostrarDetalle && proformaSeleccionada && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-                    <div className="bg-white rounded-md shadow-lg p-6 max-w-6xl w-full">
-                        {/* Encabezado con título y botón X */}
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-lg font-bold text-blue-900">Detalle de Proforma</h2>
-                            <button
-                                onClick={() => setMostrarDetalle(false)}
-                                className="text-gray-500 hover:text-gray-700"
-                            >
-                                <X className="h-5 w-5" />
-                            </button>
-                        </div>
+            {/* Paginación */}
+            <div className="flex justify-center mt-4 gap-2">
+                <Button
+                    variant="outline"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((prev) => prev - 1)}
+                >
+                    Anterior
+                </Button>
 
-                        {/* Datos del paciente */}
-                        <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
-                            <div>
-                                <p><strong>Paciente:</strong> {proformaSeleccionada.nombrePaciente}</p>
-                                <p><strong>Código de paciente:</strong> {proformaSeleccionada.numPaciente}</p>
-                                <p><strong>Historia:</strong> {proformaSeleccionada.historia}</p>
-                                <p><strong>Seguro:</strong> {proformaSeleccionada.tipoSeguro}</p>
-                                <p><strong>ID Orden:</strong> {proformaSeleccionada.ordenId}</p>
-                                <p><strong>Número de Receta:</strong> {proformaSeleccionada.numReceta}</p>
-                                <p><strong>ID Cuenta:</strong> {proformaSeleccionada.cuentaId}</p>
-                            </div>
-                            <div>
-                                <p><strong>Fecha:</strong> {proformaSeleccionada.fecha}</p>
-                                <p><strong>Hora:</strong> {proformaSeleccionada.hora}</p>
-                                <p><strong>Médico:</strong> {proformaSeleccionada.medico}</p>
-                                <p><strong>Almacén:</strong> {proformaSeleccionada.nombreAlmacen}</p>
-                                <p><strong>Consultorio:</strong> {proformaSeleccionada.nombreConsultorio}</p>
-                                <p><strong>Tipo de Pago:</strong> {proformaSeleccionada.tipoPago}</p>
-                                <p><strong>Usuario Creación:</strong> {proformaSeleccionada.nombreUsuario}</p>
-                            </div>
-                        </div>
+                <span className="px-4 py-2">
+                    Página {currentPage} de 5
+                </span>
 
-                        {/* Botón historial */}
-                        {/*<Button variant="outline" className="mb-4">Ver historial de recetas</Button>*/}
+                <Button
+                    variant="outline"
+                    disabled={currentPage === 5}
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                >
+                    Siguiente
+                </Button>
+            </div>
 
-                        {/* Tabla de medicamentos */}
-                        <div className="overflow-x-auto max-h-[400px]">
-                            <table className="min-w-full border-collapse border border-gray-300 text-sm">
-                                <thead className="bg-blue-900 text-white">
-                                    <tr>
-                                        <th className="border px-3 py-2">Producto</th>
-                                        <th className="border px-3 py-2">Cantidad solicitada</th>
-                                        <th className="border px-3 py-2">Cantidad por lote</th>
-                                        <th className="border px-3 py-2">Precio</th>
-                                        <th className="border px-3 py-2">Importe</th>
-                                        <th className="border px-3 py-2">Lote</th>
-                                        <th className="border px-3 py-2">F. Venc.</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {proformaSeleccionada.medicamentos.map((med, idx) => (
-                                        <tr key={idx}>
-                                            <td className="border px-3 py-2">{med.producto}</td>
-                                            <td className="border px-3 py-2">{med.cantSolicitada}</td>
-                                            <td className="border px-3 py-2">{med.cantAsignada}</td>
-                                            <td className="border px-3 py-2">{med.precio}</td>
-                                            <td className="border px-3 py-2">
-                                                {`S/ ${(med.cantAsignada * parseFloat(med.precio.replace("S/", "").trim())).toFixed(2)}`}
-                                            </td>
-                                            <td className="border px-3 py-2">{med.lote}</td>
-                                            <td className="border px-3 py-2">{med.fechaVenc}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* Total */}
-                        <div className="flex justify-end mt-4">
-                            <div className="bg-blue-900 text-white font-bold px-6 py-2 rounded-md shadow">
-                                Total: S/ {proformaSeleccionada.medicamentos
-                                    .reduce((acc, med) => {
-                                        const precio = parseFloat(med.precio.replace("S/", "").trim());
-                                        return acc + (med.cantAsignada * precio);
-                                    }, 0)
-                                    .toFixed(2)}
-                            </div>
-                        </div>
-
-                        {/* Botón cerrar */}
-                        <div className="flex justify-end mt-4">
-                            <Button variant="outline" onClick={() => setMostrarDetalle(false)}>Cerrar</Button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* MODAL DE IMPRESIÓN DE LA RECETA SELECCIONADA */}
+            <Dialog open={modalImpresion} onOpenChange={setModalImpresion}>
+                <DialogContent
+                    onInteractOutside={(e) => e.preventDefault()}
+                    onEscapeKeyDown={(e) => e.preventDefault()}
+                    className="max-w-7xl h-[80vh] flex flex-col"
+                >
+                    <DialogHeader>
+                        <DialogTitle>Impresión de Receta</DialogTitle>
+                        <DialogDescription>
+                            <span className="font-semibold text-gray-800">
+                                Paciente: {pacienteImpresion}
+                            </span>
+                        </DialogDescription>
+                    </DialogHeader>
+                    {recetaSeleccionada ? (
+                        <iframe
+                            src={recetaSeleccionada}
+                            className="w-full h-full border rounded-md"
+                        />
+                    ) : (
+                        <p>No se ha seleccionado ninguna receta.</p>
+                    )}
+                </DialogContent>
+            </Dialog>
 
             {/* MODAL DE CONSULTA DE TARIFARIO */}
             <Dialog open={openTarifario} onOpenChange={setOpenTarifario}>
@@ -2287,7 +2241,7 @@ export default function ProformasPage() {
                 </Dialog>
             )}
 
-            {/* MODAL DE LISTADO DE PAQUETES */}
+            {/* MODAL DE LISTADO DE PAQUETES SOLO PARA CONSULTAR PRECIOS */}
             <Dialog open={openPaquetes} onOpenChange={setOpenPaquetes}>
                 <DialogContent
                     onInteractOutside={(e) => e.preventDefault()}
@@ -2333,7 +2287,7 @@ export default function ProformasPage() {
                 </DialogContent>
             </Dialog>
 
-            {/* MODAL DE ITEMS DE PAQUETE */}
+            {/* CONTENIDO DE ITEMS DEL PAQUETE SELECCIONADO*/}
             <Dialog open={openItemsPaquete} onOpenChange={setOpenItemsPaquete}>
                 <DialogContent
                     onInteractOutside={(e) => e.preventDefault()}
@@ -2449,7 +2403,7 @@ export default function ProformasPage() {
                 </DialogContent>
             </Dialog>
 
-            {/* MODAL DE LISTADO DE PAQUETES PARA GENERACION DE PROFORMA*/}
+            {/* MODAL DE LISTADO DE PAQUETES PARA LA GENERACIÓN DE PROFORMA*/}
             <Dialog open={openPaquetesProforma} onOpenChange={setOpenPaquetesProforma}>
                 <DialogContent
                     onInteractOutside={(e) => e.preventDefault()}
@@ -2495,7 +2449,7 @@ export default function ProformasPage() {
                 </DialogContent>
             </Dialog>
 
-            {/* MODAL DE ITEMS DE PAQUETE PARA PONERLOS DENTRO DEL REGISTRO DE LA PROFORMA*/}
+            {/* CONTENIDO DE ITEMS DE PAQUETE PARA PONERLOS DENTRO DE LA PROFORMA*/}
             <Dialog open={openItemsPaqueteProforma} onOpenChange={setOpenItemsPaqueteProforma}>
                 <DialogContent
                     onInteractOutside={(e) => e.preventDefault()}
@@ -2661,99 +2615,13 @@ export default function ProformasPage() {
                 </DialogContent>
             </Dialog>
 
-            {/* MODAL DE CONFIRMACIÓN DE ANULACIÓN DE PROFORMA */}
-            {mostrarConfirmacionAnular && proformaSeleccionada && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-                    <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
-                        <div className="flex items-center gap-2 mb-4">
-                            <AlertTriangle className="h-6 w-6 text-yellow-600" />
-                            <h2 className="text-lg font-semibold">Confirmar anulación</h2>
-                        </div>
-                        <p className="mb-4 text-gray-700">
-                            ¿Está seguro de anular la proforma? Esta acción no se podrá deshacer.
-                        </p>
-
-                        <div className="mb-4">
-                            <Label htmlFor="motivo" className="block mb-1 text-sm font-medium text-gray-700">
-                                Escriba el motivo de la anulación:
-                            </Label>
-                            <textarea
-                                id="motivo"
-                                className="w-full border rounded-md p-2 text-sm"
-                                rows={3}
-                                value={motivoAnulacion}
-                                onChange={(e) => setMotivoAnulacion(e.target.value)}
-                                placeholder="Ingrese motivo..."
-                            />
-
-                            {motivoAnulacion.length > 0 && motivoAnulacion.length < 10 && (
-                                <p className="text-red-600 text-sm mt-1">
-                                    El motivo debe tener al menos 10 caracteres.
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="flex justify-end gap-2">
-                            <Button
-                                variant="outline"
-                                onClick={() => {
-                                    setMostrarConfirmacionAnular(false);
-                                    setMotivoAnulacion("");
-                                }}
-                            >
-                                Cancelar
-                            </Button>
-                            <Button
-                                className="bg-red-600 hover:bg-red-700 text-white"
-                                disabled={motivoAnulacion.trim().length < 10}
-                                onClick={() => {
-                                    setMostrarConfirmacionAnular(false);
-                                    setMostrarExitoAnular(true);
-                                }}
-                            >
-                                Confirmar
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* MODAL DE ÉXITO DE ANULACIÓN */}
-            {mostrarExitoAnular && proformaSeleccionada && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-                    <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
-                        <div className="flex items-center gap-2 mb-4">
-                            <CheckCircle className="h-6 w-6 text-green-600" />
-                            <h2 className="text-lg font-semibold">Proforma anulada</h2>
-                        </div>
-                        <p className="mb-4 text-gray-700">
-                            La proforma se anuló con éxito.
-                        </p>
-                        <div className="flex justify-end">
-                            <Button
-                                className="bg-blue-600 hover:bg-blue-700 text-white"
-                                onClick={() => {
-                                    setMostrarExitoAnular(false);
-                                    // Simulación: cambiar estado a "ANULADO"
-                                    if (proformaSeleccionada) {
-                                        proformaSeleccionada.estado = "3"; // nuevo estado
-                                    }
-                                }}
-                            >
-                                Finalizar
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* MODAL DE REGISTRO DE NUEVA PROFORMA DE VENTA */}
+            {/* MODAL DEL HISTORIAL DE PROFORMAS EN CADA AREA DE FARMACIA */}
             {modalNuevaProforma && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/50">
                     <div className="bg-white rounded-md shadow-lg p-6 max-w-7xl w-full max-h-[90vh] overflow-y-auto relative">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-lg font-semibold">
-                                Registrar Proforma
+                                Historial de Proformas
                                 <span className="ml-2 text-blue-700 font-semibold">
                                     ({filtroFarmacia})
                                 </span>
@@ -2770,160 +2638,186 @@ export default function ProformasPage() {
 
                         {/* Aquí va tu formulario */}
                         <form>
-                            <div className="mb-6 mt-6 flex justify-between items-center">
-                                <h3 className="text-md font-semibold">Listado de Recetas Médicas</h3>
+                            {/* FILTROS DE BUSQUEDA DE PROFORMAS */}
+                            <div className="flex items-end gap-4 border border-cyan-300 rounded-md px-6 py-4 mb-6 shadow-sm">
+                                <div className="flex flex-col flex-1">
+                                    <Label htmlFor="buscar" className="mb-1">Buscar por:</Label>
 
-                                {/*{resultadosBusqueda.length > 0 && (
-                                    <Button
-                                        type="button"
-                                        className="bg-gray-500 hover:bg-gray-600 text-white h-9 px-3"
-                                        onClick={() => {
-                                            setFiltro("");
-                                            setError("");
-                                            setResultadosBusqueda([]);
-                                            setPacienteData(null);
-                                            setMedicamentosData([]);
-                                            setHistorialData([]);
-                                            setDniValidado(false);
-                                            setPacienteExterno(false);
-                                            setTipoBusqueda("documento");
-                                        }}
-                                    >
-                                        Nueva Búsqueda
-                                    </Button>
-                                )}*/}
-                            </div>
-                            <div className="flex items-end gap-4 border border-cyan-300 rounded-md px-6 py-4 mb-4 shadow-sm">
-                                <div className="flex flex-col">
-                                    <label className="text-sm font-medium mb-1">Buscar por:</label>
                                     <div className="flex gap-2">
+
+                                        {/* Combobox */}
                                         <select
-                                            value={tipoBusqueda}
-                                            onChange={(e) => setTipoBusqueda(e.target.value)}
-                                            className="border p-2 h-10 w-52 text-sm"
+                                            className="h-10 w-44 rounded-md border border-input bg-background px-3 text-sm"
+                                            value={searchBy}
+                                            onChange={(e) => setSearchBy(e.target.value)}
                                         >
-                                            <option value="documento">Documento</option>
-                                            <option value="nombres">Apellidos y Nombres</option>
-                                            <option value="historia">Historia Clínica</option>
+                                            {opcionesBusqueda.map((opcion) => (
+                                                <option
+                                                    key={opcion.value}
+                                                    value={opcion.value}
+                                                >
+                                                    {opcion.label}
+                                                </option>
+                                            ))}
                                         </select>
 
-                                        {/* Contenedor vertical para input + error */}
-                                        <Input
-                                            id="documento"
-                                            type="text"
-                                            placeholder={
-                                                tipoBusqueda === "documento"
-                                                    ? "Ingrese número de documento"
-                                                    : tipoBusqueda === "nombres"
-                                                        ? "Ingrese apellidos y nombres"
-                                                        : "Ingrese historia clínica"
-                                            }
-                                            autoComplete="off"
-                                            className={`border p-2 h-10 w-64 ${error ? "border-red-500" : ""}`}
-                                            value={filtro}
-                                            onChange={(e) => setFiltro(e.target.value)}
-                                            onKeyDown={(e) => {
-                                                if (e.key === "Enter") {
-                                                    e.preventDefault();
-                                                    validarBusqueda();
-                                                }
-                                            }}
-                                            disabled={pacienteExterno}
-                                        />
+                                        {/* Caja de búsqueda */}
+                                        <div className="relative flex-1">
+                                            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+
+                                            <Input
+                                                className="pl-9 h-10"
+                                                placeholder={`Ingrese ${opcionesBusqueda.find(o => o.value === searchBy)?.label}`}
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
 
-                                {/*<Button
-                                    type="button"
-                                    className="bg-blue-600 hover:bg-blue-700 text-white h-10 px-4"
-                                    onClick={validarBusqueda}
-                                >
-                                    Buscar
-                                </Button>*/}
-
-                                {/* Filtro de fecha */}
                                 <div className="flex flex-col">
-                                    <label className="text-sm font-medium mb-1">Fecha:</label>
+                                    <Label htmlFor="fechaInicio" className="mb-1">Desde:</Label>
                                     <Input
+                                        id="fechaInicio"
                                         type="date"
-                                        className="border p-2 h-10 w-40"
-                                        value={fechaFiltro}
-                                        onChange={(e) => setFechaFiltro(e.target.value)}
+                                        className="h-10 w-40"
+                                        value={fechaInicio}
+                                        onChange={(e) => setFechaInicio(e.target.value)}
                                     />
+                                </div>
+
+                                <div className="flex flex-col">
+                                    <Label htmlFor="fechaFin" className="mb-1">Hasta:</Label>
+                                    <Input
+                                        id="fechaFin"
+                                        type="date"
+                                        className="h-10 w-40"
+                                        value={fechaFin}
+                                        onChange={(e) => setFechaFin(e.target.value)}
+                                    />
+                                </div>
+
+                                <div className="flex gap-2">
+                                    <Button type="button" variant="outline" size="sm" className="h-10 gap-1" onClick={limpiarFiltros}>
+                                        <Eraser className="h-4 w-4" />
+                                        Limpiar Filtros
+                                    </Button>
+
+                                    <Button type="button" variant="outline" size="sm" className="h-10 gap-1">
+                                        <RefreshCw className="h-4 w-4" />
+                                        Actualizar
+                                    </Button>
                                 </div>
                             </div>
 
+                            {/* TABLA DEL LISTADO DE PROFORMAS */}
                             <div className="overflow-x-auto border rounded-md">
                                 <Table className="text-xs">
                                     <TableHeader>
                                         <TableRow className="bg-cyan-600 hover:bg-cyan-600">
                                             <TableHead className="font-semibold text-white hover:bg-transparent">Estado</TableHead>
-                                            <TableHead className="font-semibold text-white hover:bg-transparent">Num. Receta</TableHead>
-                                            <TableHead className="font-semibold text-white hover:bg-transparent">Fecha</TableHead>
-                                            <TableHead className="font-semibold text-white hover:bg-transparent">Hora</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Orden ID</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Número de Receta</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Paciente</TableHead>
                                             <TableHead className="font-semibold text-white hover:bg-transparent">Historia</TableHead>
-                                            <TableHead className="font-semibold text-white hover:bg-transparent">Nombres</TableHead>
-                                            <TableHead className="font-semibold text-white hover:bg-transparent">DNI</TableHead>
-                                            <TableHead className="font-semibold text-white hover:bg-transparent">Seguro</TableHead>
-                                            <TableHead className="font-semibold text-white hover:bg-transparent">Consultorio</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Tipo de Seguro</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Fecha</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Almacén</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Total (S/.)</TableHead>
+                                            <TableHead className="font-semibold text-white hover:bg-transparent">Usuario</TableHead>
                                             <TableHead className="font-semibold text-white hover:bg-transparent">Acciones</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {filteredPacientes.map((p) => (
-                                            <TableRow key={p.dni}>
-                                                <TableCell>{getEstadoRecetaBadge(p.estadoReceta)}</TableCell>
-                                                <TableCell>{p.receta}</TableCell>
-                                                <TableCell>{p.fechaReceta}</TableCell>
-                                                <TableCell>{p.horaReceta}</TableCell>
-                                                <TableCell>{p.historia}</TableCell>
-                                                <TableCell>{p.nombre}</TableCell>
-                                                <TableCell>{p.dni}</TableCell>
-                                                <TableCell>{p.seguro}</TableCell>
-                                                <TableCell>{p.especialidad}</TableCell>
-                                                <TableCell className="flex gap-2">
-                                                    <Button
-                                                        type="button"
-                                                        title="Validar Receta"
-                                                        variant="outline"
-                                                        className="h-8 w-10 p-1.5 border-green-600 text-green-600 hover:bg-green-50 flex items-center justify-center"
-                                                        onClick={() => {
-                                                            const farmaciaEsperada = mapaFarmacias[filtroFarmacia];
-                                                            if (p.tipoAtencion === farmaciaEsperada) {
-                                                                setPacienteData(p);
-                                                                setMedicamentosData(medicamentosPrueba[p.dni] || []);
-                                                                setMedicoReceta(p.medico);
-                                                                setHistorialData(historialPrueba[p.dni] || []);
-                                                                setDniValidado(true);
-                                                                setModalNuevaProforma(false);
-                                                                setModalDetallePaciente(true);
-                                                            } else {
-                                                                setMensajeAviso(`No se tiene registro de una receta para ${filtroFarmacia}.`);
-                                                                setModalAviso(true);
-                                                            }
-
-                                                        }}
-                                                    >
-                                                        <CheckCircleIcon className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button
-                                                        type="button"
-                                                        title="Imprimir Receta"
-                                                        variant="outline"
-                                                        className="h-8 w-10 p-1.5 border-purple-600 text-purple-600 hover:bg-purple-50 flex items-center justify-center"
-                                                        onClick={() => {
-                                                            setRecetaSeleccionada("/Modelo Receta CE.pdf");
-                                                            setPacienteImpresion(p.nombre);
-                                                            setModalImpresion(true);
-                                                        }}
-                                                    >
-                                                        <Printer className="h-4 w-4" />
-                                                    </Button>
+                                        {filtrarProformas().length === 0 ? (
+                                            <TableRow>
+                                                <TableCell colSpan={10} className="text-center text-gray-500 italic">
+                                                    No se hallaron registros según los filtros de búsqueda
                                                 </TableCell>
                                             </TableRow>
-                                        ))}
+                                        ) : (
+                                            filtrarProformas().map((proforma) => (
+                                                <TableRow key={proforma.id} className={selectedItems.includes(proforma.id) ? "bg-primary/10" : ""}>
+                                                    <TableCell>{getEstadoBadge(proforma.estado)}</TableCell>
+                                                    <TableCell className="font-medium">{proforma.ordenId}</TableCell>
+                                                    <TableCell className="font-medium">{proforma.numReceta}</TableCell>
+                                                    <TableCell>
+                                                        <div className="font-mediunm">{proforma.nombrePaciente}</div>
+                                                        <div className="text-sm text-gray-500">{proforma.numPaciente}</div>
+                                                    </TableCell>
+                                                    <TableCell className="font-medium">{proforma.historia}</TableCell>
+                                                    <TableCell className="font-medium">{proforma.tipoSeguro}</TableCell>
+                                                    <TableCell>
+                                                        <div className="font-medium">{proforma.fecha}</div>
+                                                        <div className="text-sm text-gray-500">{proforma.hora}</div>
+                                                    </TableCell>
+                                                    <TableCell className="font-medium">{proforma.nombreAlmacen}</TableCell>
+                                                    <TableCell>
+                                                        {proforma.medicamentos
+                                                            .reduce((acc, med) => {
+                                                                const precio = parseFloat(med.precio.replace("S/", "").trim());
+                                                                return acc + (med.cantAsignada * precio);
+                                                            }, 0)
+                                                            .toFixed(2)}
+                                                    </TableCell>
+                                                    <TableCell>{proforma.usuario}</TableCell>
+                                                    <TableCell>
+                                                        <div className="flex space-x-2">
+                                                            <Button
+                                                                type="button"
+                                                                title="Ver detalle"
+                                                                variant="outline"
+                                                                className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50 flex items-center justify-center"
+                                                                onClick={() => {
+                                                                    setProformaSeleccionada(proforma);
+                                                                    setMostrarDetalle(true);
+                                                                }}
+                                                            >
+                                                                <Eye className="w-4 h-4" />
+                                                            </Button>
+                                                            <Button
+                                                                type="button"
+                                                                title="Anular documento"
+                                                                variant="outline"
+                                                                className="h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50 flex items-center justify-center"
+                                                                onClick={() => {
+                                                                    setProformaSeleccionada(proforma);
+                                                                    setMostrarConfirmacionAnular(true);
+                                                                }}
+                                                                disabled={proforma.estado === "3"}
+                                                            >
+                                                                <X className="w-4 h-4" />
+                                                            </Button>
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
                                     </TableBody>
                                 </Table>
+                            </div>
+
+                            {/* Paginación */}
+                            <div className="flex justify-center mt-4 gap-2">
+                                <Button
+                                    variant="outline"
+                                    disabled={currentPage === 1}
+                                    onClick={() => setCurrentPage((prev) => prev - 1)}
+                                >
+                                    Anterior
+                                </Button>
+
+                                <span className="px-4 py-2">
+                                    Página {currentPage} de 5
+                                </span>
+
+                                <Button
+                                    variant="outline"
+                                    disabled={currentPage === 5}
+                                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                                >
+                                    Siguiente
+                                </Button>
                             </div>
 
                             <Dialog open={modalImpresion} onOpenChange={setModalImpresion}>
@@ -3028,6 +2922,184 @@ export default function ProformasPage() {
                                 </Button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* MODAL DE CONFIRMACIÓN DE LA ANULACIÓN DE UNA PROFORMA */}
+            {mostrarConfirmacionAnular && proformaSeleccionada && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+                    <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
+                        <div className="flex items-center gap-2 mb-4">
+                            <AlertTriangle className="h-6 w-6 text-yellow-600" />
+                            <h2 className="text-lg font-semibold">Confirmar anulación</h2>
+                        </div>
+                        <p className="mb-4 text-gray-700">
+                            ¿Está seguro de anular la proforma? Esta acción no se podrá deshacer.
+                        </p>
+
+                        <div className="mb-4">
+                            <Label htmlFor="motivo" className="block mb-1 text-sm font-medium text-gray-700">
+                                Escriba el motivo de la anulación:
+                            </Label>
+                            <textarea
+                                id="motivo"
+                                className="w-full border rounded-md p-2 text-sm"
+                                rows={3}
+                                value={motivoAnulacion}
+                                onChange={(e) => setMotivoAnulacion(e.target.value)}
+                                placeholder="Ingrese motivo..."
+                            />
+
+                            {motivoAnulacion.length > 0 && motivoAnulacion.length < 10 && (
+                                <p className="text-red-600 text-sm mt-1">
+                                    El motivo debe tener al menos 10 caracteres.
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="flex justify-end gap-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => {
+                                    setMostrarConfirmacionAnular(false);
+                                    setMotivoAnulacion("");
+                                }}
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                className="bg-red-600 hover:bg-red-700 text-white"
+                                disabled={motivoAnulacion.trim().length < 10}
+                                onClick={() => {
+                                    setMostrarConfirmacionAnular(false);
+                                    setMostrarExitoAnular(true);
+                                }}
+                            >
+                                Confirmar
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* MODAL DE ÉXITO DE LA ANULACIÓN DE LA PROFORMA SELECCIONADA */}
+            {mostrarExitoAnular && proformaSeleccionada && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+                    <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
+                        <div className="flex items-center gap-2 mb-4">
+                            <CheckCircle className="h-6 w-6 text-green-600" />
+                            <h2 className="text-lg font-semibold">Proforma anulada</h2>
+                        </div>
+                        <p className="mb-4 text-gray-700">
+                            La proforma se anuló con éxito.
+                        </p>
+                        <div className="flex justify-end">
+                            <Button
+                                className="bg-blue-600 hover:bg-blue-700 text-white"
+                                onClick={() => {
+                                    setMostrarExitoAnular(false);
+                                    // Simulación: cambiar estado a "ANULADO"
+                                    if (proformaSeleccionada) {
+                                        proformaSeleccionada.estado = "3"; // nuevo estado
+                                    }
+                                }}
+                            >
+                                Finalizar
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* VER DETALLE DE LA PROFORMA SELECCIONADA */}
+            {mostrarDetalle && proformaSeleccionada && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+                    <div className="bg-white rounded-md shadow-lg p-6 max-w-6xl w-full">
+                        {/* Encabezado con título y botón X */}
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-lg font-bold text-blue-900">Detalle de Proforma</h2>
+                            <button
+                                onClick={() => setMostrarDetalle(false)}
+                                className="text-gray-500 hover:text-gray-700"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
+
+                        {/* Datos del paciente */}
+                        <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
+                            <div>
+                                <p><strong>Paciente:</strong> {proformaSeleccionada.nombrePaciente}</p>
+                                <p><strong>Código de paciente:</strong> {proformaSeleccionada.numPaciente}</p>
+                                <p><strong>Historia:</strong> {proformaSeleccionada.historia}</p>
+                                <p><strong>Seguro:</strong> {proformaSeleccionada.tipoSeguro}</p>
+                                <p><strong>ID Orden:</strong> {proformaSeleccionada.ordenId}</p>
+                                <p><strong>Número de Receta:</strong> {proformaSeleccionada.numReceta}</p>
+                                <p><strong>ID Cuenta:</strong> {proformaSeleccionada.cuentaId}</p>
+                            </div>
+                            <div>
+                                <p><strong>Fecha:</strong> {proformaSeleccionada.fecha}</p>
+                                <p><strong>Hora:</strong> {proformaSeleccionada.hora}</p>
+                                <p><strong>Médico:</strong> {proformaSeleccionada.medico}</p>
+                                <p><strong>Almacén:</strong> {proformaSeleccionada.nombreAlmacen}</p>
+                                <p><strong>Consultorio:</strong> {proformaSeleccionada.nombreConsultorio}</p>
+                                <p><strong>Tipo de Pago:</strong> {proformaSeleccionada.tipoPago}</p>
+                                <p><strong>Usuario Creación:</strong> {proformaSeleccionada.nombreUsuario}</p>
+                            </div>
+                        </div>
+
+                        {/* Botón historial */}
+                        {/*<Button variant="outline" className="mb-4">Ver historial de recetas</Button>*/}
+
+                        {/* Tabla de medicamentos */}
+                        <div className="overflow-x-auto max-h-[400px]">
+                            <table className="min-w-full border-collapse border border-gray-300 text-sm">
+                                <thead className="bg-blue-900 text-white">
+                                    <tr>
+                                        <th className="border px-3 py-2">Producto</th>
+                                        <th className="border px-3 py-2">Cantidad solicitada</th>
+                                        <th className="border px-3 py-2">Cantidad por lote</th>
+                                        <th className="border px-3 py-2">Precio</th>
+                                        <th className="border px-3 py-2">Importe</th>
+                                        <th className="border px-3 py-2">Lote</th>
+                                        <th className="border px-3 py-2">F. Venc.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {proformaSeleccionada.medicamentos.map((med, idx) => (
+                                        <tr key={idx}>
+                                            <td className="border px-3 py-2">{med.producto}</td>
+                                            <td className="border px-3 py-2">{med.cantSolicitada}</td>
+                                            <td className="border px-3 py-2">{med.cantAsignada}</td>
+                                            <td className="border px-3 py-2">{med.precio}</td>
+                                            <td className="border px-3 py-2">
+                                                {`S/ ${(med.cantAsignada * parseFloat(med.precio.replace("S/", "").trim())).toFixed(2)}`}
+                                            </td>
+                                            <td className="border px-3 py-2">{med.lote}</td>
+                                            <td className="border px-3 py-2">{med.fechaVenc}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Total */}
+                        <div className="flex justify-end mt-4">
+                            <div className="bg-blue-900 text-white font-bold px-6 py-2 rounded-md shadow">
+                                Total: S/ {proformaSeleccionada.medicamentos
+                                    .reduce((acc, med) => {
+                                        const precio = parseFloat(med.precio.replace("S/", "").trim());
+                                        return acc + (med.cantAsignada * precio);
+                                    }, 0)
+                                    .toFixed(2)}
+                            </div>
+                        </div>
+
+                        {/* Botón cerrar */}
+                        <div className="flex justify-end mt-4">
+                            <Button variant="outline" onClick={() => setMostrarDetalle(false)}>Cerrar</Button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -3348,6 +3420,7 @@ export default function ProformasPage() {
                                         </div>
                                     </div>
 
+                                    {/* HISTORIAL DE RECETAS MEDICAS */}
                                     {modalHistorial && (
                                         <div className="fixed inset-0 flex items-center justify-center bg-black/50">
                                             <div className="bg-white rounded-md shadow-lg p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto relative">
@@ -3406,7 +3479,7 @@ export default function ProformasPage() {
                                         </div>
                                     )}
 
-                                    {/* Registrar Observación */}
+                                    {/* MODAL DE REGISTRO DE LA OBSERVACIÓN DE UN PRODUCTO FARMACÉUTICO DENTRO DE UNA RECETA MÉDICA */}
                                     <Dialog open={openObservacion} onOpenChange={setOpenObservacion}>
                                         <DialogContent
                                             onInteractOutside={(e) => e.preventDefault()}
@@ -3464,43 +3537,17 @@ export default function ProformasPage() {
                                     Cancelar
                                 </Button>
 
-                                {(dniValidado || pacienteExterno) && (
-                                    <Button
-                                        type="button"
-                                        className="bg-cyan-600 hover:bg-cyan-700 text-white"
-                                        onClick={() => {
-                                            if (pacienteExterno) {
-                                                const newErrors: Record<string, string> = {};
-
-                                                if (!paciente.trim()) newErrors.paciente = "El campo Paciente es obligatorio";
-                                                if (!historia.trim()) newErrors.historia = "El campo Historia/DNI es obligatorio";
-                                                if (!seguro.trim()) newErrors.seguro = "El campo Seguro es obligatorio";
-                                                if (!tipoAtencion.trim()) newErrors.tipoAtencion = "El campo Tipo de Atención es obligatorio";
-                                                if (!especialidad.trim()) newErrors.especialidad = "El campo Especialidad es obligatorio";
-                                                if (!medico.trim()) newErrors.medico = "El campo Médico es obligatorio";
-
-                                                setErrors(newErrors);
-
-                                                if (medicamentos.length === 0) {
-                                                    setErrorMedicamentos("Debe registrar al menos un medicamento");
-                                                } else {
-                                                    setErrorMedicamentos("");
-                                                }
-
-                                                if (Object.keys(newErrors).length === 0 && medicamentos.length > 0) {
-                                                    setMostrarConfirmacion(true);
-                                                }
-                                            } else {
-                                                setMostrarConfirmacion(true); // caso DNI validado normal
-                                            }
-                                        }}
-                                    >
-                                        <FilePlus className="h-4 w-4" />
-                                        Generar Proforma
-                                    </Button>
-                                )}
+                                <Button
+                                    type="button"
+                                    className="bg-cyan-600 hover:bg-cyan-700 text-white"
+                                    onClick={() => setMostrarConfirmacion(true)}
+                                >
+                                    <FilePlus className="h-4 w-4" />
+                                    Generar Proforma
+                                </Button>
                             </div>
 
+                            {/* CONFIRMACIÓN DE LA GENERACIÓN DE LA PROFORMA */}
                             {mostrarConfirmacion && (
                                 <div className="fixed inset-0 flex items-center justify-center bg-black/50">
                                     <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
@@ -3532,6 +3579,7 @@ export default function ProformasPage() {
                                 </div>
                             )}
 
+                            {/* ÉXITO DE LA GENERACIÓN DE LA PROFORMA */}
                             {mostrarExito && (
                                 <div className="fixed inset-0 flex items-center justify-center bg-black/50">
                                     <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
@@ -3570,7 +3618,7 @@ export default function ProformasPage() {
                                 </div>
                             )}
 
-                            {/* Confirmar Anulación de receta */}
+                            {/* CONFIRMAR ANULACIÓN DE LA RECETA MÉDICA */}
                             {showConfirmAnular && (
                                 <div className="fixed inset-0 flex items-center justify-center bg-black/50">
                                     <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full relative">
@@ -3614,6 +3662,7 @@ export default function ProformasPage() {
                                 </div>
                             )}
 
+                            {/* ÉXITO DE LA ANULACIÓN DE LA RECETA MÉDICA */}
                             {showSuccessAnular && (
                                 <div className="fixed inset-0 flex items-center justify-center bg-black/50">
                                     <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full relative">
@@ -3639,12 +3688,12 @@ export default function ProformasPage() {
                                     </div>
                                 </div>
                             )}
-
                         </form>
                     </div>
                 </div>
             )}
 
+            {/* MODAL DE REGISTRO MANUAL DE LA PROFORMA */}
             {modalRecetaExterna && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/50">
                     <div className="bg-white rounded-md shadow-lg p-6 max-w-7xl w-full max-h-[90vh] overflow-y-auto relative">
@@ -4112,18 +4161,6 @@ export default function ProformasPage() {
                                                         {idx === 0 && (
                                                             <td className="border px-3 py-2 text-center" rowSpan={med.lotes.length}>
                                                                 <div className="flex justify-center gap-2">
-                                                                    {/*<button
-                                                                        onClick={() => {
-                                                                            setMedicamentoEditando(index);
-                                                                            setNuevaCantidad(med.cantidadSolicitada?.toString() || "");
-                                                                            setModalEditarCantidadMed(true);
-                                                                        }}
-                                                                        className="border border-blue-600 rounded-md p-2 text-blue-600 hover:bg-blue-50"
-                                                                        title="Editar cantidad"
-                                                                    >
-                                                                        <FileEdit className="h-5 w-5" />
-                                                                    </button>*/}
-
                                                                     <button
                                                                         onClick={() => {
                                                                             setMedicamentos(medicamentos.filter((_, i) => i !== index));
@@ -4166,30 +4203,13 @@ export default function ProformasPage() {
                             <Button
                                 type="button"
                                 className="bg-cyan-600 hover:bg-cyan-700 text-white"
-                                onClick={() => {
-                                    if (pacienteExterno) {
-                                        const newErrors: Record<string, string> = {};
-
-                                        setErrors(newErrors);
-
-                                        if (medicamentos.length === 0) {
-                                            setErrorMedicamentos("Debe registrar al menos un medicamento");
-                                        } else {
-                                            setErrorMedicamentos("");
-                                        }
-
-                                        if (Object.keys(newErrors).length === 0 && medicamentos.length > 0) {
-                                            setMostrarConfirmacion(true);
-                                        }
-                                    } else {
-                                        setMostrarConfirmacion(true); // caso DNI validado normal
-                                    }
-                                }}
+                                onClick={() => setMostrarConfirmacion(true)}
                             >
                                 Generar Proforma
                             </Button>
                         </div>
 
+                        {/* HISTORIAL DE RECETAS MÉDICAS */}
                         {modalHistorial && (
                             <div className="fixed inset-0 flex items-center justify-center bg-black/50">
                                 <div className="bg-white rounded-md shadow-lg p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto relative">
@@ -4246,86 +4266,7 @@ export default function ProformasPage() {
                             </div>
                         )}
 
-                        {modalEditarCantidadMed && medicamentoEditando !== null && (
-                            <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-                                <div className="bg-white rounded-md shadow-lg p-6 w-[400px]">
-                                    <h2 className="text-lg font-semibold mb-4">Editar cantidad solicitada</h2>
-
-                                    <Input
-                                        type="number"
-                                        value={nuevaCantidad}
-                                        onChange={(e) => setNuevaCantidad(e.target.value)}
-                                        className="border-2 border-gray-500 w-full mb-4"
-                                    />
-                                    {errorStock && (
-                                        <p className="text-red-600 text-sm mt-2">{errorStock}</p>
-                                    )}
-
-                                    <div className="flex justify-end gap-2">
-                                        <Button
-                                            variant="outline"
-                                            onClick={() => {
-                                                setModalEditarCantidadMed(false);
-                                                setMedicamentoEditando(null);
-                                                setNuevaCantidad("");
-                                                setErrorStock("");
-                                            }}
-                                        >
-                                            Cancelar
-                                        </Button>
-
-                                        <Button
-                                            className="bg-blue-600 hover:bg-blue-700 text-white"
-                                            onClick={() => {
-                                                const medBase = medicamentos[medicamentoEditando];
-                                                if (medBase && nuevaCantidad.trim()) {
-                                                    const cantidadSolicitada = parseInt(nuevaCantidad, 10);
-
-                                                    const stockTotal = medicamentosDisponibles.find(m => m.producto === medBase.producto)
-                                                        ?.lotes.reduce((acc, lote) => acc + lote.cantAsignada, 0) || 0;
-
-                                                    if (cantidadSolicitada > stockTotal) {
-                                                        setErrorStock(`La cantidad solicitada (${cantidadSolicitada}) supera el stock total disponible (${stockTotal}).`);
-                                                        return;
-                                                    }
-
-                                                    let restante = cantidadSolicitada;
-                                                    let lotesDistribuidos: Lote[] = [];
-
-                                                    for (const lote of medicamentosDisponibles.find(m => m.producto === medBase.producto)?.lotes || []) {
-                                                        if (restante <= 0) break;
-                                                        const stockDisponible = lote.cantAsignada;
-                                                        const asignar = Math.min(restante, stockDisponible);
-                                                        lotesDistribuidos.push({
-                                                            ...lote,
-                                                            cantAsignada: asignar,
-                                                            importe: `S/ ${(asignar * parseFloat(lote.precio.replace("S/ ", ""))).toFixed(2)}`
-                                                        });
-                                                        restante -= asignar;
-                                                    }
-
-                                                    const nuevosMedicamentos = [...medicamentos];
-                                                    nuevosMedicamentos[medicamentoEditando] = {
-                                                        ...medBase,
-                                                        cantidadSolicitada,
-                                                        lotes: lotesDistribuidos
-                                                    };
-
-                                                    setMedicamentos(nuevosMedicamentos);
-                                                    setModalEditarCantidadMed(false);
-                                                    setMedicamentoEditando(null);
-                                                    setNuevaCantidad("");
-                                                    setErrorStock("");
-                                                }
-                                            }}
-                                        >
-                                            Guardar
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
+                        {/* CONFIRMAR GENERACIÓN DE LA PROFORMA MANUAL */}
                         {mostrarConfirmacion && (
                             <div className="fixed inset-0 flex items-center justify-center bg-black/50">
                                 <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
@@ -4357,6 +4298,7 @@ export default function ProformasPage() {
                             </div>
                         )}
 
+                        {/* ÉXITO DE LA GENERACIÓN DE LA PROFORMA MANUAL */}
                         {mostrarExito && (
                             <div className="fixed inset-0 flex items-center justify-center bg-black/50">
                                 <div className="bg-white rounded-md shadow-lg p-6 max-w-md w-full">
