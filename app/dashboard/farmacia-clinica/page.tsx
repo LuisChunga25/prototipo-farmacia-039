@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, CreditCard, FileSpreadsheet, Package, Printer, RotateCcw, ShoppingCart } from 'lucide-react'
 import { useState, useEffect } from "react"
 
-export default function VentasPage() {
+export default function FarmaciaClinicaPage() {
   const [currentDate, setCurrentDate] = useState("")
   const [userName, setUserName] = useState("JHOLGUIN")
   const [almacen, setAlmacen] = useState("FARMACIA")
@@ -38,8 +38,8 @@ export default function VentasPage() {
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Ventas</h1>
-          <p className="text-muted-foreground text-sm">Gestión de proformas, paquetes y devoluciones</p>
+          <h1 className="text-2xl font-bold tracking-tight">Farmacia Clínica</h1>
+          <p className="text-muted-foreground text-sm">Seguimiento Farmacoterapéutico, hoja farmacoterapéutica, cartilla y más.</p>
         </div>
         <div className="flex gap-2">
           <Link href="/dashboard">
@@ -59,25 +59,25 @@ export default function VentasPage() {
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">
                 <ShoppingCart className="h-5 w-5 text-primary" />
-                Proformas Web
+                Seguimiento Farmacoterapéutico
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-0">
-              <CardDescription className="text-xs">Registro y gestión de las proformas de ventas en Farmacia</CardDescription>
+              <CardDescription className="text-xs">Problemas relacionados a medicamentos</CardDescription>
             </CardContent>
           </Card>
         </Link>
 
-        {/*<Link href="/dashboard/ventas/proformas-contado" className="block">
+        <Link href="/dashboard/ventas/proformas-contado" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">
                 <ShoppingCart className="h-5 w-5 text-primary" />
-                Proformas Contado
+                Hoja Farmacoterapéutica
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-0">
-              <CardDescription className="text-xs">Registro y gestión de proformas al contado</CardDescription>
+              <CardDescription className="text-xs">Control de medicamentos del paciente hospitalizado</CardDescription>
             </CardContent>
           </Card>
         </Link>
@@ -87,11 +87,11 @@ export default function VentasPage() {
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">
                 <CreditCard className="h-5 w-5 text-primary" />
-                Proformas Crédito
+                Anamnesis Farmacológica
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-0">
-              <CardDescription className="text-xs">Registro y gestión de proformas a crédito</CardDescription>
+              <CardDescription className="text-xs">Registro de atención realizada al paciente en materia de productos farmacéuticos</CardDescription>
             </CardContent>
           </Card>
         </Link>
@@ -101,16 +101,16 @@ export default function VentasPage() {
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">
                 <FileSpreadsheet className="h-5 w-5 text-primary" />
-                Proformas Exoneradas
+                Cartilla de uso seguro de medicamentos
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-0">
-              <CardDescription className="text-xs">Registro y gestión de proformas exoneradas</CardDescription>
+              <CardDescription className="text-xs">Supervisión del consumo de medicamentos realizado al paciente hospitalizado</CardDescription>
             </CardContent>
           </Card>
         </Link>
 
-        <Link href="/dashboard/ventas/paquetes" className="block">
+        {/*<Link href="/dashboard/ventas/paquetes" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">
@@ -122,7 +122,7 @@ export default function VentasPage() {
               <CardDescription className="text-xs">Configuración y gestión de paquetes de productos</CardDescription>
             </CardContent>
           </Card>
-        </Link>*/}
+        </Link>
 
         <Link href="/dashboard/ventas/devoluciones" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
@@ -138,7 +138,7 @@ export default function VentasPage() {
           </Card>
         </Link>
 
-        {/*<Link href="/dashboard/ventas/visualizador" className="block">
+        <Link href="/dashboard/ventas/visualizador" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">

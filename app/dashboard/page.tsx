@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Database, Home, FileText, DollarSign, AlertTriangle } from "lucide-react"
+import { Database, Home, FileText, DollarSign, AlertTriangle, Pill } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { AlertDialogHeader } from "@/components/ui/alert-dialog"
 
@@ -194,6 +194,22 @@ export default function Dashboard() {
             <CardContent className="p-6 pt-0">
               <CardDescription className="text-sm">
                 Proformas contado, crédito, exoneradas, armado de paquetes y devoluciones.
+              </CardDescription>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/dashboard/farmacia-clinica" className="block">
+          <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors shadow-sm hover:shadow-md">
+            <CardHeader className="p-6">
+              <CardTitle className="text-xl flex items-center gap-3">
+                <Pill className="h-8 w-8 text-primary" />
+                Farmacia Clínica
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 pt-0">
+              <CardDescription className="text-sm">
+                Seguimiento Farmacoterapéutico, hoja farmacoterapéutica, cartilla y más.
               </CardDescription>
             </CardContent>
           </Card>

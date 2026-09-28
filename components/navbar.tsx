@@ -37,6 +37,7 @@ import {
   Boxes,
   CalendarDays,
   AlertTriangle,
+  Pill,
 } from "lucide-react"
 import { ThemeToggle } from "./theme-toggle"
 import { useAlmacen } from "@/context/AlmacenContext"
@@ -281,6 +282,29 @@ export default function Navbar() {
         },
       ],
     },
+    {
+      name: "Farmacia Clínica",
+      href: "/dashboard/farmacia-clinica",
+      icon: <Pill className="h-5 w-5" />,
+      subItems: [
+        {
+          name: "Seguimiento Farmacoterapéutico",
+          href: "/dashboard/reportes/ventas-ce",
+        },
+        {
+          name: "Hoja Farmacoterapéutica",
+          href: "/dashboard/reportes/generales",
+        },
+        {
+          name: "Anamnesis Farmacológica",
+          href: "/dashboard/reportes/analisis-abc",
+        },
+        {
+          name: "Cartilla de uso seguro de medicamentos",
+          href: "/dashboard/reportes/kardex",
+        },
+      ],
+    },
   ]
 
   // Función para renderizar los submenús en la versión móvil
@@ -387,8 +411,8 @@ export default function Navbar() {
               <Hospital className="w-8 h-8 flex items-center justify-center" />
             </div>
             <div>
-              <h1 className="text-x1 font-bold">Sistema de Farmacia Web</h1>
-              <p className="text-sm opacity-90">HOSPITAL JOSÉ AGURTO TELLO DE CHOSICA - HJATCH</p>
+              <h1 className="text-lg font-semibold tracking-light">Sistema de Farmacia Web</h1>
+              <p className="text-xs text-white/80 font-light">HOSPITAL JOSÉ AGURTO TELLO DE CHOSICA - HJATCH</p>
             </div>
           </Link>
 
