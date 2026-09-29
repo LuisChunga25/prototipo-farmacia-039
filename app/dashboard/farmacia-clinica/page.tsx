@@ -54,7 +54,7 @@ export default function FarmaciaClinicaPage() {
       {/* No info bar needed here as it's already in the footer */}
 
       <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
-        <Link href="/dashboard/ventas/proformas" className="block">
+        <Link href="/dashboard/farmacia-clinica/seguimiento-farmaco" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">

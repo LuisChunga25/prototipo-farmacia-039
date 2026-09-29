@@ -328,7 +328,7 @@ export default function Navbar() {
 
   return (
     <header className="bg-gradient-to-r from-[#114C5F] to-[#4A6EB0] text-white shadow-md border-b border-[#9CD2D3]/20">
-      <div className="flex items-center justify-between px-6 py-4">
+      <div className="flex items-center justify-between px-8 py-3">
         <div className="flex items-center space-x-4">
           <Sheet>
             <SheetTrigger asChild>
@@ -408,7 +408,7 @@ export default function Navbar() {
 
           <Link href="/dashboard" className="flex items-center space-x-4">
             <div className="flex items-center gap-2">
-              <Hospital className="w-8 h-8 flex items-center justify-center" />
+              <Hospital className="w-7 h-7 flex items-center justify-center" />
             </div>
             <div>
               <h1 className="text-lg font-semibold tracking-light">Sistema de Farmacia Web</h1>

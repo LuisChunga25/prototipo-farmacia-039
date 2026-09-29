@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { getCookie } from "cookies-next"
 import Navbar from "@/components/navbar"
+import Sidebar from "@/components/sidebar"
 import UnifiedFooter from "@/components/unified-footer"
 
 export default function DashboardLayout({
@@ -37,7 +38,10 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-4 pb-16">{children}</main>
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar />
+        <main className="flex-1 container ml-6 mt-6">{children}</main>
+      </div>
       {/*<UnifiedFooter />*/}
     </div>
   )
