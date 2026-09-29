@@ -153,7 +153,7 @@ export default function SeguimientoFarmacoPage() {
   const [showDetalleModal, setShowDetalleModal] = useState(false);
   const [seguimientoDetalle, setSeguimientoDetalle] = useState<any>(null);
   const router = useRouter();
-  const [searchBy, setSearchBy] = useState("seguimientoId");
+  const [searchBy, setSearchBy] = useState("hojaId");
   const hoy = new Date();
   const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
   const formatoISO = (fecha: Date) => fecha.toISOString().split("T")[0];
@@ -161,7 +161,7 @@ export default function SeguimientoFarmacoPage() {
   const [fechaFin, setFechaFin] = useState(formatoISO(hoy));
 
   const opcionesBusqueda = [
-    { value: "seguimientoId", label: "Seguimiento ID" },
+    { value: "hojaId", label: "Hoja ID" },
     { value: "paciente", label: "Paciente" },
     { value: "historiaClinica", label: "Historia Clínica" }
   ];
@@ -238,8 +238,8 @@ export default function SeguimientoFarmacoPage() {
             Regresar
           </Button>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Seguimiento Farmacoterapéutico</h1>
-            <p className="text-muted-foreground">Gestione los problemas relacionados a medicamentos</p>
+            <h1 className="text-3xl font-bold tracking-tight">Hoja Farmacoterapéutica</h1>
+            <p className="text-muted-foreground">Control de los medicamentos suministrados al paciente</p>
           </div>
         </div>
         <div className="bg-cyan-50 border border-cyan-200 border-2 p-4 rounded-md">
@@ -340,7 +340,7 @@ export default function SeguimientoFarmacoPage() {
           <TableHeader>
             <TableRow className="bg-cyan-600 hover:bg-cyan-600">
               {/*<TableHead>Estado</TableHead>*/}
-              <TableHead className="font-semibold text-white hover:bg-transparent">Seguimiento ID</TableHead>
+              <TableHead className="font-semibold text-white hover:bg-transparent">Hoja ID</TableHead>
               <TableHead className="font-semibold text-white hover:bg-transparent">Paciente</TableHead>
               {/*<TableHead className="font-semibold text-white hover:bg-transparent">Departamento de Hospitalización</TableHead>*/}
               <TableHead className="font-semibold text-white hover:bg-transparent">Servicio</TableHead>

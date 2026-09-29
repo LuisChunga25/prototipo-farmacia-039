@@ -137,7 +137,7 @@ const productosMock = [
   },
 ];
 
-export default function SeguimientoFarmacoPage() {
+export default function AnmanesisFarmacoPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSalida, setSelectedSalida] = useState(null);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -238,8 +238,8 @@ export default function SeguimientoFarmacoPage() {
             Regresar
           </Button>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Seguimiento Farmacoterapéutico</h1>
-            <p className="text-muted-foreground">Gestione los problemas relacionados a medicamentos</p>
+            <h1 className="text-3xl font-bold tracking-tight">Anamnesis Farmacológica</h1>
+            <p className="text-muted-foreground">Monitoreo de la atención del paciente en base al consumo de sus medicamentos</p>
           </div>
         </div>
         <div className="bg-cyan-50 border border-cyan-200 border-2 p-4 rounded-md">
@@ -340,7 +340,7 @@ export default function SeguimientoFarmacoPage() {
           <TableHeader>
             <TableRow className="bg-cyan-600 hover:bg-cyan-600">
               {/*<TableHead>Estado</TableHead>*/}
-              <TableHead className="font-semibold text-white hover:bg-transparent">Seguimiento ID</TableHead>
+              <TableHead className="font-semibold text-white hover:bg-transparent">Anamnesis ID</TableHead>
               <TableHead className="font-semibold text-white hover:bg-transparent">Paciente</TableHead>
               {/*<TableHead className="font-semibold text-white hover:bg-transparent">Departamento de Hospitalización</TableHead>*/}
               <TableHead className="font-semibold text-white hover:bg-transparent">Servicio</TableHead>

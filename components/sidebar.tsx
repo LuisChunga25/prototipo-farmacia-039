@@ -400,7 +400,11 @@ export default function Sidebar() {
                                 <span>Seguimiento Farmacoterapéutico</span>
                             </a>
                             <a
-                                className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname.startsWith("/dashboard/farmacia-clinica/hoja-farmaco")
+                                    ? "bg-blue-50 text-blue-700"
+                                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    }`}
+                                href="/dashboard/farmacia-clinica/hoja-farmaco"
                                 data-discover="true"
                                 aria-current="page"
                             >
@@ -408,7 +412,11 @@ export default function Sidebar() {
                                 <span>Hoja Farmacoterapéutica</span>
                             </a>
                             <a
-                                className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname.startsWith("/dashboard/farmacia-clinica/anamnesis-farmaco")
+                                    ? "bg-blue-50 text-blue-700"
+                                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    }`}
+                                href="/dashboard/farmacia-clinica/anamnesis-farmaco"
                                 data-discover="true"
                                 aria-current="page"
                             >
@@ -416,7 +424,11 @@ export default function Sidebar() {
                                 <span>Anamnesis Farmacológica</span>
                             </a>
                             <a
-                                className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname.startsWith("/dashboard/farmacia-clinica/cartilla-medicamentos")
+                                    ? "bg-blue-50 text-blue-700"
+                                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    }`}
+                                href="/dashboard/farmacia-clinica/cartilla-medicamentos"
                                 data-discover="true"
                                 aria-current="page"
                             >
