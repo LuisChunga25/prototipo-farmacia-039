@@ -35,80 +35,95 @@ const seguimientosFarmacoData = [
     id: 1,
     estado: "1",
     salidaId: "25000650",
+    seguimientoId: "00000005",
+    paciente: "CHUNGA HUAYLINOS LUIS DIEGO",
+    servicio: "MEDICINA INTERNA",
     documento: "PPA-650",
     tipo_transaccion: "STS",
     nombre_transaccion: "Salida por Transferencias de Servicios",
-    fecha: "31/01/2026",
+    fecha: "30/09/2026",
     hora: "18:12:07",
     fecha_proceso: "31/01/2026",
     hora_proceso: "18:24:05",
     almacen: "F",
     total: 67.4,
-    usuario: "MALVAREZ",
+    usuario: "06649520",
     observacion: "SALIDA POR TRANSFERENCIA",
   },
   {
     id: 2,
     estado: "1",
     salidaId: "25000648",
+    seguimientoId: "00000004",
+    paciente: "HILARIO GARCIA MIGUEL ANGEL",
+    servicio: "MEDICINA INTERNA",
     documento: "PPA-558",
     tipo_transaccion: "STE",
     nombre_transaccion: "Salida por Transferencias entre Unidades Ejecutoras",
-    fecha: "31/01/2026",
+    fecha: "30/09/2026",
     hora: "14:42:24",
     fecha_proceso: "31/01/2026",
     hora_proceso: "14:45:19",
     almacen: "A",
     total: 213.68,
-    usuario: "EROMERO",
+    usuario: "06649520",
     observacion: "CAMPAÑA MÉDICA",
   },
   {
     id: 3,
     estado: "1",
     salidaId: "25000647",
+    seguimientoId: "00000003",
+    paciente: "HOLGUIN CUCALON JORGE ALBERTO",
+    servicio: "CIRUGIA GENERAL",
     documento: "25000647",
     tipo_transaccion: "STL",
     nombre_transaccion: "Salida por Transferencia de Laboratorio",
-    fecha: "30/01/2026",
+    fecha: "30/09/2026",
     hora: "13:26:28",
     fecha_proceso: "30/01/2026",
     hora_proceso: "13:26:55",
     almacen: "DU",
     total: 224.64,
-    usuario: "MARIH",
+    usuario: "06649520",
     observacion: "",
   },
   {
     id: 4,
     estado: "1",
     salidaId: "25000646",
+    seguimientoId: "00000002",
+    paciente: "QUISPE JAVIER TERRY ANFONI",
+    servicio: "TRAUMATOLOGIA Y ORTOPEDIA",
     documento: "PPA-646",
     tipo_transaccion: "STS",
     nombre_transaccion: "Salida por Transferencia de Servicios",
-    fecha: "30/01/2026",
+    fecha: "29/09/2026",
     hora: "11:19:24",
     fecha_proceso: "30/01/2026",
     hora_proceso: "11:20:45",
     almacen: "A",
     total: 5000,
-    usuario: "ECHATE",
+    usuario: "06649520",
     observacion: "REQUERIMIENTO O2",
   },
   {
     id: 5,
     estado: "1",
     salidaId: "25000645",
+    seguimientoId: "00000001",
+    paciente: "PRADO DAVILA CARLOS ENRIQUE ALBERTO",
+    servicio: "CIRUGIA GENERAL",
     documento: "25000645",
     tipo_transaccion: "STS",
     nombre_transaccion: "Salida pr Transferencia de Servicios",
-    fecha: "30/01/2026",
+    fecha: "29/09/2026",
     hora: "10:18:50",
     fecha_proceso: "30/01/2026",
     hora_proceso: "11:19:12",
     almacen: "DU",
     total: 299.52,
-    usuario: "MALVAREZ",
+    usuario: "06649520",
     observacion: "SOBRE STOCK",
   },
 ]
@@ -326,7 +341,7 @@ export default function SeguimientoFarmacoPage() {
             <Button
               className="bg-teal-600 hover:bg-teal-700 text-white gap-2 font-semibold h-10 px-4"
               size="sm"
-              onClick={() => router.push("/dashboard/almacenes/salidas/nueva")}
+              onClick={() => router.push("/dashboard/farmacia-clinica/seguimiento-farmaco/registrar")}
             >
               <Plus className="h-5 w-5" strokeWidth={3} />
               Nuevo Documento
@@ -353,10 +368,10 @@ export default function SeguimientoFarmacoPage() {
             {seguimientosVisibles.map((seguimiento) => (
               <TableRow key={seguimiento.id} className={selectedItems.includes(seguimiento.id) ? "bg-primary/10" : ""}>
                 {/*<TableCell>{getEstadoBadge(salida.estado)}</TableCell>*/}
-                <TableCell className="font-medium">{seguimiento.salidaId}</TableCell>
-                <TableCell className="font-medium">{seguimiento.documento}</TableCell>
+                <TableCell className="font-medium">{seguimiento.seguimientoId}</TableCell>
+                <TableCell className="font-medium">{seguimiento.paciente}</TableCell>
                 {/*<TableCell className="font-medium">{salida.tipo_transaccion}</TableCell>*/}
-                <TableCell className="font-medium">{seguimiento.nombre_transaccion}</TableCell>
+                <TableCell className="font-medium">{seguimiento.servicio}</TableCell>
                 {/*<TableCell>
                   <div className="font-mediunm">{seguimiento.tipo_transaccion}</div>
                   <div className="text-sm text-gray-500">{seguimiento.nombre_transaccion}</div>

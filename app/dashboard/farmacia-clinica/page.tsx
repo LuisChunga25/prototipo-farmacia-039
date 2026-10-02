@@ -68,7 +68,7 @@ export default function FarmaciaClinicaPage() {
           </Card>
         </Link>
 
-        <Link href="/dashboard/ventas/proformas-contado" className="block">
+        <Link href="/dashboard/farmacia-clinica/hoja-farmaco" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">
@@ -82,7 +82,7 @@ export default function FarmaciaClinicaPage() {
           </Card>
         </Link>
 
-        <Link href="/dashboard/ventas/proformas-credito" className="block">
+        <Link href="/dashboard/farmacia-clinica/anamnesis-farmaco" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">
@@ -96,7 +96,7 @@ export default function FarmaciaClinicaPage() {
           </Card>
         </Link>
 
-        <Link href="/dashboard/ventas/proformas-exoneradas" className="block">
+        <Link href="/dashboard/farmacia-clinica/cartilla-medicamentos" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">

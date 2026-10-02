@@ -397,7 +397,7 @@ export default function Sidebar() {
                                 aria-current="page"
                             >
                                 <Package className="h-4 w-4" />
-                                <span>Seguimiento Farmacoterapéutico</span>
+                                <span>Seguimiento</span>
                             </a>
                             <a
                                 className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname.startsWith("/dashboard/farmacia-clinica/hoja-farmaco")
@@ -433,7 +433,7 @@ export default function Sidebar() {
                                 aria-current="page"
                             >
                                 <ClipboardList className="h-4 w-4" />
-                                <span>Cartilla de uso seguro de medicamentos</span>
+                                <span>Cartilla de uso</span>
                             </a>
                         </div>
                     </div>

@@ -35,6 +35,9 @@ const seguimientosFarmacoData = [
     id: 1,
     estado: "1",
     salidaId: "25000650",
+    cartillaId: "00000005",
+    paciente: "CHUNGA HUAYLINOS LUIS DIEGO",
+    servicio: "MEDICINA INTERNA",
     documento: "PPA-650",
     tipo_transaccion: "STS",
     nombre_transaccion: "Salida por Transferencias de Servicios",
@@ -44,13 +47,16 @@ const seguimientosFarmacoData = [
     hora_proceso: "18:24:05",
     almacen: "F",
     total: 67.4,
-    usuario: "MALVAREZ",
+    usuario: "06649520",
     observacion: "SALIDA POR TRANSFERENCIA",
   },
   {
     id: 2,
     estado: "1",
     salidaId: "25000648",
+    cartillaId: "00000004",
+    paciente: "HILARIO GARCIA MIGUEL ANGEL",
+    servicio: "MEDICINA INTERNA",
     documento: "PPA-558",
     tipo_transaccion: "STE",
     nombre_transaccion: "Salida por Transferencias entre Unidades Ejecutoras",
@@ -60,13 +66,16 @@ const seguimientosFarmacoData = [
     hora_proceso: "14:45:19",
     almacen: "A",
     total: 213.68,
-    usuario: "EROMERO",
+    usuario: "06649520",
     observacion: "CAMPAÑA MÉDICA",
   },
   {
     id: 3,
     estado: "1",
     salidaId: "25000647",
+    cartillaId: "00000003",
+    paciente: "PRADO DAVILA CARLOS ENRIQUE ALBERTO",
+    servicio: "CIRUGIA GENERAL",
     documento: "25000647",
     tipo_transaccion: "STL",
     nombre_transaccion: "Salida por Transferencia de Laboratorio",
@@ -76,13 +85,16 @@ const seguimientosFarmacoData = [
     hora_proceso: "13:26:55",
     almacen: "DU",
     total: 224.64,
-    usuario: "MARIH",
+    usuario: "06649520",
     observacion: "",
   },
   {
     id: 4,
     estado: "1",
     salidaId: "25000646",
+    cartillaId: "00000002",
+    paciente: "HOLGUIN CUCALON JORGE ALBERTO",
+    servicio: "TRAUMATOLOGIA Y ORTOPEDIA",
     documento: "PPA-646",
     tipo_transaccion: "STS",
     nombre_transaccion: "Salida por Transferencia de Servicios",
@@ -92,23 +104,26 @@ const seguimientosFarmacoData = [
     hora_proceso: "11:20:45",
     almacen: "A",
     total: 5000,
-    usuario: "ECHATE",
+    usuario: "06649520",
     observacion: "REQUERIMIENTO O2",
   },
   {
     id: 5,
     estado: "1",
     salidaId: "25000645",
+    cartillaId: "00000001",
+    paciente: "MANRIQUE RODRIGUEZ DIJEIM SOLUN",
+    servicio: "MEDICINA INTERNA",
     documento: "25000645",
     tipo_transaccion: "STS",
-    nombre_transaccion: "Salida pr Transferencia de Servicios",
+    nombre_transaccion: "Salida por Transferencia de Servicios",
     fecha: "30/01/2026",
     hora: "10:18:50",
     fecha_proceso: "30/01/2026",
     hora_proceso: "11:19:12",
     almacen: "DU",
     total: 299.52,
-    usuario: "MALVAREZ",
+    usuario: "06649520",
     observacion: "SOBRE STOCK",
   },
 ]
@@ -153,7 +168,7 @@ export default function CartillaMedicamentosPage() {
   const [showDetalleModal, setShowDetalleModal] = useState(false);
   const [seguimientoDetalle, setSeguimientoDetalle] = useState<any>(null);
   const router = useRouter();
-  const [searchBy, setSearchBy] = useState("seguimientoId");
+  const [searchBy, setSearchBy] = useState("cartillaId");
   const hoy = new Date();
   const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
   const formatoISO = (fecha: Date) => fecha.toISOString().split("T")[0];
@@ -161,7 +176,7 @@ export default function CartillaMedicamentosPage() {
   const [fechaFin, setFechaFin] = useState(formatoISO(hoy));
 
   const opcionesBusqueda = [
-    { value: "seguimientoId", label: "Seguimiento ID" },
+    { value: "cartillaId", label: "Cartilla ID" },
     { value: "paciente", label: "Paciente" },
     { value: "historiaClinica", label: "Historia Clínica" }
   ];
@@ -326,7 +341,7 @@ export default function CartillaMedicamentosPage() {
             <Button
               className="bg-teal-600 hover:bg-teal-700 text-white gap-2 font-semibold h-10 px-4"
               size="sm"
-              onClick={() => router.push("/dashboard/almacenes/salidas/nueva")}
+              onClick={() => router.push("/dashboard/farmacia-clinica/cartilla-medicamentos/registrar")}
             >
               <Plus className="h-5 w-5" strokeWidth={3} />
               Nuevo Documento
@@ -353,10 +368,10 @@ export default function CartillaMedicamentosPage() {
             {seguimientosVisibles.map((seguimiento) => (
               <TableRow key={seguimiento.id} className={selectedItems.includes(seguimiento.id) ? "bg-primary/10" : ""}>
                 {/*<TableCell>{getEstadoBadge(salida.estado)}</TableCell>*/}
-                <TableCell className="font-medium">{seguimiento.salidaId}</TableCell>
-                <TableCell className="font-medium">{seguimiento.documento}</TableCell>
+                <TableCell className="font-medium">{seguimiento.cartillaId}</TableCell>
+                <TableCell className="font-medium">{seguimiento.paciente}</TableCell>
                 {/*<TableCell className="font-medium">{salida.tipo_transaccion}</TableCell>*/}
-                <TableCell className="font-medium">{seguimiento.nombre_transaccion}</TableCell>
+                <TableCell className="font-medium">{seguimiento.servicio}</TableCell>
                 {/*<TableCell>
                   <div className="font-mediunm">{seguimiento.tipo_transaccion}</div>
                   <div className="text-sm text-gray-500">{seguimiento.nombre_transaccion}</div>
