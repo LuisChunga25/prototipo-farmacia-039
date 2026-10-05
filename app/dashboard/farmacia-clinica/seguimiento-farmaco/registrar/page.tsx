@@ -146,6 +146,16 @@ type ProductoSalida = {
     lotesAsignados: LoteAsignado[];
 };
 
+type MedicamentoInvolucrado = {
+    id: number;
+    nombrePresentacion: string;
+    problemaSalud: string;
+    prmReal: boolean;
+    prmPotencial: boolean;
+    reaccionAdversa: boolean;
+    interaccionMedicamentos: boolean;
+};
+
 
 export default function NuevaSalidaPage() {
     const router = useRouter();
@@ -178,6 +188,16 @@ export default function NuevaSalidaPage() {
     const isACTA = tipoDocumento === "ACTA";
     const isRDS = tipoDocumento === "RDS";
     const isDDL = tipoDocumento === "DDL";
+
+    const [nombrePresentacion, setNombrePresentacion] = useState("");
+    const [problemaSalud, setProblemaSalud] = useState("");
+
+    const [prmReal, setPrmReal] = useState(false);
+    const [prmPotencial, setPrmPotencial] = useState(false);
+    const [reaccionAdversa, setReaccionAdversa] = useState(false);
+    const [interaccionMedicamentos, setInteraccionMedicamentos] = useState(false);
+
+    const [medicamentosRegistrados, setMedicamentosRegistrados] = useState<MedicamentoInvolucrado[]>([]);
 
     // CALCULAR LA FECHA Y HORA ACTUALES
     useEffect(() => {
@@ -306,6 +326,35 @@ export default function NuevaSalidaPage() {
         return acc + subtotal;
     }, 0);
 
+    // FUNCIÓN PARA AGREGAR MEDICAMENTO INVOLUCRADO
+    const handleAgregarMedicamento = () => {
+
+        if (!nombrePresentacion.trim()) return;
+        if (!problemaSalud.trim()) return;
+
+        const nuevoRegistro: MedicamentoInvolucrado = {
+            id: Date.now(),
+            nombrePresentacion,
+            problemaSalud,
+            prmReal,
+            prmPotencial,
+            reaccionAdversa,
+            interaccionMedicamentos,
+        };
+
+        setMedicamentosRegistrados(prev => [...prev, nuevoRegistro]);
+
+        // Limpiar formulario
+
+        setNombrePresentacion("");
+        setProblemaSalud("");
+
+        setPrmReal(false);
+        setPrmPotencial(false);
+        setReaccionAdversa(false);
+        setInteraccionMedicamentos(false);
+    };
+
 
 
     return (
@@ -353,16 +402,16 @@ export default function NuevaSalidaPage() {
                 <div className="p-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
-                            <Label>Fecha: <span className="text-red-500">*</span></Label>
-                            <Input type="date" />
+                            <Label>Fecha <span className="text-red-500">*</span></Label>
+                            <Input type="date" className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
-                            <Label>HC: <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Label>HC <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
-                            <Label>Paciente: <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Label>Paciente <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
                         </div>
                     </div>
                 </div>
@@ -376,32 +425,56 @@ export default function NuevaSalidaPage() {
                 <div className="p-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2 space-y-2">
-                            <Label>Nombre, concentración y presentación: <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Label>Nombre, concentración y presentación <span className="text-red-500">*</span></Label>
+                            <Input
+                                className="border border-slate-900"
+                                value={nombrePresentacion}
+                                onChange={(e) => setNombrePresentacion(e.target.value)}
+                            />
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
-                            <Label>Problema de salud: <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Label>Problema de salud <span className="text-red-500">*</span></Label>
+                            <Input
+                                className="border border-slate-900"
+                                value={problemaSalud}
+                                onChange={(e) => setProblemaSalud(e.target.value)}
+                            />
                         </div>
 
-                        <div>
+                        <div className="md:col-span-2 space-y-2">
                             <p className="text-sm font-semibold">Situación:</p>
                             <div className="flex items-center space-x-2">
-                                <Checkbox></Checkbox>
-                                <label className="text-sm">PRM Real (Manifestado)</label>
+                                <Checkbox
+                                    id="prm-real"
+                                    checked={prmReal}
+                                    onCheckedChange={(checked) => setPrmReal(checked === true)}
+                                />
+                                <Label htmlFor="prm-real" className="text-sm font-normal cursor-pointer">PRM Real (Manifestado)</Label>
                             </div>
                             <div className="flex items-center space-x-2">
-                                <Checkbox></Checkbox>
-                                <label className="text-sm">PRM Potencial (Riesgo de Aparición)</label>
+                                <Checkbox
+                                    id="prm-potencial"
+                                    checked={prmPotencial}
+                                    onCheckedChange={(checked) => setPrmPotencial(checked === true)}
+                                />
+                                <Label htmlFor="prm-potencial" className="text-sm font-normal cursor-pointer">PRM Potencial (Riesgo de Aparición)</Label>
                             </div>
                             <div className="flex items-center space-x-2">
-                                <Checkbox></Checkbox>
-                                <label className="text-sm">Reacción Adversa</label>
+                                <Checkbox
+                                    id="reaccion-adversa"
+                                    checked={reaccionAdversa}
+                                    onCheckedChange={(checked) => setReaccionAdversa(checked === true)}
+                                />
+                                <Label htmlFor="reaccion-adversa" className="text-sm font-normal cursor-pointer">Reacción Adversa</Label>
                             </div>
                             <div className="flex items-center space-x-2">
-                                <Checkbox></Checkbox>
-                                <label className="text-sm">Interacción Medicamentos</label>
+                                <Checkbox
+                                    id="interaccion-medicamentos"
+                                    checked={interaccionMedicamentos}
+                                    onCheckedChange={(checked) => setInteraccionMedicamentos(checked === true)}
+                                />
+                                <Label htmlFor="interaccion-medicamentos" className="text-sm font-normal cursor-pointer">Interacción Medicamentos</Label>
                             </div>
                         </div>
                     </div>
@@ -422,9 +495,10 @@ export default function NuevaSalidaPage() {
                         Resetear
                     </Button>*/}
 
-                    <div className="flex justify-end mt-4">
+                    <div className="flex mt-8">
                         <Button
                             type="button"
+                            onClick={handleAgregarMedicamento}
                             className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
                         >
                             <PlusCircle className="w-4 h-4" />
@@ -432,7 +506,7 @@ export default function NuevaSalidaPage() {
                         </Button>
                     </div>
 
-                    <div className="mt-6 border rounded-lg overflow-hidden">
+                    <div className="mt-6 border border-slate-300 rounded-lg overflow-hidden">
                         <table className="w-full text-sm">
                             <thead className="bg-slate-100">
                                 <tr>
@@ -447,101 +521,61 @@ export default function NuevaSalidaPage() {
                             </thead>
 
                             <tbody>
-                                {productos.length === 0 ? (
+                                {medicamentosRegistrados.length === 0 ? (
                                     <tr>
                                         <td
-                                            colSpan={6}
+                                            colSpan={7}
                                             className="px-3 py-4 text-center text-slate-500"
                                         >
                                             No hay registro de medicamentos involucrados
                                         </td>
                                     </tr>
                                 ) : (
-                                    productos.map((prod, index) => {
-                                        const subtotalProducto = prod.lotesAsignados.reduce(
-                                            (acc, l) => acc + l.precio * l.cantidad,
-                                            0
-                                        );
+                                    medicamentosRegistrados.map((item, index) => (
+                                        <tr key={item.id} className="border-t">
 
-                                        return (
-                                            <tr key={index} className="border-t">
-                                                {/* ITEM */}
-                                                <td className="px-3 py-2">{index + 1}</td>
+                                            <td className="px-3 py-2">
+                                                {item.nombrePresentacion}
+                                            </td>
 
-                                                {/* NOMBRE */}
-                                                <td className="px-3 py-2 font-medium">
-                                                    {prod.nombre}
-                                                </td>
+                                            <td className="px-3 py-2">
+                                                {item.problemaSalud}
+                                            </td>
 
-                                                {/* LOTE */}
-                                                <td className="px-3 py-2">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
-                                                        >
-                                                            {lote.lote}
-                                                        </div>
-                                                    ))}
-                                                </td>
+                                            <td className="px-3 py-2 text-center font-bold">
+                                                {item.prmReal ? "X" : ""}
+                                            </td>
 
-                                                {/* PRECIO POR LOTE */}
-                                                <td className="px-3 py-2 text-right">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
-                                                        >
-                                                            {lote.precio}
-                                                        </div>
-                                                    ))}
-                                                </td>
+                                            <td className="px-3 py-2 text-center font-bold">
+                                                {item.prmPotencial ? "X" : ""}
+                                            </td>
 
-                                                {/* CANTIDAD POR LOTE */}
-                                                <td className="px-3 py-2 text-right">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
-                                                        >
-                                                            {lote.cantidad}
-                                                        </div>
-                                                    ))}
-                                                </td>
+                                            <td className="px-3 py-2 text-center font-bold">
+                                                {item.reaccionAdversa ? "X" : ""}
+                                            </td>
 
-                                                {/* IMPORTE POR LOTE */}
-                                                <td className="px-3 py-2 text-right">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
-                                                        >
-                                                            {(lote.cantidad * lote.precio).toFixed(2)}
-                                                        </div>
-                                                    ))}
-                                                </td>
+                                            <td className="px-3 py-2 text-center font-bold">
+                                                {item.interaccionMedicamentos ? "X" : ""}
+                                            </td>
 
-                                                {/* SUBTOTAL POR PRODUCTO */}
-                                                <td className="px-3 py-2 text-right font-semibold text-slate-700">
-                                                    {subtotalProducto.toFixed(2)}
-                                                </td>
-
-                                                {/* ACCIÓN */}
-                                                <td className="px-3 py-2 text-center">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="border-red-500 text-red-600 hover:bg-red-50"
-                                                        onClick={() =>
-                                                            setProductos(productos.filter((_, i) => i !== index))
-                                                        }
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })
+                                            <td className="px-3 py-2 text-center">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50"
+                                                    onClick={() =>
+                                                        setMedicamentosRegistrados(
+                                                            medicamentosRegistrados.filter(
+                                                                registro => registro.id !== item.id
+                                                            )
+                                                        )
+                                                    }
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))
                                 )}
                             </tbody>
                         </table>
@@ -560,13 +594,13 @@ export default function NuevaSalidaPage() {
                         <h3 className="font-semibold">INTERVENIR SOBRE CANTIDAD DE MEDICAMENTO</h3>
 
                         <div className="md:col-span-2 space-y-2">
-                            <Label>Dosis: <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Label>Dosis <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
-                            <Label>Pauta de administración: <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Label>Pauta de administración <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
                         </div>
                     </div>
                 </div>
@@ -576,18 +610,18 @@ export default function NuevaSalidaPage() {
                         <h3 className="font-semibold">INTERVENIR SOBRE ESTRATEGIA FARMACOLÓGICA</h3>
 
                         <div className="md:col-span-2 space-y-2">
-                            <Label>Añadir medicamento: <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Label>Añadir medicamento <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
-                            <Label>Retirar medicamento: <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Label>Retirar medicamento <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
-                            <Label>Sustituir medicamento: <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Label>Sustituir medicamento <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
                         </div>
                     </div>
                 </div>
@@ -597,13 +631,13 @@ export default function NuevaSalidaPage() {
                         <h3 className="font-semibold">VÍA DE COMUNICACIÓN MÉDICO TRATANTE</h3>
 
                         <div className="md:col-span-2 space-y-2">
-                            <Label>Verbal: <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Label>Verbal <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
-                            <Label>Escrita: <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Label>Escrita <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
                         </div>
                     </div>
                 </div>
@@ -613,13 +647,13 @@ export default function NuevaSalidaPage() {
                         <h3 className="font-semibold">RESULTADO</h3>
 
                         <div className="md:col-span-2 space-y-2">
-                            <Label>Intervención aceptada: <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Label>Intervención aceptada <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
-                            <Label>Intervención no aceptada: <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Label>Intervención no aceptada <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
                         </div>
                     </div>
                 </div>

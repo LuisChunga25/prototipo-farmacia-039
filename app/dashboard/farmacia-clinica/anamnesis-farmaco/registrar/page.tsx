@@ -355,31 +355,31 @@ export default function NuevaSalidaPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
                             <Label>Fecha <span className="text-red-500">*</span></Label>
-                            <Input type="date" />
+                            <Input type="date" className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>Apellidos y Nombres <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>Edad <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>N° HC <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>Peso <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>Talla <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>Procedencia <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                     </div>
                 </div>
@@ -396,60 +396,60 @@ export default function NuevaSalidaPage() {
                 <div className="p-4">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">IMA</label>
+                            <Checkbox id="ima" />
+                            <Label htmlFor="ima" className="text-sm font-normal cursor-pointer">IMA</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">ACV</label>
+                            <Checkbox id="acv" />
+                            <Label htmlFor="acv" className="text-sm font-normal cursor-pointer">ACV</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">ICC</label>
+                            <Checkbox id="icc" />
+                            <Label htmlFor="icc" className="text-sm font-normal cursor-pointer">ICC</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Diabetes</label>
+                            <Checkbox id="diabetes" />
+                            <Label htmlFor="diabetes" className="text-sm font-normal cursor-pointer">Diabetes</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Enf. Renal</label>
+                            <Checkbox id="enf-renal" />
+                            <Label htmlFor="enf-renal" className="text-sm font-normal cursor-pointer">Enf. Renal</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Obesidad</label>
+                            <Checkbox id="obesidad" />
+                            <Label htmlFor="obesidad" className="text-sm font-normal cursor-pointer">Obesidad</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Asma</label>
+                            <Checkbox id="asma" />
+                            <Label htmlFor="asma" className="text-sm font-normal cursor-pointer">Asma</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Enf. Psiquiátrica</label>
+                            <Checkbox id="enf-psiquiatrica" />
+                            <Label htmlFor="enf-psiquiatrica" className="text-sm font-normal cursor-pointer">Enf. Psiquiátrica</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Enf. Hepática</label>
+                            <Checkbox id="enf-hepatica" />
+                            <Label htmlFor="enf-hepatica" className="text-sm font-normal cursor-pointer">Enf. Hepática</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Úlcera</label>
+                            <Checkbox id="ulcera" />
+                            <Label htmlFor="ulcera" className="text-sm font-normal cursor-pointer">Úlcera</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Enf. Tiroides</label>
+                            <Checkbox id="enf-tiroides" />
+                            <Label htmlFor="enf-tiroides" className="text-sm font-normal cursor-pointer">Enf. Tiroides</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">A.R.</label>
+                            <Checkbox id="ar" />
+                            <Label htmlFor="ar" className="text-sm font-normal cursor-pointer">A.R.</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">HTA</label>
+                            <Checkbox id="hta" />
+                            <Label htmlFor="hta" className="text-sm font-normal cursor-pointer">HTA</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Medicación Habitual</label>
+                            <Checkbox id="medicacion-habitual" />
+                            <Label htmlFor="medicacion-habitual" className="text-sm font-normal cursor-pointer">Medicación Habitual</Label>
                         </div>
                     </div>
                 </div>
@@ -463,32 +463,32 @@ export default function NuevaSalidaPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Tos</label>
+                            <Checkbox id="tos" />
+                            <Label htmlFor="tos" className="text-sm font-normal cursor-pointer">Tos</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Mareos</label>
+                            <Checkbox id="mareos" />
+                            <Label htmlFor="mareos" className="text-sm font-normal cursor-pointer">Mareos</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Sueño</label>
+                            <Checkbox id="sueno" />
+                            <Label htmlFor="sueno" className="text-sm font-normal cursor-pointer">Sueño</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Desvanecimiento</label>
+                            <Checkbox id="desvanecimiento" />
+                            <Label htmlFor="desvanecimiento" className="text-sm font-normal cursor-pointer">Desvanecimiento</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Visión borrosa</label>
+                            <Checkbox id="vision-borrosa" />
+                            <Label htmlFor="vision-borrosa" className="text-sm font-normal cursor-pointer">Visión borrosa</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Pérdida de apetito</label>
+                            <Checkbox id="perdida-apetito" />
+                            <Label htmlFor="perdida-apetito" className="text-sm font-normal cursor-pointer">Pérdida de apetito</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Dolor de cabeza</label>
+                            <Checkbox id="dolor-cabeza" />
+                            <Label htmlFor="dolor-cabeza" className="text-sm font-normal cursor-pointer">Dolor de cabeza</Label>
                         </div>
                     </div>
 
@@ -497,20 +497,20 @@ export default function NuevaSalidaPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Debilidad muscular</label>
+                            <Checkbox id="debilidad-muscular" />
+                            <Label htmlFor="debilidad-muscular" className="text-sm font-normal cursor-pointer">Debilidad muscular</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Dolores articulares</label>
+                            <Checkbox id="dolores-articulares" />
+                            <Label htmlFor="dolores-articulares" className="text-sm font-normal cursor-pointer">Dolores articulares</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Calambres</label>
+                            <Checkbox id="calambres" />
+                            <Label htmlFor="calambres" className="text-sm font-normal cursor-pointer">Calambres</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Dolor/rigídez de cuello</label>
+                            <Checkbox id="dolor-cuello" />
+                            <Label htmlFor="dolor-cuello" className="text-sm font-normal cursor-pointer">Dolor/rigídez de cuello</Label>
                         </div>
                     </div>
 
@@ -519,24 +519,24 @@ export default function NuevaSalidaPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Dolor y/o ardor de estómago</label>
+                            <Checkbox id="dolor-estomago" />
+                            <Label htmlFor="dolor-estomago" className="text-sm font-normal cursor-pointer">Dolor y/o ardor de estómago</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Náuseas y/o vómitos</label>
+                            <Checkbox id="nauseas-vomitos" />
+                            <Label htmlFor="nauseas-vomitos" className="text-sm font-normal cursor-pointer">Náuseas y/o vómitos</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Diarreas</label>
+                            <Checkbox id="diarreas" />
+                            <Label htmlFor="diarreas" className="text-sm font-normal cursor-pointer">Diarreas</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Estreñimiento</label>
+                            <Checkbox id="estreñimiento" />
+                            <Label htmlFor="estreñimiento" className="text-sm font-normal cursor-pointer">Estreñimiento</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Sequedad bucal</label>
+                            <Checkbox id="sequedad-bucal" />
+                            <Label htmlFor="sequedad-bucal" className="text-sm font-normal cursor-pointer">Sequedad bucal</Label>
                         </div>
                     </div>
 
@@ -545,36 +545,36 @@ export default function NuevaSalidaPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Hiponatremia</label>
+                            <Checkbox id="hiponatremia" />
+                            <Label htmlFor="hiponatremia" className="text-sm font-normal cursor-pointer">Hiponatremia</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Hipopotasemia</label>
+                            <Checkbox id="hipopotasemia" />
+                            <Label htmlFor="hipopotasemia" className="text-sm font-normal cursor-pointer">Hipopotasemia</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Hiperglicemia</label>
+                            <Checkbox id="hiperglicemia" />
+                            <Label htmlFor="hiperglicemia" className="text-sm font-normal cursor-pointer">Hiperglicemia</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Hipercalcemia</label>
+                            <Checkbox id="hipercalcemia" />
+                            <Label htmlFor="hipercalcemia" className="text-sm font-normal cursor-pointer">Hipercalcemia</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Hipercolesteronemia</label>
+                            <Checkbox id="hipercolesteronemia" />
+                            <Label htmlFor="hipercolesteronemia" className="text-sm font-normal cursor-pointer">Hipercolesteronemia</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Edema</label>
+                            <Checkbox id="edema" />
+                            <Label htmlFor="edema" className="text-sm font-normal cursor-pointer">Edema</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Hiperpotasemia</label>
+                            <Checkbox id="hiperpotasemia" />
+                            <Label htmlFor="hiperpotasemia" className="text-sm font-normal cursor-pointer">Hiperpotasemia</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Hipotiroidismo</label>
+                            <Checkbox id="hipotiroidismo" />
+                            <Label htmlFor="hipotiroidismo" className="text-sm font-normal cursor-pointer">Hipotiroidismo</Label>
                         </div>
                     </div>
 
@@ -583,32 +583,32 @@ export default function NuevaSalidaPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Palpitaciones</label>
+                            <Checkbox id="palpitaciones" />
+                            <Label htmlFor="palpitaciones" className="text-sm font-normal cursor-pointer">Palpitaciones</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Taquicardia</label>
+                            <Checkbox id="taquicardia" />
+                            <Label htmlFor="taquicardia" className="text-sm font-normal cursor-pointer">Taquicardia</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Hipotensión</label>
+                            <Checkbox id="hipotension" />
+                            <Label htmlFor="hipotension" className="text-sm font-normal cursor-pointer">Hipotensión</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Arritmias</label>
+                            <Checkbox id="arritmias" />
+                            <Label htmlFor="arritmias" className="text-sm font-normal cursor-pointer">Arritmias</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Angina</label>
+                            <Checkbox id="angina" />
+                            <Label htmlFor="angina" className="text-sm font-normal cursor-pointer">Angina</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Bradicardia</label>
+                            <Checkbox id="bradicardia" />
+                            <Label htmlFor="bradicardia" className="text-sm font-normal cursor-pointer">Bradicardia</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Hipotensión ortostática</label>
+                            <Checkbox id="hipotension-ortostatica" />
+                            <Label htmlFor="hipotension-ortostatica" className="text-sm font-normal cursor-pointer">Hipotensión ortostática</Label>
                         </div>
                     </div>
 
@@ -617,20 +617,20 @@ export default function NuevaSalidaPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Erupciones cutáneas</label>
+                            <Checkbox id="erupciones-cutaneas" />
+                            <Label htmlFor="erupciones-cutaneas" className="text-sm font-normal cursor-pointer">Erupciones cutáneas</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Prurito</label>
+                            <Checkbox id="prurito" />
+                            <Label htmlFor="prurito" className="text-sm font-normal cursor-pointer">Prurito</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Rubefacción</label>
+                            <Checkbox id="rubefaccion" />
+                            <Label htmlFor="rubefaccion" className="text-sm font-normal cursor-pointer">Rubefacción</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox></Checkbox>
-                            <label className="text-sm">Otros</label>
+                            <Checkbox id="otros" />
+                            <Label htmlFor="otros" className="text-sm font-normal cursor-pointer">Otros</Label>
                         </div>
                     </div>
                 </div>
@@ -642,23 +642,23 @@ export default function NuevaSalidaPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                         <div className="space-y-2">
                             <Label>FC <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>FR <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>SAT O2 <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>T° <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>PA <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                     </div>
                 </div>
@@ -667,131 +667,223 @@ export default function NuevaSalidaPage() {
                     <h2 className="font-semibold text-white">2.4 Pruebas de Laboratorio</h2>
                 </div>
                 <div className="p-4">
-                    <div className="mt-6 border rounded-lg overflow-hidden">
-                        <table className="w-full text-sm">
+                    <div className="mt-6 border border-slate-300 rounded-lg overflow-hidden">
+                        <table className="w-full table-fixed text-sm">
                             <thead className="bg-slate-100">
                                 <tr>
-                                    <th className="px-3 py-2 text-left">Prueba</th>
+                                    <th className="w-[150px] px-3 py-2 text-left">Prueba</th>
                                     <th className="px-3 py-2 text-left">Resultado</th>
-                                    <th className="px-3 py-2 text-left">Fecha</th>
+                                    <th className="w-[180px] px-3 py-2 text-left">Fecha</th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 <tr>
                                     <td className="px-3 py-2">Leucocitos</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">HB</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">Plaquetas</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">Neutrofilos</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">PCR</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">Na</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">K</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">Albúmina</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">Prot. Totales</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">Probnp</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">Urae</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">Creat.</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">FA</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">TGO</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">TGP</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">BT</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">BD</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">BI</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">GGT</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">Amilasa</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">Lipasa</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">Urocultivo</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">Antibiograma</td>
-                                    <td className="px-3 py-2"></td>
-                                    <td className="px-3 py-2"></td>
+                                    <td className="px-3 py-2">
+                                        <Input className="h-8 border border-slate-900" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Input type="date" className="h-8 border border-slate-900" />
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -800,7 +892,7 @@ export default function NuevaSalidaPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 mt-6">
                         <div className="space-y-2">
                             <Label>Otros exámenes auxiliares <span className="text-red-500">*</span></Label>
-                            <Textarea />
+                            <Textarea className="border border-slate-900" />
                         </div>
                     </div>
                 </div>
@@ -809,19 +901,28 @@ export default function NuevaSalidaPage() {
                     <h2 className="font-semibold text-white">2.5 Diagnóstico(s)</h2>
                 </div>
                 <div className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-[140px_1fr_140px] gap-4 items-end">
                         <div className="space-y-2">
                             <Label>Tipo de DX <span className="text-red-500">*</span></Label>
-                            <Input />
+
+                            <Select>
+                                <SelectTrigger className="border border-slate-900">
+                                    <SelectValue placeholder="Seleccione" />
+                                </SelectTrigger>
+
+                                <SelectContent>
+                                    <SelectItem value="P">P</SelectItem>
+                                    <SelectItem value="D">D</SelectItem>
+                                    <SelectItem value="R">R</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         <div className="space-y-2">
                             <Label>Diagnóstico <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
-                    </div>
 
-                    <div className="flex justify-end mt-4">
                         <Button
                             type="button"
                             className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
@@ -831,7 +932,7 @@ export default function NuevaSalidaPage() {
                         </Button>
                     </div>
 
-                    <div className="mt-6 border rounded-lg overflow-hidden">
+                    <div className="mt-6 border border-slate-300 rounded-lg overflow-hidden">
                         <table className="w-full text-sm">
                             <thead className="bg-slate-100">
                                 <tr>
@@ -876,8 +977,8 @@ export default function NuevaSalidaPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2 space-y-2">
                             <Label>PRM IDENTIFICADO <span className="text-red-500">*</span></Label>
-                            <div className="mt-6 border rounded-lg overflow-hidden">
-                                <table className="w-full text-sm">
+                            <div className="mt-6 border border-slate-300 rounded-lg overflow-hidden max-w-md">
+                                <table className="w-full table-fixed text-sm">
                                     <thead className="bg-slate-100">
                                         <tr>
                                             <th className="px-3 py-2 text-left">N</th>
@@ -888,9 +989,15 @@ export default function NuevaSalidaPage() {
 
                                     <tbody>
                                         <tr>
-                                            <td className="px-3 py-2">1</td>
-                                            <td className="px-3 py-2">3</td>
-                                            <td className="px-3 py-2">5</td>
+                                            <td className="px-3 py-3">
+                                                <Input className="h-8 border border-slate-900" />
+                                            </td>
+                                            <td className="px-3 py-3">
+                                                <Input className="h-8 border border-slate-900" />
+                                            </td>
+                                            <td className="px-3 py-3">
+                                                <Input className="h-8 border border-slate-900" />
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -899,12 +1006,12 @@ export default function NuevaSalidaPage() {
 
                         <div className="md:col-span-2 space-y-2 mt-6">
                             <Label>EVALUACIÓN DE RIESTOS DE NECESIDAD, EFICACIA Y SEGURIDAD <span className="text-red-500">*</span></Label>
-                            <Textarea />
+                            <Textarea className="border border-slate-900" />
                         </div>
 
                         <div className="md:col-span-2 space-y-2 mt-6">
                             <Label>REFERENCIA BIBLIOGRÁFICA <span className="text-red-500">*</span></Label>
-                            <Textarea />
+                            <Textarea className="border border-slate-900" />
                         </div>
                     </div>
                 </div>

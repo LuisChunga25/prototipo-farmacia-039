@@ -355,23 +355,23 @@ export default function NuevaSalidaPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
                             <Label>Nombre <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>N° HC <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>Fecha <span className="text-red-500">*</span></Label>
-                            <Input type="date" />
+                            <Input type="date" className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>Edad <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>Dx de egreso <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                     </div>
                 </div>
@@ -386,7 +386,7 @@ export default function NuevaSalidaPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2 space-y-2">
                             <Label>Medicamento <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                     </div>
 
@@ -416,7 +416,7 @@ export default function NuevaSalidaPage() {
                         </Button>
                     </div>
 
-                    <div className="mt-6 border rounded-lg overflow-hidden">
+                    <div className="mt-6 border border-slate-300 rounded-lg overflow-hidden">
                         <table className="w-full text-sm">
                             <thead className="bg-slate-100">
                                 <tr>
@@ -536,7 +536,7 @@ export default function NuevaSalidaPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2 space-y-2">
                             <Label>Otras observaciones <span className="text-red-500">*</span></Label>
-                            <Textarea />
+                            <Textarea className="border border-slate-900" />
                         </div>
                     </div>
                 </div>
@@ -552,19 +552,19 @@ export default function NuevaSalidaPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label>Nombre <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>DNI <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>Firma <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>N° Teléfono <span className="text-red-500">*</span></Label>
-                            <Input />
+                            <Input className="border border-slate-900" />
                         </div>
                     </div>
                 </div>
