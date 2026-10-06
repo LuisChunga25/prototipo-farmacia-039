@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Database, Home, FileText, DollarSign, AlertTriangle, Pill } from "lucide-react"
+import { Database, Home, FileText, DollarSign, AlertTriangle, Pill, ShieldAlert, ShieldCheck } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { AlertDialogHeader } from "@/components/ui/alert-dialog"
 
@@ -70,7 +70,7 @@ export default function Dashboard() {
       </div>
 
       {/* Modal de semaforización */}
-      <Dialog open={openSemaforo} onOpenChange={setOpenSemaforo}>
+      {/*<Dialog open={openSemaforo} onOpenChange={setOpenSemaforo}>
         <DialogContent
           onInteractOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
@@ -132,7 +132,7 @@ export default function Dashboard() {
             </div>
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog>*/}
 
       <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         <Link href="/dashboard/tablas" className="block">
@@ -210,6 +210,22 @@ export default function Dashboard() {
             <CardContent className="p-6 pt-0">
               <CardDescription className="text-sm">
                 Seguimiento Farmacoterapéutico, hoja farmacoterapéutica, cartilla y más.
+              </CardDescription>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/dashboard/farmacovigilancia" className="block">
+          <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors shadow-sm hover:shadow-md">
+            <CardHeader className="p-6">
+              <CardTitle className="text-xl flex items-center gap-3">
+                <ShieldAlert className="h-8 w-8 text-primary" />
+                Farmacovigilancia
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 pt-0">
+              <CardDescription className="text-sm">
+                Formatos del comité de farmacovigilancia y tecnovigilancia para todos los servicios.
               </CardDescription>
             </CardContent>
           </Card>

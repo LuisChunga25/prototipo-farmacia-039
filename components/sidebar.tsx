@@ -51,6 +51,10 @@ import {
     FolderTree,
     FlaskConical,
     ListChecks,
+    ShieldAlert,
+    PillBottle,
+    StethoscopeIcon,
+    Syringe,
 } from "lucide-react"
 import { ThemeToggle } from "./theme-toggle"
 import { useAlmacen } from "@/context/AlmacenContext"
@@ -66,6 +70,7 @@ export default function Sidebar() {
     const [isReportesOpen, setIsReportesOpen] = useState(pathname.startsWith("/dashboard/reportes"));
     const [isTransferenciasOpen, setIsTransferenciasOpen] = useState(location.pathname.includes('/almacenes/transferencias'));
     const [isFarmaciaClinicaOpen, setIsFarmaciaClinicaOpen] = useState(pathname.startsWith("/dashboard/farmacia-clinica"));
+    const [isFarmacovigilanciaOpen, setIsFarmacovigilanciaOpen] = useState(pathname.startsWith("/dashboard/farmacovigilancia"));
 
     useEffect(() => {
         // Obtener información del usuario del localStorage
@@ -434,6 +439,59 @@ export default function Sidebar() {
                             >
                                 <ClipboardList className="h-4 w-4" />
                                 <span>Cartilla de uso</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Farmacovigilancia */}
+                    <button
+                        onClick={() => setIsFarmacovigilanciaOpen(!isFarmacovigilanciaOpen)}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm font-semibold rounded-md text-gray-900 hover:bg-gray-100 transition-colors"
+                    >
+                        <div className="flex items-center gap-3">
+                            <ShieldAlert className="h-5 w-5" />
+                            <span>Farmacovigilancia</span>
+                        </div>
+                        {isFarmacovigilanciaOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                    </button>
+                    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isFarmacovigilanciaOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                        }`}>
+                        <div className="pl-4 space-y-1 mt-1">
+                            <a
+                                className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname.startsWith("/dashboard/farmacovigilancia/medicamentos")
+                                    ? "bg-blue-50 text-blue-700"
+                                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    }`}
+                                href="/dashboard/farmacovigilancia/medicamentos"
+                                data-discover="true"
+                                aria-current="page"
+                            >
+                                <PillBottle className="h-4 w-4" />
+                                <span>Medicamentos</span>
+                            </a>
+                            <a
+                                className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname.startsWith("/dashboard/farmacovigilancia/dispositivos-medicos")
+                                    ? "bg-blue-50 text-blue-700"
+                                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    }`}
+                                href="/dashboard/farmacovigilancia/dispositivos-medicos"
+                                data-discover="true"
+                                aria-current="page"
+                            >
+                                <StethoscopeIcon className="h-4 w-4" />
+                                <span>Dispositivos Médicos</span>
+                            </a>
+                            <a
+                                className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname.startsWith("/dashboard/farmacovigilancia/vacunas")
+                                    ? "bg-blue-50 text-blue-700"
+                                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    }`}
+                                href="/dashboard/farmacovigilancia/vacunas"
+                                data-discover="true"
+                                aria-current="page"
+                            >
+                                <Syringe className="h-4 w-4" />
+                                <span>Vacunas</span>
                             </a>
                         </div>
                     </div>

@@ -147,6 +147,11 @@ type ProductoSalida = {
     lotesAsignados: LoteAsignado[];
 };
 
+type MedicamentoCartilla = {
+    id: number;
+    nombre: string;
+};
+
 
 export default function NuevaSalidaPage() {
     const router = useRouter();
@@ -179,6 +184,8 @@ export default function NuevaSalidaPage() {
     const isACTA = tipoDocumento === "ACTA";
     const isRDS = tipoDocumento === "RDS";
     const isDDL = tipoDocumento === "DDL";
+    const [medicamento, setMedicamento] = useState("");
+    const [medicamentosCartilla, setMedicamentosCartilla] = useState<MedicamentoCartilla[]>([]);
 
     // CALCULAR LA FECHA Y HORA ACTUALES
     useEffect(() => {
@@ -307,7 +314,23 @@ export default function NuevaSalidaPage() {
         return acc + subtotal;
     }, 0);
 
+    // AGREGAR MEDICAMENTO A LA CARTILLA
+    const handleAgregarMedicamento = () => {
 
+        if (!medicamento.trim()) return;
+
+        const nuevoMedicamento: MedicamentoCartilla = {
+            id: Date.now(),
+            nombre: medicamento,
+        };
+
+        setMedicamentosCartilla(prev => [
+            ...prev,
+            nuevoMedicamento
+        ]);
+
+        setMedicamento("");
+    };
 
     return (
         <div className="max-w-7xl mx-auto p-6 space-y-6 bg-slate-50/50 min-h-screen">
@@ -383,11 +406,24 @@ export default function NuevaSalidaPage() {
                     <h2 className="font-semibold text-white">Registro de medicamentos</h2>
                 </div>
                 <div className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="md:col-span-2 space-y-2">
+                    <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-end">
+                        <div className="space-y-2">
                             <Label>Medicamento <span className="text-red-500">*</span></Label>
-                            <Input className="border border-slate-900" />
+                            <Input
+                                value={medicamento}
+                                onChange={(e) => setMedicamento(e.target.value)}
+                                className="border border-slate-900"
+                            />
                         </div>
+
+                        <Button
+                            type="button"
+                            onClick={handleAgregarMedicamento}
+                            className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2 h-10"
+                        >
+                            <PlusCircle className="w-4 h-4" />
+                            Agregar
+                        </Button>
                     </div>
 
                     {/*<Button
@@ -406,16 +442,6 @@ export default function NuevaSalidaPage() {
                         Resetear
                     </Button>*/}
 
-                    <div className="flex justify-end mt-4">
-                        <Button
-                            type="button"
-                            className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-                        >
-                            <PlusCircle className="w-4 h-4" />
-                            Agregar
-                        </Button>
-                    </div>
-
                     <div className="mt-6 border border-slate-300 rounded-lg overflow-hidden">
                         <table className="w-full text-sm">
                             <thead className="bg-slate-100">
@@ -427,105 +453,75 @@ export default function NuevaSalidaPage() {
                                     <th className="px-3 py-2 text-left">Cena</th>
                                     <th className="px-3 py-2 text-left">Al acostarse</th>
                                     <th className="px-3 py-2 text-left">Duración / Observaciones</th>
+                                    <th className="px-3 py-2 text-center">Acción</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                {productos.length === 0 ? (
+                                {medicamentosCartilla.length === 0 ? (
                                     <tr>
                                         <td
-                                            colSpan={7}
+                                            colSpan={8}
                                             className="px-3 py-4 text-center text-slate-500"
                                         >
                                             No hay registro de medicamentos involucrados
                                         </td>
                                     </tr>
                                 ) : (
-                                    productos.map((prod, index) => {
-                                        const subtotalProducto = prod.lotesAsignados.reduce(
-                                            (acc, l) => acc + l.precio * l.cantidad,
-                                            0
-                                        );
+                                    medicamentosCartilla.map((item) => (
 
-                                        return (
-                                            <tr key={index} className="border-t">
-                                                {/* ITEM */}
-                                                <td className="px-3 py-2">{index + 1}</td>
+                                        <tr key={item.id} className="border-t">
 
-                                                {/* NOMBRE */}
-                                                <td className="px-3 py-2 font-medium">
-                                                    {prod.nombre}
-                                                </td>
+                                            <td className="px-3 py-2 font-medium align-top">
+                                                {item.nombre}
+                                            </td>
 
-                                                {/* LOTE */}
-                                                <td className="px-3 py-2">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
-                                                        >
-                                                            {lote.lote}
-                                                        </div>
-                                                    ))}
-                                                </td>
+                                            <td className="px-2 py-2">
+                                                <Textarea className="min-h-[70px]" />
+                                            </td>
 
-                                                {/* PRECIO POR LOTE */}
-                                                <td className="px-3 py-2 text-right">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
-                                                        >
-                                                            {lote.precio}
-                                                        </div>
-                                                    ))}
-                                                </td>
+                                            <td className="px-2 py-2">
+                                                <Textarea className="min-h-[70px]" />
+                                            </td>
 
-                                                {/* CANTIDAD POR LOTE */}
-                                                <td className="px-3 py-2 text-right">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
-                                                        >
-                                                            {lote.cantidad}
-                                                        </div>
-                                                    ))}
-                                                </td>
+                                            <td className="px-2 py-2">
+                                                <Textarea className="min-h-[70px]" />
+                                            </td>
 
-                                                {/* IMPORTE POR LOTE */}
-                                                <td className="px-3 py-2 text-right">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
-                                                        >
-                                                            {(lote.cantidad * lote.precio).toFixed(2)}
-                                                        </div>
-                                                    ))}
-                                                </td>
+                                            <td className="px-2 py-2">
+                                                <Textarea className="min-h-[70px]" />
+                                            </td>
 
-                                                {/* SUBTOTAL POR PRODUCTO */}
-                                                <td className="px-3 py-2 text-right font-semibold text-slate-700">
-                                                    {subtotalProducto.toFixed(2)}
-                                                </td>
+                                            <td className="px-2 py-2">
+                                                <Textarea className="min-h-[70px]" />
+                                            </td>
 
-                                                {/* ACCIÓN */}
-                                                <td className="px-3 py-2 text-center">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="border-red-500 text-red-600 hover:bg-red-50"
-                                                        onClick={() =>
-                                                            setProductos(productos.filter((_, i) => i !== index))
-                                                        }
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })
+                                            <td className="px-2 py-2">
+                                                <Textarea className="min-h-[70px]" />
+                                            </td>
+
+                                            <td className="px-3 py-2 text-center align-top">
+
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="border-red-500 text-red-600 hover:bg-red-50"
+                                                    onClick={() =>
+                                                        setMedicamentosCartilla(
+                                                            medicamentosCartilla.filter(
+                                                                med => med.id !== item.id
+                                                            )
+                                                        )
+                                                    }
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+
+                                            </td>
+
+                                        </tr>
+
+                                    ))
                                 )}
                             </tbody>
                         </table>

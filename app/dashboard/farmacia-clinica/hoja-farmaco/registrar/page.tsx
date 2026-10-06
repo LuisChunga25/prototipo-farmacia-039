@@ -178,6 +178,7 @@ export default function NuevaSalidaPage() {
     const isACTA = tipoDocumento === "ACTA";
     const isRDS = tipoDocumento === "RDS";
     const isDDL = tipoDocumento === "DDL";
+    const [fechaIngreso, setFechaIngreso] = useState("");
 
     // CALCULAR LA FECHA Y HORA ACTUALES
     useEffect(() => {
@@ -306,6 +307,37 @@ export default function NuevaSalidaPage() {
         return acc + subtotal;
     }, 0);
 
+    // GENERAR FECHAS PARA LA TABLA DE 24 DÍAS A PARTIR DE LA FECHA DE INGRESO
+    const generarFechas = () => {
+
+        if (!fechaIngreso) {
+            return Array(24).fill("/");
+        }
+
+        const [anio, mes, dia] = fechaIngreso
+            .split("-")
+            .map(Number);
+
+        const fechaBase = new Date(
+            anio,
+            mes - 1,
+            dia
+        );
+
+        return Array.from({ length: 24 }, (_, index) => {
+
+            const fecha = new Date(fechaBase);
+
+            fecha.setDate(fechaBase.getDate() + index);
+
+            const dia = String(fecha.getDate()).padStart(2, "0");
+            const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+
+            return `${dia}/${mes}`;
+        });
+    };
+
+    const fechasTratamiento = generarFechas();
 
 
     return (
@@ -366,7 +398,12 @@ export default function NuevaSalidaPage() {
                         </div>
                         <div className="space-y-2">
                             <Label>Fecha de Ingreso: <span className="text-red-500">*</span></Label>
-                            <Input type="date" className="border border-slate-900" />
+                            <Input
+                                type="date"
+                                value={fechaIngreso}
+                                onChange={(e) => setFechaIngreso(e.target.value)}
+                                className="border border-slate-900"
+                            />
                         </div>
                         <div className="space-y-2">
                             <Label>DX Ingreso: <span className="text-red-500">*</span></Label>
@@ -382,11 +419,19 @@ export default function NuevaSalidaPage() {
                     <h2 className="font-semibold text-white">Registrar Medicamento</h2>
                 </div>
                 <div className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="md:col-span-2 space-y-2">
+                    <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-end">
+                        <div className="space-y-2">
                             <Label>Medicamento: <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
+
+                        <Button
+                            type="button"
+                            className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2 h-10"
+                        >
+                            <PlusCircle className="w-4 h-4" />
+                            Agregar
+                        </Button>
                     </div>
 
                     {/*<Button
@@ -405,21 +450,16 @@ export default function NuevaSalidaPage() {
                         Resetear
                     </Button>*/}
 
-                    <div className="flex justify-end mt-4">
-                        <Button
-                            type="button"
-                            className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-                        >
-                            <PlusCircle className="w-4 h-4" />
-                            Agregar
-                        </Button>
-                    </div>
-
                     <div className="mt-6 border rounded-lg overflow-hidden">
                         <table className="w-full text-xs">
                             <thead className="bg-slate-100">
                                 <tr>
-                                    <th className="px-3 py-2 text-left">Medicamentos</th>
+                                    <th
+                                        rowSpan={2}
+                                        className="px-3 py-2 text-left align-middle"
+                                    >
+                                        Medicamentos
+                                    </th>
                                     <th className="px-3 py-2 text-left">1</th>
                                     <th className="px-3 py-2 text-left">2</th>
                                     <th className="px-3 py-2 text-left">3</th>
@@ -444,6 +484,16 @@ export default function NuevaSalidaPage() {
                                     <th className="px-3 py-2 text-left">22</th>
                                     <th className="px-3 py-2 text-left">23</th>
                                     <th className="px-3 py-2 text-left">24</th>
+                                </tr>
+                                <tr>
+                                    {fechasTratamiento.map((fecha, index) => (
+                                        <th
+                                            key={index}
+                                            className="px-1 py-2 text-center text-[10px]"
+                                        >
+                                            {fecha}
+                                        </th>
+                                    ))}
                                 </tr>
                             </thead>
 
