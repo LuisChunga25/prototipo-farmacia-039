@@ -341,7 +341,7 @@ export default function MedicamentosPage() {
             <Button
               className="bg-teal-600 hover:bg-teal-700 text-white gap-2 font-semibold h-10 px-4"
               size="sm"
-              onClick={() => router.push("/dashboard/farmacia-clinica/seguimiento-farmaco/registrar")}
+              onClick={() => router.push("/dashboard/farmacovigilancia/medicamentos/registrar")}
             >
               <Plus className="h-5 w-5" strokeWidth={3} />
               Nuevo Documento

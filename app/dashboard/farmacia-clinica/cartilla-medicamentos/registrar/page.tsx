@@ -153,7 +153,7 @@ type MedicamentoCartilla = {
 };
 
 
-export default function NuevaSalidaPage() {
+export default function RegistrarCartillaMedicamentosPage() {
     const router = useRouter();
 
     const [tipoDocumento, setTipoDocumento] = useState("");

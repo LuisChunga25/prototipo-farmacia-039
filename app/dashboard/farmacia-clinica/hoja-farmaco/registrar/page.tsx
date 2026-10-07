@@ -147,7 +147,7 @@ type ProductoSalida = {
 };
 
 
-export default function NuevaSalidaPage() {
+export default function RegistrarHojaFarmacoPage() {
     const router = useRouter();
 
     const [tipoDocumento, setTipoDocumento] = useState("");

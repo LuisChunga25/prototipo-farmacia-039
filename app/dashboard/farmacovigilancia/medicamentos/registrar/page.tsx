@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, Save, PlusCircle, Trash2, Loader2, CheckCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
@@ -148,16 +149,18 @@ type ProductoSalida = {
 
 type MedicamentoInvolucrado = {
     id: number;
-    nombrePresentacion: string;
-    problemaSalud: string;
-    prmReal: boolean;
-    prmPotencial: boolean;
-    reaccionAdversa: boolean;
-    interaccionMedicamentos: boolean;
+    nombreComercial: string;
+    laboratorio: string;
+    lote: string;
+    dosisFrecuencia: string;
+    viaAdministracion: string;
+    fechaInicio: string;
+    fechaFinal: string;
+    motivoPrescripcion: string;
 };
 
 
-export default function RegistrarSeguimientoFarmacoPage() {
+export default function RegistrarNotificacionMedicamentosPage() {
     const router = useRouter();
 
     const [tipoDocumento, setTipoDocumento] = useState("");
@@ -198,6 +201,15 @@ export default function RegistrarSeguimientoFarmacoPage() {
     const [interaccionMedicamentos, setInteraccionMedicamentos] = useState(false);
 
     const [medicamentosRegistrados, setMedicamentosRegistrados] = useState<MedicamentoInvolucrado[]>([]);
+
+    const [nombreComercial, setNombreComercial] = useState("");
+    const [laboratorio, setLaboratorio] = useState("");
+    const [lote, setLote] = useState("");
+    const [dosisFrecuencia, setDosisFrecuencia] = useState("");
+    const [viaAdministracion, setViaAdministracion] = useState("");
+    const [fechaInicio, setFechaInicio] = useState("");
+    const [fechaFinal, setFechaFinal] = useState("");
+    const [motivoPrescripcion, setMotivoPrescripcion] = useState("");
 
     // CALCULAR LA FECHA Y HORA ACTUALES
     useEffect(() => {
@@ -326,35 +338,35 @@ export default function RegistrarSeguimientoFarmacoPage() {
         return acc + subtotal;
     }, 0);
 
-    // FUNCIÓN PARA AGREGAR MEDICAMENTO INVOLUCRADO
-    const handleAgregarMedicamento = () => {
-
-        if (!nombrePresentacion.trim()) return;
-        if (!problemaSalud.trim()) return;
-
-        const nuevoRegistro: MedicamentoInvolucrado = {
+    // AGREGAR MEDICAMENTO A LA TABLA
+    const agregarMedicamento = () => {
+        const nuevoMedicamento: MedicamentoInvolucrado = {
             id: Date.now(),
-            nombrePresentacion,
-            problemaSalud,
-            prmReal,
-            prmPotencial,
-            reaccionAdversa,
-            interaccionMedicamentos,
+            nombreComercial,
+            laboratorio,
+            lote,
+            dosisFrecuencia,
+            viaAdministracion,
+            fechaInicio,
+            fechaFinal,
+            motivoPrescripcion,
         };
 
-        setMedicamentosRegistrados(prev => [...prev, nuevoRegistro]);
+        setMedicamentosRegistrados(prev => [
+            ...prev,
+            nuevoMedicamento,
+        ]);
 
         // Limpiar formulario
-
-        setNombrePresentacion("");
-        setProblemaSalud("");
-
-        setPrmReal(false);
-        setPrmPotencial(false);
-        setReaccionAdversa(false);
-        setInteraccionMedicamentos(false);
+        setNombreComercial("");
+        setLaboratorio("");
+        setLote("");
+        setDosisFrecuencia("");
+        setViaAdministracion("");
+        setFechaInicio("");
+        setFechaFinal("");
+        setMotivoPrescripcion("");
     };
-
 
 
     return (
@@ -365,14 +377,14 @@ export default function RegistrarSeguimientoFarmacoPage() {
                 <div className="flex items-center gap-4 w-full">
                     <Button
                         variant="outline"
-                        onClick={() => router.push("/dashboard/farmacia-clinica/seguimiento-farmaco")}
+                        onClick={() => router.push("/dashboard/farmacovigilancia/medicamentos")}
                     >
                         <ArrowLeft className="w-4 h-4 mr-1" />
                         Regresar
                     </Button>
 
                     <div>
-                        <h1 className="text-xl font-bold">Registrar Seguimiento Farmacoterapéutico</h1>
+                        <h1 className="text-xl font-bold">Registro de Notificación de sospechas de reacciones adversas a medicamentos u otros productos farmacéuticos</h1>
                         <p className="text-muted-foreground">
                             Complete los datos
                         </p>
@@ -395,87 +407,277 @@ export default function RegistrarSeguimientoFarmacoPage() {
                 </div>
             </div>
 
+            {/* DATOS DEL PACIENTE */}
             <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
                 <div className="bg-gradient-to-r from-cyan-600 to-cyan-700 px-4 py-3">
-                    <h2 className="font-semibold text-white">Datos iniciales</h2>
+                    <h2 className="font-semibold text-white">A. DATOS DEL PACIENTE</h2>
                 </div>
                 <div className="p-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
-                            <Label>Fecha <span className="text-red-500">*</span></Label>
-                            <Input type="date" className="border border-slate-900" />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>HC <span className="text-red-500">*</span></Label>
+                            <Label>Nombres o iniciales <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
-                            <Label>Paciente <span className="text-red-500">*</span></Label>
+                            <Label>Edad <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Sexo <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Peso (Kg) <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Historia Clínica y/o DNI <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Establecimiento <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Diagnóstico Principal o CIE 10 <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* MEDICAMENTOS INVOLUCRADOS */}
+            {/* REACCIONES ADVERSAS SOSPECHADAS */}
             <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
                 <div className="bg-gradient-to-r from-cyan-600 to-cyan-700 px-4 py-3">
-                    <h2 className="font-semibold text-white">Medicamentos Involucrados</h2>
+                    <h2 className="font-semibold text-white">B. REACCIONES ADVERSAS SOSPECHADAS</h2>
                 </div>
                 <div className="p-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2 space-y-2">
-                            <Label>Nombre, concentración y presentación <span className="text-red-500">*</span></Label>
-                            <Input
-                                className="border border-slate-900"
-                                value={nombrePresentacion}
-                                onChange={(e) => setNombrePresentacion(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="md:col-span-2 space-y-2">
-                            <Label>Problema de salud <span className="text-red-500">*</span></Label>
-                            <Input
-                                className="border border-slate-900"
-                                value={problemaSalud}
-                                onChange={(e) => setProblemaSalud(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="md:col-span-2 space-y-2">
-                            <p className="text-sm font-semibold">Situación:</p>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="prm-real"
-                                    checked={prmReal}
-                                    onCheckedChange={(checked) => setPrmReal(checked === true)}
-                                />
-                                <Label htmlFor="prm-real" className="text-sm font-normal cursor-pointer">PRM Real (Manifestado)</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="prm-potencial"
-                                    checked={prmPotencial}
-                                    onCheckedChange={(checked) => setPrmPotencial(checked === true)}
-                                />
-                                <Label htmlFor="prm-potencial" className="text-sm font-normal cursor-pointer">PRM Potencial (Riesgo de Aparición)</Label>
-                            </div>
+                            <p className="text-sm font-semibold">Marcar si la notificación corresponde a <span className="text-red-500">*</span></p>
                             <div className="flex items-center space-x-2">
                                 <Checkbox
                                     id="reaccion-adversa"
-                                    checked={reaccionAdversa}
-                                    onCheckedChange={(checked) => setReaccionAdversa(checked === true)}
                                 />
-                                <Label htmlFor="reaccion-adversa" className="text-sm font-normal cursor-pointer">Reacción Adversa</Label>
+                                <Label htmlFor="reaccion-adversa" className="text-sm font-normal cursor-pointer">Reacción adversa</Label>
                             </div>
                             <div className="flex items-center space-x-2">
                                 <Checkbox
-                                    id="interaccion-medicamentos"
-                                    checked={interaccionMedicamentos}
-                                    onCheckedChange={(checked) => setInteraccionMedicamentos(checked === true)}
+                                    id="error-medicacion"
                                 />
-                                <Label htmlFor="interaccion-medicamentos" className="text-sm font-normal cursor-pointer">Interacción Medicamentos</Label>
+                                <Label htmlFor="error-medicacion" className="text-sm font-normal cursor-pointer">Error de medicación</Label>
                             </div>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="problema-calidad"
+                                />
+                                <Label htmlFor="problema-calidad" className="text-sm font-normal cursor-pointer">Problema de calidad</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="otro"
+                                />
+                                <Label htmlFor="otro" className="text-sm font-normal cursor-pointer">Otro (Especifique)</Label>
+                            </div>
+                        </div>
+
+                        <div className="md:col-span-2 space-y-2">
+                            <Label>Describir la reacción adversa <span className="text-red-500">*</span></Label>
+                            <Textarea
+                                className="border border-slate-900"
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                                <Label>Fecha de inicio de RAM <span className="text-red-500">*</span></Label>
+                                <Input type="date" className="border border-slate-900" />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Fecha final de RAM <span className="text-red-500">*</span></Label>
+                                <Input type="date" className="border border-slate-900" />
+                            </div>
+                        </div>
+
+                        <div className="md:col-span-2 space-y-2">
+                            <p className="text-sm font-semibold">Gravedad de la RAM <span className="text-red-500">*</span></p>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="leve"
+                                />
+                                <Label htmlFor="leve" className="text-sm font-normal cursor-pointer">Leve</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="moderada"
+                                />
+                                <Label htmlFor="moderada" className="text-sm font-normal cursor-pointer">Moderada</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="grave"
+                                />
+                                <Label htmlFor="grave" className="text-sm font-normal cursor-pointer">Grave</Label>
+                            </div>
+                        </div>
+
+                        <div className="md:col-span-2 space-y-2">
+                            <p className="text-sm font-semibold">Solo para RAM grave <span className="text-red-500">*</span></p>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="ram-grave-01"
+                                />
+                                <Label htmlFor="ram-grave-01" className="text-sm font-normal cursor-pointer">Muerte</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="ram-grave-02"
+                                />
+                                <Label htmlFor="ram-grave-02" className="text-sm font-normal cursor-pointer">Puso en grave riesgo la vida del paciente</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="ram-grave-03"
+                                />
+                                <Label htmlFor="ram-grave-03" className="text-sm font-normal cursor-pointer">Produjo o prolongó su hospitalización</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="ram-grave-04"
+                                />
+                                <Label htmlFor="ram-grave-04" className="text-sm font-normal cursor-pointer">Produjo discapacidad / incapacidad</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="ram-grave-05"
+                                />
+                                <Label htmlFor="ram-grave-05" className="text-sm font-normal cursor-pointer">Produjo anomalía congénita</Label>
+                            </div>
+                        </div>
+
+                        <div className="md:col-span-2 space-y-2">
+                            <p className="text-sm font-semibold">Desenlace <span className="text-red-500">*</span></p>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="ram-grave-01"
+                                />
+                                <Label htmlFor="ram-grave-01" className="text-sm font-normal cursor-pointer">Recuperado</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="ram-grave-02"
+                                />
+                                <Label htmlFor="ram-grave-02" className="text-sm font-normal cursor-pointer">Recuperado con secuela</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="ram-grave-03"
+                                />
+                                <Label htmlFor="ram-grave-03" className="text-sm font-normal cursor-pointer">No recuperado</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="ram-grave-04"
+                                />
+                                <Label htmlFor="ram-grave-04" className="text-sm font-normal cursor-pointer">Mortal</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="ram-grave-05"
+                                />
+                                <Label htmlFor="ram-grave-05" className="text-sm font-normal cursor-pointer">Desconocido</Label>
+                            </div>
+                        </div>
+
+                        <div className="md:col-span-2 space-y-2">
+                            <Label>Resultados relevantes de exámenes de laboratorio (incluir fechas) <span className="text-red-500">*</span></Label>
+                            <Textarea
+                                className="border border-slate-900"
+                            />
+                        </div>
+
+                        <div className="md:col-span-2 space-y-2">
+                            <Label>Otros fatos importantes de la historia clínica, incluyendo condiciones médicas preexistentes, patologías concomitantes (Ejm: alergias, embarazo, consumo de alcohol, tabaco, disfunción renal/hepática, etc.) <span className="text-red-500">*</span></Label>
+                            <Textarea
+                                className="border border-slate-900"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* MEDICAMENTOS U OTROS PRODUCTOS FARMACÉUTICOS */}
+            <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+                <div className="bg-gradient-to-r from-cyan-600 to-cyan-700 px-4 py-3">
+                    <h2 className="font-semibold text-white">C. MEDICAMENTO(S) U OTRO(S) PRODUCTO(S) FARMACÉUTICO(S)</h2>
+                </div>
+                <div className="p-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                            <Label>Nombres comercial y genérico (*) <span className="text-red-500">*</span></Label>
+                            <Input
+                                className="border border-slate-900"
+                                value={nombreComercial}
+                                onChange={(e) => setNombreComercial(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Laboratorio <span className="text-red-500">*</span></Label>
+                            <Input
+                                className="border border-slate-900"
+                                value={laboratorio}
+                                onChange={(e) => setLaboratorio(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Lote <span className="text-red-500">*</span></Label>
+                            <Input
+                                className="border border-slate-900"
+                                value={lote}
+                                onChange={(e) => setLote(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Dosis / Frecuencia <span className="text-red-500">*</span></Label>
+                            <Input
+                                className="border border-slate-900"
+                                value={dosisFrecuencia}
+                                onChange={(e) => setDosisFrecuencia(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Vía de Adm. <span className="text-red-500">*</span></Label>
+                            <Input
+                                className="border border-slate-900"
+                                value={viaAdministracion}
+                                onChange={(e) => setViaAdministracion(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Fecha inicio <span className="text-red-500">*</span></Label>
+                            <Input
+                                type="date"
+                                className="border border-slate-900"
+                                value={fechaInicio}
+                                onChange={(e) => setFechaInicio(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Fecha final <span className="text-red-500">*</span></Label>
+                            <Input
+                                type="date"
+                                className="border border-slate-900"
+                                value={fechaFinal}
+                                onChange={(e) => setFechaFinal(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Motivo de prescripción o CIE 10 <span className="text-red-500">*</span></Label>
+                            <Input
+                                className="border border-slate-900"
+                                value={motivoPrescripcion}
+                                onChange={(e) => setMotivoPrescripcion(e.target.value)}
+                            />
                         </div>
                     </div>
 
@@ -498,7 +700,7 @@ export default function RegistrarSeguimientoFarmacoPage() {
                     <div className="flex mt-8">
                         <Button
                             type="button"
-                            onClick={handleAgregarMedicamento}
+                            onClick={agregarMedicamento}
                             className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
                         >
                             <PlusCircle className="w-4 h-4" />
@@ -510,12 +712,14 @@ export default function RegistrarSeguimientoFarmacoPage() {
                         <table className="w-full text-sm">
                             <thead className="bg-slate-100">
                                 <tr>
-                                    <th className="px-3 py-2 text-left">Nombre, Concentración y Presentación</th>
-                                    <th className="px-3 py-2 text-left">Problema de Salud</th>
-                                    <th className="px-3 py-2 text-left">PRM Real (Manifestado)</th>
-                                    <th className="px-3 py-2 text-left">PRM Potencial (Riesgo de Aparición)</th>
-                                    <th className="px-3 py-2 text-left">Reacción Adversa</th>
-                                    <th className="px-3 py-2 text-left">Interacción Medicamentos</th>
+                                    <th className="px-3 py-2 text-left">Nombre comercial y genérico</th>
+                                    <th className="px-3 py-2 text-left">Laboratorio</th>
+                                    <th className="px-3 py-2 text-left">Lote</th>
+                                    <th className="px-3 py-2 text-left">Dosis/Frecuencia</th>
+                                    <th className="px-3 py-2 text-left">Vía de Adm.</th>
+                                    <th className="px-3 py-2 text-left">Fecha inicio</th>
+                                    <th className="px-3 py-2 text-left">Fecha fin</th>
+                                    <th className="px-3 py-2 text-left">Motivo de prescripción o CIE 10</th>
                                     <th className="px-3 py-2 text-left">Acción</th>
                                 </tr>
                             </thead>
@@ -524,38 +728,46 @@ export default function RegistrarSeguimientoFarmacoPage() {
                                 {medicamentosRegistrados.length === 0 ? (
                                     <tr>
                                         <td
-                                            colSpan={7}
+                                            colSpan={9}
                                             className="px-3 py-4 text-center text-slate-500"
                                         >
-                                            No hay registro de medicamentos involucrados
+                                            No hay registro de medicamentos o productos farmacéuticos
                                         </td>
                                     </tr>
                                 ) : (
-                                    medicamentosRegistrados.map((item, index) => (
+                                    medicamentosRegistrados.map((item) => (
                                         <tr key={item.id} className="border-t">
 
                                             <td className="px-3 py-2">
-                                                {item.nombrePresentacion}
+                                                {item.nombreComercial}
                                             </td>
 
                                             <td className="px-3 py-2">
-                                                {item.problemaSalud}
+                                                {item.laboratorio}
                                             </td>
 
-                                            <td className="px-3 py-2 text-center font-bold">
-                                                {item.prmReal ? "X" : ""}
+                                            <td className="px-3 py-2">
+                                                {item.lote}
                                             </td>
 
-                                            <td className="px-3 py-2 text-center font-bold">
-                                                {item.prmPotencial ? "X" : ""}
+                                            <td className="px-3 py-2">
+                                                {item.dosisFrecuencia}
                                             </td>
 
-                                            <td className="px-3 py-2 text-center font-bold">
-                                                {item.reaccionAdversa ? "X" : ""}
+                                            <td className="px-3 py-2">
+                                                {item.viaAdministracion}
                                             </td>
 
-                                            <td className="px-3 py-2 text-center font-bold">
-                                                {item.interaccionMedicamentos ? "X" : ""}
+                                            <td className="px-3 py-2">
+                                                {item.fechaInicio}
+                                            </td>
+
+                                            <td className="px-3 py-2">
+                                                {item.fechaFinal}
+                                            </td>
+
+                                            <td className="px-3 py-2">
+                                                {item.motivoPrescripcion}
                                             </td>
 
                                             <td className="px-3 py-2 text-center">
@@ -579,6 +791,131 @@ export default function RegistrarSeguimientoFarmacoPage() {
                                 )}
                             </tbody>
                         </table>
+                    </div>
+
+                    <div className="mt-6 border border-slate-300 rounded-lg overflow-hidden">
+                        <table className="w-full text-sm">
+                            <thead className="bg-slate-100">
+                                <tr>
+                                    <th className="px-3 py-2 text-left">Suspensión</th>
+                                    <th className="px-3 py-2 text-left">Sí</th>
+                                    <th className="px-3 py-2 text-left">No</th>
+                                    <th className="px-3 py-2 text-left">No aplica</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td className="px-3 py-2">¿Desapareció la reacción adversa al suspender el medicamento u otro producto farmacéutico?</td>
+                                    <td className="px-3 py-2">
+                                        <Checkbox id="suspension-si" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Checkbox id="suspension-no" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Checkbox id="suspension-no-aplica" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="px-3 py-2">¿Desapareció la reacción adversa al disminuir la dosis?</td>
+                                    <td className="px-3 py-2">
+                                        <Checkbox id="suspension-si" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Checkbox id="suspension-no" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Checkbox id="suspension-no-aplica" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="mt-6 border border-slate-300 rounded-lg overflow-hidden">
+                        <table className="w-full text-sm">
+                            <thead className="bg-slate-100">
+                                <tr>
+                                    <th className="px-3 py-2 text-left">Reexposición</th>
+                                    <th className="px-3 py-2 text-left">Sí</th>
+                                    <th className="px-3 py-2 text-left">No</th>
+                                    <th className="px-3 py-2 text-left">No aplica</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td className="px-3 py-2">Reapareció la reacción adversa al administrar nuevamente el medicamento u otro producto farmacéutico?</td>
+                                    <td className="px-3 py-2">
+                                        <Checkbox id="suspension-si" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Checkbox id="suspension-no" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Checkbox id="suspension-no-aplica" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="px-3 py-2">El paciente ha presentado anteriormente la reacción adversa al medicamento u otro producto farmacéutico?</td>
+                                    <td className="px-3 py-2">
+                                        <Checkbox id="suspension-si" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Checkbox id="suspension-no" />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                        <Checkbox id="suspension-no-aplica" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="md:col-span-2 space-y-2 mt-6">
+                        <p className="text-sm font-semibold">El paciente recibió tratamiento para la reacción adversa <span className="text-red-500">*</span></p>
+                        <div className="flex items-center space-x-2">
+                            <Checkbox
+                                id="si"
+                            />
+                            <Label htmlFor="si" className="text-sm font-normal cursor-pointer">Sí</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Checkbox
+                                id="no"
+                            />
+                            <Label htmlFor="no" className="text-sm font-normal cursor-pointer">No</Label>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                        <div className="md:col-span-2 space-y-2">
+                            <Label>Especifique <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
+                        </div>
+                    </div>
+
+                    <div className="mt-6 mb-2">
+                        <p className="text-sm font-semibold">En caso de sospecha de problemas de calidad indicar</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="space-y-2">
+                            <Label>N° Registro Sanitario (*) <span className="text-red-500">*</span></Label>
+                            <Input
+                                className="border border-slate-900"
+                                value={nombreComercial}
+                                onChange={(e) => setNombreComercial(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Fecha de vencimiento <span className="text-red-500">*</span></Label>
+                            <Input
+                                type="date"
+                                className="border border-slate-900"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
