@@ -245,8 +245,8 @@ export default function RegistrarHojaFarmacoPage() {
         }
     }, [productoId]);
 
-    // FUNCIÓN GUARDAR SALIDA
-    const handleGuardarSalida = () => {
+    // FUNCIÓN GUARDAR HOJA FARMACOTERAPÉUTICA
+    const handleGuardarHojaFarmaco = () => {
         setGuardando(true);
 
         // Simulación de guardado (API / backend)
@@ -606,7 +606,7 @@ export default function RegistrarHojaFarmacoPage() {
                 </Button>
                 <Button
                     className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-                    onClick={handleGuardarSalida}
+                    onClick={handleGuardarHojaFarmaco}
                 >
                     {guardando ? (
                         <>
@@ -633,7 +633,7 @@ export default function RegistrarHojaFarmacoPage() {
                     </DialogHeader>
 
                     <p className="text-center text-gray-700">
-                        La hoja farmacoterapéutica ha sido registrado con éxito.
+                        La hoja farmacoterapéutica ha sido registrada con éxito.
                     </p>
 
                     <DialogFooter className="flex justify-center mt-4">

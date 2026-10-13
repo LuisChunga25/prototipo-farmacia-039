@@ -159,6 +159,16 @@ type MedicamentoInvolucrado = {
     motivoPrescripcion: string;
 };
 
+type MedicamentoConcomitante = {
+    id: number;
+    nombreComercialCon: string;
+    dosisFrecuenciaCon: string;
+    viaAdministracionCon: string;
+    fechaInicioCon: string;
+    fechaFinalCon: string;
+    motivoPrescripcionCon: string;
+}
+
 
 export default function RegistrarNotificacionMedicamentosPage() {
     const router = useRouter();
@@ -191,17 +201,6 @@ export default function RegistrarNotificacionMedicamentosPage() {
     const isACTA = tipoDocumento === "ACTA";
     const isRDS = tipoDocumento === "RDS";
     const isDDL = tipoDocumento === "DDL";
-
-    const [nombrePresentacion, setNombrePresentacion] = useState("");
-    const [problemaSalud, setProblemaSalud] = useState("");
-
-    const [prmReal, setPrmReal] = useState(false);
-    const [prmPotencial, setPrmPotencial] = useState(false);
-    const [reaccionAdversa, setReaccionAdversa] = useState(false);
-    const [interaccionMedicamentos, setInteraccionMedicamentos] = useState(false);
-
-    const [medicamentosRegistrados, setMedicamentosRegistrados] = useState<MedicamentoInvolucrado[]>([]);
-
     const [nombreComercial, setNombreComercial] = useState("");
     const [laboratorio, setLaboratorio] = useState("");
     const [lote, setLote] = useState("");
@@ -210,6 +209,14 @@ export default function RegistrarNotificacionMedicamentosPage() {
     const [fechaInicio, setFechaInicio] = useState("");
     const [fechaFinal, setFechaFinal] = useState("");
     const [motivoPrescripcion, setMotivoPrescripcion] = useState("");
+    const [medicamentosRegistrados, setMedicamentosRegistrados] = useState<MedicamentoInvolucrado[]>([]);
+    const [nombreComercialCon, setNombreComercialCon] = useState("");
+    const [dosisFrecuenciaCon, setDosisFrecuenciaCon] = useState("");
+    const [viaAdministracionCon, setViaAdministracionCon] = useState("");
+    const [fechaInicioCon, setFechaInicioCon] = useState("");
+    const [fechaFinalCon, setFechaFinalCon] = useState("");
+    const [motivoPrescripcionCon, setMotivoPrescripcionCon] = useState("");
+    const [MedicamentosConcRegistrados, setMedicamentosConcRegistrados] = useState<MedicamentoConcomitante[]>([]);
 
     // CALCULAR LA FECHA Y HORA ACTUALES
     useEffect(() => {
@@ -276,8 +283,8 @@ export default function RegistrarNotificacionMedicamentosPage() {
         }
     }, [productoId]);
 
-    // FUNCIÓN GUARDAR SALIDA
-    const handleGuardarSalida = () => {
+    // FUNCIÓN GUARDAR NOTIFICACIÓN DE MEDICAMENTOS
+    const handleGuardarNotifMedicamentos = () => {
         setGuardando(true);
 
         // Simulación de guardado (API / backend)
@@ -366,6 +373,31 @@ export default function RegistrarNotificacionMedicamentosPage() {
         setFechaInicio("");
         setFechaFinal("");
         setMotivoPrescripcion("");
+    };
+
+    const agregarMedicamentoConcomitante = () => {
+        const nuevoMedicamentoCon: MedicamentoConcomitante = {
+            id: Date.now(),
+            nombreComercialCon,
+            dosisFrecuenciaCon,
+            viaAdministracionCon,
+            fechaInicioCon,
+            fechaFinalCon,
+            motivoPrescripcionCon,
+        };
+
+        setMedicamentosConcRegistrados(prev => [
+            ...prev,
+            nuevoMedicamentoCon,
+        ]);
+
+        // Limpiar formulario
+        setNombreComercialCon("");
+        setDosisFrecuenciaCon("");
+        setViaAdministracionCon("");
+        setFechaInicioCon("");
+        setFechaFinalCon("");
+        setMotivoPrescripcionCon("");
     };
 
 
@@ -597,7 +629,7 @@ export default function RegistrarNotificacionMedicamentosPage() {
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
-                            <Label>Otros fatos importantes de la historia clínica, incluyendo condiciones médicas preexistentes, patologías concomitantes (Ejm: alergias, embarazo, consumo de alcohol, tabaco, disfunción renal/hepática, etc.) <span className="text-red-500">*</span></Label>
+                            <Label>Otros datos importantes de la historia clínica, incluyendo condiciones médicas preexistentes, patologías concomitantes (Ejm: alergias, embarazo, consumo de alcohol, tabaco, disfunción renal/hepática, etc.) <span className="text-red-500">*</span></Label>
                             <Textarea
                                 className="border border-slate-900"
                             />
@@ -614,7 +646,7 @@ export default function RegistrarNotificacionMedicamentosPage() {
                 <div className="p-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
-                            <Label>Nombres comercial y genérico (*) <span className="text-red-500">*</span></Label>
+                            <Label>Nombre comercial y genérico (*) <span className="text-red-500">*</span></Label>
                             <Input
                                 className="border border-slate-900"
                                 value={nombreComercial}
@@ -905,8 +937,6 @@ export default function RegistrarNotificacionMedicamentosPage() {
                             <Label>N° Registro Sanitario (*) <span className="text-red-500">*</span></Label>
                             <Input
                                 className="border border-slate-900"
-                                value={nombreComercial}
-                                onChange={(e) => setNombreComercial(e.target.value)}
                             />
                         </div>
                         <div className="space-y-2">
@@ -920,76 +950,196 @@ export default function RegistrarNotificacionMedicamentosPage() {
                 </div>
             </div>
 
-            {/* INTERVENCIÓN FARMACÉUTICA */}
+            {/* MEDICAMENTOS U OTROS PRODUCTOS FARMACEUTICOS CONCOMITANTES */}
             <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
                 <div className="bg-gradient-to-r from-cyan-600 to-cyan-700 px-4 py-3">
-                    <h2 className="font-semibold text-white">Intervención Farmacéutica</h2>
+                    <h2 className="font-semibold text-white">D. MEDICAMENTO(S) U OTRO(S) PRODUCTO(S) FARMACÉUTICO(S) CONCOMITANTE(S) UTILIZADO(S) EN LOS 3 ÚLTIMOS MESES</h2>
                 </div>
 
                 <div className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <h3 className="font-semibold">INTERVENIR SOBRE CANTIDAD DE MEDICAMENTO</h3>
-
-                        <div className="md:col-span-2 space-y-2">
-                            <Label>Dosis <span className="text-red-500">*</span></Label>
-                            <Input className="border border-slate-900" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                            <Label>Nombre comercial y genérico (*) <span className="text-red-500">*</span></Label>
+                            <Input
+                                className="border border-slate-900"
+                                value={nombreComercialCon}
+                                onChange={(e) => setNombreComercialCon(e.target.value)}
+                            />
                         </div>
-
-                        <div className="md:col-span-2 space-y-2">
-                            <Label>Pauta de administración <span className="text-red-500">*</span></Label>
-                            <Input className="border border-slate-900" />
+                        <div className="space-y-2">
+                            <Label>Dosis / Frecuencia <span className="text-red-500">*</span></Label>
+                            <Input
+                                className="border border-slate-900"
+                                value={dosisFrecuenciaCon}
+                                onChange={(e) => setDosisFrecuenciaCon(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Vía de Adm. <span className="text-red-500">*</span></Label>
+                            <Input
+                                className="border border-slate-900"
+                                value={viaAdministracionCon}
+                                onChange={(e) => setViaAdministracionCon(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Fecha inicio <span className="text-red-500">*</span></Label>
+                            <Input
+                                type="date"
+                                className="border border-slate-900"
+                                value={fechaInicioCon}
+                                onChange={(e) => setFechaInicioCon(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Fecha final <span className="text-red-500">*</span></Label>
+                            <Input
+                                type="date"
+                                className="border border-slate-900"
+                                value={fechaFinalCon}
+                                onChange={(e) => setFechaFinalCon(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Motivo de prescripción <span className="text-red-500">*</span></Label>
+                            <Input
+                                className="border border-slate-900"
+                                value={motivoPrescripcionCon}
+                                onChange={(e) => setMotivoPrescripcionCon(e.target.value)}
+                            />
                         </div>
                     </div>
-                </div>
 
-                <div className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <h3 className="font-semibold">INTERVENIR SOBRE ESTRATEGIA FARMACOLÓGICA</h3>
+                    {/*<Button
+                        variant="outline"
+                        className="mt-3"
+                        onClick={() => {
+                            setMostrarLotes(false);
+                            setProductoId("");
+                            setProductoSeleccionado(null);
+                            setCantidad("");
+                            setLotesAsignados([]);
+                            setOrdenAsignacion(1);
+                            setSumaStockAsignado(0);
+                        }}
+                    >
+                        Resetear
+                    </Button>*/}
 
-                        <div className="md:col-span-2 space-y-2">
-                            <Label>Añadir medicamento <span className="text-red-500">*</span></Label>
-                            <Input className="border border-slate-900" />
-                        </div>
+                    <div className="flex mt-8">
+                        <Button
+                            type="button"
+                            onClick={agregarMedicamentoConcomitante}
+                            className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+                        >
+                            <PlusCircle className="w-4 h-4" />
+                            Agregar
+                        </Button>
+                    </div>
 
-                        <div className="md:col-span-2 space-y-2">
-                            <Label>Retirar medicamento <span className="text-red-500">*</span></Label>
-                            <Input className="border border-slate-900" />
-                        </div>
+                    <div className="mt-6 border border-slate-300 rounded-lg overflow-hidden">
+                        <table className="w-full text-sm">
+                            <thead className="bg-slate-100">
+                                <tr>
+                                    <th className="px-3 py-2 text-left">Nombre comercial y genérico</th>
+                                    <th className="px-3 py-2 text-left">Dosis/Frecuencia</th>
+                                    <th className="px-3 py-2 text-left">Vía de Adm.</th>
+                                    <th className="px-3 py-2 text-left">Fecha inicio</th>
+                                    <th className="px-3 py-2 text-left">Fecha fin</th>
+                                    <th className="px-3 py-2 text-left">Motivo de prescripción</th>
+                                    <th className="px-3 py-2 text-left">Acción</th>
+                                </tr>
+                            </thead>
 
-                        <div className="md:col-span-2 space-y-2">
-                            <Label>Sustituir medicamento <span className="text-red-500">*</span></Label>
-                            <Input className="border border-slate-900" />
-                        </div>
+                            <tbody>
+                                {MedicamentosConcRegistrados.length === 0 ? (
+                                    <tr>
+                                        <td
+                                            colSpan={7}
+                                            className="px-3 py-4 text-center text-slate-500"
+                                        >
+                                            No hay registro de medicamentos o productos farmacéuticos concomitantes
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    MedicamentosConcRegistrados.map((item) => (
+                                        <tr key={item.id} className="border-t">
+
+                                            <td className="px-3 py-2">
+                                                {item.nombreComercialCon}
+                                            </td>
+
+                                            <td className="px-3 py-2">
+                                                {item.dosisFrecuenciaCon}
+                                            </td>
+
+                                            <td className="px-3 py-2">
+                                                {item.viaAdministracionCon}
+                                            </td>
+
+                                            <td className="px-3 py-2">
+                                                {item.fechaInicioCon}
+                                            </td>
+
+                                            <td className="px-3 py-2">
+                                                {item.fechaFinalCon}
+                                            </td>
+
+                                            <td className="px-3 py-2">
+                                                {item.motivoPrescripcionCon}
+                                            </td>
+
+                                            <td className="px-3 py-2 text-center">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50"
+                                                    onClick={() =>
+                                                        setMedicamentosConcRegistrados(
+                                                            MedicamentosConcRegistrados.filter(
+                                                                registro => registro.id !== item.id
+                                                            )
+                                                        )
+                                                    }
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+            </div>
 
-                <div className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <h3 className="font-semibold">VÍA DE COMUNICACIÓN MÉDICO TRATANTE</h3>
-
-                        <div className="md:col-span-2 space-y-2">
-                            <Label>Verbal <span className="text-red-500">*</span></Label>
-                            <Input className="border border-slate-900" />
-                        </div>
-
-                        <div className="md:col-span-2 space-y-2">
-                            <Label>Escrita <span className="text-red-500">*</span></Label>
-                            <Input className="border border-slate-900" />
-                        </div>
-                    </div>
+            {/* DATOS DEL NOTIFICADOR */}
+            <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+                <div className="bg-gradient-to-r from-cyan-600 to-cyan-700 px-4 py-3">
+                    <h2 className="font-semibold text-white">E. DATOS DEL NOTIFICADOR</h2>
                 </div>
 
                 <div className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <h3 className="font-semibold">RESULTADO</h3>
-
-                        <div className="md:col-span-2 space-y-2">
-                            <Label>Intervención aceptada <span className="text-red-500">*</span></Label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                            <Label>Nombres y apellidos <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
-
-                        <div className="md:col-span-2 space-y-2">
-                            <Label>Intervención no aceptada <span className="text-red-500">*</span></Label>
+                        <div className="space-y-2">
+                            <Label>Teléfono o Correo electrónico <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Profesión <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Fecha de notificación <span className="text-red-500">*</span></Label>
+                            <Input type="date" className="border border-slate-900" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>N° Notificación <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
                     </div>
@@ -1002,7 +1152,7 @@ export default function RegistrarNotificacionMedicamentosPage() {
                 </Button>
                 <Button
                     className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-                    onClick={handleGuardarSalida}
+                    onClick={handleGuardarNotifMedicamentos}
                 >
                     {guardando ? (
                         <>
@@ -1012,13 +1162,13 @@ export default function RegistrarNotificacionMedicamentosPage() {
                     ) : (
                         <>
                             <Save className="w-4 h-4" />
-                            Guardar Seguimiento
+                            Guardar Notificación
                         </>
                     )}
                 </Button>
             </div>
 
-            {/* MODAL DE ÉXITO DEL GUARDADO DEL DOCUMENTO DE SALIDA */}
+            {/* MODAL DE ÉXITO DEL GUARDADO DE LA NOTIFICACION DE SOSPECHAS DE REACCIONES ADVERSAS A MEDICAMENTOS */}
             <Dialog open={openModalExito} onOpenChange={setOpenModalExito}>
                 <DialogContent className="max-w-sm">
                     <DialogHeader>
@@ -1029,7 +1179,7 @@ export default function RegistrarNotificacionMedicamentosPage() {
                     </DialogHeader>
 
                     <p className="text-center text-gray-700">
-                        El documento de seguimiento farmacoterapéutico ha sido registrado con éxito.
+                        La notificación de sospechas de reacciones adversas a medicamentos ha sido registrada con éxito.
                     </p>
 
                     <DialogFooter className="flex justify-center mt-4">
@@ -1037,7 +1187,7 @@ export default function RegistrarNotificacionMedicamentosPage() {
                             className="bg-blue-600 hover:bg-blue-700 text-white"
                             onClick={() => {
                                 setOpenModalExito(false);
-                                router.push("/dashboard/farmacia-clinica/seguimiento-farmaco");
+                                router.push("/dashboard/farmacovigilancia/medicamentos");
                             }}
                         >
                             Finalizar

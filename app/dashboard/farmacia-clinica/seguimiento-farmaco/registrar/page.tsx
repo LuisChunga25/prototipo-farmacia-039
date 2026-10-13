@@ -264,8 +264,8 @@ export default function RegistrarSeguimientoFarmacoPage() {
         }
     }, [productoId]);
 
-    // FUNCIÓN GUARDAR SALIDA
-    const handleGuardarSalida = () => {
+    // FUNCIÓN GUARDAR SEGUIMIENTO
+    const handleGuardarSeguimiento = () => {
         setGuardando(true);
 
         // Simulación de guardado (API / backend)
@@ -665,7 +665,7 @@ export default function RegistrarSeguimientoFarmacoPage() {
                 </Button>
                 <Button
                     className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-                    onClick={handleGuardarSalida}
+                    onClick={handleGuardarSeguimiento}
                 >
                     {guardando ? (
                         <>

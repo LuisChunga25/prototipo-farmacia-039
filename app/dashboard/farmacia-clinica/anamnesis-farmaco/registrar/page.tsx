@@ -245,8 +245,8 @@ export default function RegistrarAnamnesisFarmacoPage() {
         }
     }, [productoId]);
 
-    // FUNCIÓN GUARDAR SALIDA
-    const handleGuardarSalida = () => {
+    // FUNCIÓN GUARDAR ANAMNESIS
+    const handleGuardarAnamnesis = () => {
         setGuardando(true);
 
         // Simulación de guardado (API / backend)
@@ -1023,7 +1023,7 @@ export default function RegistrarAnamnesisFarmacoPage() {
                 </Button>
                 <Button
                     className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-                    onClick={handleGuardarSalida}
+                    onClick={handleGuardarAnamnesis}
                 >
                     {guardando ? (
                         <>
@@ -1033,7 +1033,7 @@ export default function RegistrarAnamnesisFarmacoPage() {
                     ) : (
                         <>
                             <Save className="w-4 h-4" />
-                            Guardar Seguimiento
+                            Guardar Anamnesis
                         </>
                     )}
                 </Button>
@@ -1050,7 +1050,7 @@ export default function RegistrarAnamnesisFarmacoPage() {
                     </DialogHeader>
 
                     <p className="text-center text-gray-700">
-                        El documento de anamnesis farmacológica ha sido registrado con éxito.
+                        La anamnesis farmacológica ha sido registrada con éxito.
                     </p>
 
                     <DialogFooter className="flex justify-center mt-4">
