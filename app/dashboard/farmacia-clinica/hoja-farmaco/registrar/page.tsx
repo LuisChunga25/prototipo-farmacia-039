@@ -146,22 +146,22 @@ type ProductoSalida = {
     lotesAsignados: LoteAsignado[];
 };
 
+type MedicamentoFarmaco = {
+    id: number;
+    nombre: string;
+    dias: boolean[];
+}
+
 
 export default function RegistrarHojaFarmacoPage() {
     const router = useRouter();
 
     const [tipoDocumento, setTipoDocumento] = useState("");
-    const [documento, setDocumento] = useState("");
-    const [observacion, setObservacion] = useState("");
     const [fechaActual, setFechaActual] = useState("");
     const [horaActual, setHoraActual] = useState("");
     const [almacenOrigen, setAlmacenOrigen] = useState("");
     const [tipoDeSalida, setTipoDeSalida] = useState("");
-    const [destino, setDestino] = useState("");
-    const [destinoOperativo, setDestinoOperativo] = useState("");
-    const [laboratorioDestino, setLaboratorioDestino] = useState("");
     const [tipoDeUso, setTipoDeUso] = useState("");
-    const [tipoDeTransferencia, setTipoDeTransferencia] = useState("");
     const [productoId, setProductoId] = useState("");
     const [productos, setProductos] = useState<ProductoSalida[]>([]);
     const [productoSeleccionado, setProductoSeleccionado] = useState<any>(null);
@@ -179,6 +179,9 @@ export default function RegistrarHojaFarmacoPage() {
     const isRDS = tipoDocumento === "RDS";
     const isDDL = tipoDocumento === "DDL";
     const [fechaIngreso, setFechaIngreso] = useState("");
+    const [medicamento, setMedicamento] = useState("");
+
+    const [medicamentosRegistrados, setMedicamentosRegistrados] = useState<MedicamentoFarmaco[]>([]);
 
     // CALCULAR LA FECHA Y HORA ACTUALES
     useEffect(() => {
@@ -256,57 +259,6 @@ export default function RegistrarHojaFarmacoPage() {
         }, 1500);
     };
 
-    // LÓGICA DE SELECCIÓN DE LOTES
-    const seleccionarLote = (lote: LoteDisponible) => {
-        if (lotesAsignados.some(l => l.id === lote.id)) return;
-
-        const cantidadSolicitada = Number(cantidad);
-
-        // 🔑 cuánto ya se asignó
-        const yaAsignado = lotesAsignados.reduce(
-            (acc, l) => acc + l.cantidad,
-            0
-        );
-
-        // 🔑 cuánto falta por cubrir
-        const restante = cantidadSolicitada - yaAsignado;
-
-        if (restante <= 0) return;
-
-        // 🔑 asignación parcial real
-        const cantidadAsignada = Math.min(lote.stock, restante);
-
-        const nuevoLote: LoteAsignado = {
-            id: lote.id,
-            lote: lote.lote,
-            cantidad: cantidadAsignada, // luego se puede refinar
-            precio: lote.precio,
-            orden: ordenAsignacion,
-            regSanitario: lote.regSanitario,
-            fechaVcto: lote.fechaVcto,
-        };
-
-        const nuevos = [...lotesAsignados, nuevoLote];
-        const suma = nuevos.reduce((acc, l) => acc + l.cantidad, 0);
-
-        setLotesAsignados(nuevos);
-        setOrdenAsignacion(ordenAsignacion + 1);
-        setSumaStockAsignado(suma);
-
-        if (suma >= cantidadSolicitada) {
-            setOpenConfirmLoteModal(true);
-        }
-    };
-
-    // CALCULAR TOTAL GENERAL DE LA TABLA
-    const totalGeneral = productos.reduce((acc, prod) => {
-        const subtotal = prod.lotesAsignados.reduce(
-            (s, l) => s + l.precio * l.cantidad,
-            0
-        );
-        return acc + subtotal;
-    }, 0);
-
     // GENERAR FECHAS PARA LA TABLA DE 24 DÍAS A PARTIR DE LA FECHA DE INGRESO
     const generarFechas = () => {
 
@@ -338,6 +290,55 @@ export default function RegistrarHojaFarmacoPage() {
     };
 
     const fechasTratamiento = generarFechas();
+
+    const agregarMedicamento = () => {
+
+        if (!medicamento.trim()) return;
+
+        const nuevoMedicamento: MedicamentoFarmaco = {
+            id: Date.now(),
+            nombre: medicamento,
+            dias: Array(24).fill(false),
+        };
+
+        setMedicamentosRegistrados((prev) => [
+            ...prev,
+            nuevoMedicamento,
+        ]);
+
+        setMedicamento("");
+    };
+
+    const toggleDia = (
+        medicamentoId: number,
+        diaIndex: number
+    ) => {
+
+        setMedicamentosRegistrados((prev) =>
+            prev.map((med) => {
+
+                if (med.id !== medicamentoId)
+                    return med;
+
+                const nuevosDias = [...med.dias];
+
+                nuevosDias[diaIndex] =
+                    !nuevosDias[diaIndex];
+
+                return {
+                    ...med,
+                    dias: nuevosDias,
+                };
+            })
+        );
+    };
+
+    const eliminarMedicamento = (id: number) => {
+
+        setMedicamentosRegistrados((prev) =>
+            prev.filter((m) => m.id !== id)
+        );
+    };
 
 
     return (
@@ -383,21 +384,24 @@ export default function RegistrarHojaFarmacoPage() {
                     <h2 className="font-semibold text-white">Datos del paciente</h2>
                 </div>
                 <div className="p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4">
                         <div className="space-y-2">
-                            <Label>Nombre: <span className="text-red-500">*</span></Label>
+                            <Label>Historia Clínica <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
+                        </div>
+                        <div className="md:col-span-3 space-y-2">
+                            <Label>Nombre <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
-                            <Label>Historia Clínica: <span className="text-red-500">*</span></Label>
+                            <Label>Edad <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4 mt-4">
                         <div className="space-y-2">
-                            <Label>Edad: <span className="text-red-500">*</span></Label>
-                            <Input className="border border-slate-900" />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Fecha de Ingreso: <span className="text-red-500">*</span></Label>
+                            <Label>Fecha de Ingreso <span className="text-red-500">*</span></Label>
                             <Input
                                 type="date"
                                 value={fechaIngreso}
@@ -405,8 +409,8 @@ export default function RegistrarHojaFarmacoPage() {
                                 className="border border-slate-900"
                             />
                         </div>
-                        <div className="space-y-2">
-                            <Label>DX Ingreso: <span className="text-red-500">*</span></Label>
+                        <div className="md:col-span-3 space-y-2">
+                            <Label>DX Ingreso <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
                     </div>
@@ -421,12 +425,17 @@ export default function RegistrarHojaFarmacoPage() {
                 <div className="p-4">
                     <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-end">
                         <div className="space-y-2">
-                            <Label>Medicamento: <span className="text-red-500">*</span></Label>
-                            <Input className="border border-slate-900" />
+                            <Label>Medicamento <span className="text-red-500">*</span></Label>
+                            <Input
+                                className="border border-slate-900"
+                                value={medicamento}
+                                onChange={(e) => setMedicamento(e.target.value)}
+                            />
                         </div>
 
                         <Button
                             type="button"
+                            onClick={agregarMedicamento}
                             className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2 h-10"
                         >
                             <PlusCircle className="w-4 h-4" />
@@ -451,151 +460,166 @@ export default function RegistrarHojaFarmacoPage() {
                     </Button>*/}
 
                     <div className="mt-6 border rounded-lg overflow-hidden">
-                        <table className="w-full text-xs">
-                            <thead className="bg-slate-100">
-                                <tr>
-                                    <th
-                                        rowSpan={2}
-                                        className="px-3 py-2 text-left align-middle"
-                                    >
-                                        Medicamentos
-                                    </th>
-                                    <th className="px-3 py-2 text-left">1</th>
-                                    <th className="px-3 py-2 text-left">2</th>
-                                    <th className="px-3 py-2 text-left">3</th>
-                                    <th className="px-3 py-2 text-left">4</th>
-                                    <th className="px-3 py-2 text-left">5</th>
-                                    <th className="px-3 py-2 text-left">6</th>
-                                    <th className="px-3 py-2 text-left">7</th>
-                                    <th className="px-3 py-2 text-left">8</th>
-                                    <th className="px-3 py-2 text-left">9</th>
-                                    <th className="px-3 py-2 text-left">10</th>
-                                    <th className="px-3 py-2 text-left">11</th>
-                                    <th className="px-3 py-2 text-left">12</th>
-                                    <th className="px-3 py-2 text-left">13</th>
-                                    <th className="px-3 py-2 text-left">14</th>
-                                    <th className="px-3 py-2 text-left">15</th>
-                                    <th className="px-3 py-2 text-left">16</th>
-                                    <th className="px-3 py-2 text-left">17</th>
-                                    <th className="px-3 py-2 text-left">18</th>
-                                    <th className="px-3 py-2 text-left">19</th>
-                                    <th className="px-3 py-2 text-left">20</th>
-                                    <th className="px-3 py-2 text-left">21</th>
-                                    <th className="px-3 py-2 text-left">22</th>
-                                    <th className="px-3 py-2 text-left">23</th>
-                                    <th className="px-3 py-2 text-left">24</th>
-                                </tr>
-                                <tr>
-                                    {fechasTratamiento.map((fecha, index) => (
-                                        <th
-                                            key={index}
-                                            className="px-1 py-2 text-center text-[10px]"
-                                        >
-                                            {fecha}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
+                        <div className="flex">
+                            {/* PANEL IZQUIERDO */}
+                            <div className="w-[350px] flex-shrink-0 border-r">
+                                <table className="w-full text-xs">
+                                    <thead className="bg-slate-100">
+                                        <tr>
+                                            <th
+                                                className="px-3 py-2 text-center h-[32px]"
+                                            >
+                                                Medicamentos
+                                            </th>
+                                        </tr>
 
-                            <tbody>
-                                {productos.length === 0 ? (
-                                    <tr>
-                                        <td
-                                            colSpan={25}
-                                            className="px-3 py-4 text-center text-slate-500"
-                                        >
-                                            No hay registro de medicamentos involucrados
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    productos.map((prod, index) => {
-                                        const subtotalProducto = prod.lotesAsignados.reduce(
-                                            (acc, l) => acc + l.precio * l.cantidad,
-                                            0
-                                        );
+                                        <tr>
+                                            <th
+                                                className="px-3 py-2 h-[32px]"
+                                            >
+                                            </th>
+                                        </tr>
+                                    </thead>
 
-                                        return (
-                                            <tr key={index} className="border-t">
-                                                {/* ITEM */}
-                                                <td className="px-3 py-2">{index + 1}</td>
+                                    <tbody>
+                                        {medicamentosRegistrados.length === 0 ? (
 
-                                                {/* NOMBRE */}
-                                                <td className="px-3 py-2 font-medium">
-                                                    {prod.nombre}
-                                                </td>
-
-                                                {/* LOTE */}
-                                                <td className="px-3 py-2">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
-                                                        >
-                                                            {lote.lote}
-                                                        </div>
-                                                    ))}
-                                                </td>
-
-                                                {/* PRECIO POR LOTE */}
-                                                <td className="px-3 py-2 text-right">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
-                                                        >
-                                                            {lote.precio}
-                                                        </div>
-                                                    ))}
-                                                </td>
-
-                                                {/* CANTIDAD POR LOTE */}
-                                                <td className="px-3 py-2 text-right">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
-                                                        >
-                                                            {lote.cantidad}
-                                                        </div>
-                                                    ))}
-                                                </td>
-
-                                                {/* IMPORTE POR LOTE */}
-                                                <td className="px-3 py-2 text-right">
-                                                    {prod.lotesAsignados.map((lote, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="border-b last:border-b-0 py-1"
-                                                        >
-                                                            {(lote.cantidad * lote.precio).toFixed(2)}
-                                                        </div>
-                                                    ))}
-                                                </td>
-
-                                                {/* SUBTOTAL POR PRODUCTO */}
-                                                <td className="px-3 py-2 text-right font-semibold text-slate-700">
-                                                    {subtotalProducto.toFixed(2)}
-                                                </td>
-
-                                                {/* ACCIÓN */}
-                                                <td className="px-3 py-2 text-center">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="border-red-500 text-red-600 hover:bg-red-50"
-                                                        onClick={() =>
-                                                            setProductos(productos.filter((_, i) => i !== index))
-                                                        }
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </Button>
+                                            <tr>
+                                                <td className="px-3 py-4 text-center text-slate-500">
+                                                    No hay registro de medicamentos involucrados
                                                 </td>
                                             </tr>
-                                        );
-                                    })
-                                )}
-                            </tbody>
-                        </table>
+
+                                        ) : (
+
+                                            medicamentosRegistrados.map((med) => (
+
+                                                <tr
+                                                    key={med.id}
+                                                    className="border-t h-[52px]"
+                                                >
+
+                                                    <td className="px-3 h-[52px] align-middle">
+
+                                                        <div className="flex items-center justify-between">
+
+                                                            <span>
+                                                                {med.nombre}
+                                                            </span>
+
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={() =>
+                                                                    eliminarMedicamento(
+                                                                        med.id
+                                                                    )
+                                                                }
+                                                                className="text-red-600 hover:bg-red-50"
+                                                            >
+                                                                <Trash2 className="w-4 h-4" />
+                                                            </Button>
+
+                                                        </div>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            ))
+
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* PANEL DERECHO */}
+                            <div className="overflow-x-auto flex-1">
+                                <table className="min-w-[1680px] text-xs">
+
+                                    <thead className="bg-slate-100">
+
+                                        <tr>
+
+                                            {Array.from(
+                                                { length: 24 },
+                                                (_, i) => (
+                                                    <th
+                                                        key={i}
+                                                        className="w-[70px] min-w-[70px] py-2 text-center"
+                                                    >
+                                                        {i + 1}
+                                                    </th>
+                                                )
+                                            )}
+
+                                        </tr>
+
+                                        <tr>
+
+                                            {fechasTratamiento.map(
+                                                (fecha, index) => (
+                                                    <th
+                                                        key={index}
+                                                        className="w-[70px] min-w-[70px] py-2 text-center text-[10px]"
+                                                    >
+                                                        {fecha}
+                                                    </th>
+                                                )
+                                            )}
+
+                                        </tr>
+
+                                    </thead>
+
+                                    <tbody>
+
+                                        {medicamentosRegistrados.map(
+                                            (med) => (
+
+                                                <tr
+                                                    key={med.id}
+                                                    className="border-t h-[52px]"
+                                                >
+
+                                                    {med.dias.map(
+                                                        (
+                                                            valor,
+                                                            index
+                                                        ) => (
+
+                                                            <td
+                                                                key={index}
+                                                                className="text-center align-middle h-[52px]"
+                                                            >
+
+                                                                <Checkbox
+                                                                    checked={
+                                                                        valor
+                                                                    }
+                                                                    onCheckedChange={() =>
+                                                                        toggleDia(
+                                                                            med.id,
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                />
+
+                                                            </td>
+
+                                                        )
+                                                    )}
+
+                                                </tr>
+
+                                            )
+                                        )}
+
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

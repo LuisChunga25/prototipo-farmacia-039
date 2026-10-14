@@ -160,7 +160,7 @@ export default function SeguimientoFarmacoPage() {
   const [nuevaSalida, setNuevaSalida] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showSuccessDelete, setShowSuccessDelete] = useState(false);
-  const [salidaToDelete, setSalidaToDelete] = useState<any>(null);
+  const [seguimientoToDelete, setSeguimientoToDelete] = useState<any>(null);
   const [seguimientosVisibles, setSeguimientosVisibles] = useState<any[]>([]);
   const [showConfirmProcesar, setShowConfirmProcesar] = useState(false);
   const [showSuccessProcesar, setShowSuccessProcesar] = useState(false);
@@ -186,9 +186,9 @@ export default function SeguimientoFarmacoPage() {
     setSeguimientosVisibles(seguimientosFarmacoData);
   }, [seguimientosFarmacoData]);
 
-  // ELIMINAR DOCUMENTO DE SALIDA
-  const handleDeleteClick = (salida: any) => {
-    setSalidaToDelete(salida);
+  // ELIMINAR SEGUIMIENTO FARMACOTERAPÉUTICO
+  const handleDeleteClick = (seguimiento: any) => {
+    setSeguimientoToDelete(seguimiento);
     setShowConfirmDelete(true);
   };
 
@@ -197,7 +197,7 @@ export default function SeguimientoFarmacoPage() {
 
     // Ocultamiento visual
     setSeguimientosVisibles((prev) =>
-      prev.filter((s) => s.id !== salidaToDelete.id)
+      prev.filter((s) => s.id !== seguimientoToDelete.id)
     );
 
     setTimeout(() => {
@@ -450,14 +450,14 @@ export default function SeguimientoFarmacoPage() {
         </Table>
       </div>
 
-      {/* MODAL DE CONFIRMACIÓN DE ELIMINAR DOCUMENTO DE SALIDA */}
+      {/* MODAL DE CONFIRMACIÓN DE ELIMINAR SEGUIMIENTO FARMACOTERAPÉUTICO */}
       {showConfirmDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
             <h2 className="text-lg font-semibold mb-2">Confirmar eliminación</h2>
             <p className="text-sm text-gray-600 mb-4">
-              ¿Está seguro de eliminar el documento{" "}
-              <span className="font-semibold">{salidaToDelete?.documento}</span>?
+              ¿Está seguro de eliminar el seguimiento farmacoterapéutico{" "}
+              <span className="font-semibold">{seguimientoToDelete?.seguimientoId}</span>?
             </p>
 
             <div className="flex justify-end gap-2">
@@ -478,14 +478,14 @@ export default function SeguimientoFarmacoPage() {
         </div>
       )}
 
-      {/* MODAL DE ÉXITO DE ELIMINACIÓN DE DOCUMENTO DE SALIDA */}
+      {/* MODAL DE ÉXITO DE ELIMINACIÓN DE SEGUIMIENTO FARMACOTERAPÉUTICO */}
       {showSuccessDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-center">
             <CheckCircle className="mx-auto h-12 w-12 text-green-600 mb-3" />
             <h2 className="text-lg font-semibold mb-2">Eliminado con éxito</h2>
             <p className="text-sm text-gray-600 mb-4">
-              El documento fue eliminado correctamente.
+              El seguimiento farmacoterapéutico fue eliminado correctamente.
             </p>
 
             <Button

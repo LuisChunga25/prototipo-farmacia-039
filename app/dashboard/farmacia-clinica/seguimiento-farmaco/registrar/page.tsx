@@ -400,7 +400,7 @@ export default function RegistrarSeguimientoFarmacoPage() {
                     <h2 className="font-semibold text-white">Datos iniciales</h2>
                 </div>
                 <div className="p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4">
                         <div className="space-y-2">
                             <Label>Fecha <span className="text-red-500">*</span></Label>
                             <Input type="date" className="border border-slate-900" />
@@ -409,7 +409,7 @@ export default function RegistrarSeguimientoFarmacoPage() {
                             <Label>HC <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
-                        <div className="space-y-2">
+                        <div className="md:col-span-3 space-y-2">
                             <Label>Paciente <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
