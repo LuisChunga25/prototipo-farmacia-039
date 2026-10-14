@@ -252,8 +252,8 @@ export default function RegistrarCartillaMedicamentosPage() {
         }
     }, [productoId]);
 
-    // FUNCIÓN GUARDAR SALIDA
-    const handleGuardarSalida = () => {
+    // FUNCIÓN GUARDAR CARTILLA
+    const handleGuardarCartilla = () => {
         setGuardando(true);
 
         // Simulación de guardado (API / backend)
@@ -375,24 +375,27 @@ export default function RegistrarCartillaMedicamentosPage() {
                     <h2 className="font-semibold text-white">Datos del paciente</h2>
                 </div>
                 <div className="p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                            <Label>Nombre <span className="text-red-500">*</span></Label>
-                            <Input className="border border-slate-900" />
-                        </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4">
                         <div className="space-y-2">
                             <Label>N° HC <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
-                        <div className="space-y-2">
-                            <Label>Fecha <span className="text-red-500">*</span></Label>
-                            <Input type="date" className="border border-slate-900" />
+                        <div className="md:col-span-3 space-y-2">
+                            <Label>Nombre <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>Edad <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4 mt-4">
                         <div className="space-y-2">
+                            <Label>Fecha <span className="text-red-500">*</span></Label>
+                            <Input type="date" className="border border-slate-900" />
+                        </div>
+                        <div className="md:col-span-3 space-y-2">
                             <Label>Dx de egreso <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
@@ -545,7 +548,7 @@ export default function RegistrarCartillaMedicamentosPage() {
                 </div>
 
                 <div className="p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
                             <Label>Nombre <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
@@ -555,11 +558,13 @@ export default function RegistrarCartillaMedicamentosPage() {
                             <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
-                            <Label>Firma <span className="text-red-500">*</span></Label>
+                            <Label>N° Teléfono <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                         <div className="space-y-2">
-                            <Label>N° Teléfono <span className="text-red-500">*</span></Label>
+                            <Label>Firma <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
                     </div>
@@ -572,7 +577,7 @@ export default function RegistrarCartillaMedicamentosPage() {
                 </Button>
                 <Button
                     className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-                    onClick={handleGuardarSalida}
+                    onClick={handleGuardarCartilla}
                 >
                     {guardando ? (
                         <>
@@ -588,7 +593,7 @@ export default function RegistrarCartillaMedicamentosPage() {
                 </Button>
             </div>
 
-            {/* MODAL DE ÉXITO DEL GUARDADO DEL DOCUMENTO DE SALIDA */}
+            {/* MODAL DE ÉXITO DEL GUARDADO DE LA CARTILLA DE USO SEGURO DE MEDICAMENTOS */}
             <Dialog open={openModalExito} onOpenChange={setOpenModalExito}>
                 <DialogContent className="max-w-sm">
                     <DialogHeader>
@@ -599,7 +604,7 @@ export default function RegistrarCartillaMedicamentosPage() {
                     </DialogHeader>
 
                     <p className="text-center text-gray-700">
-                        El documento de la cartilla ha sido registrado con éxito.
+                        La cartilla de uso seguro de medicamentos ha sido registrada con éxito.
                     </p>
 
                     <DialogFooter className="flex justify-center mt-4">

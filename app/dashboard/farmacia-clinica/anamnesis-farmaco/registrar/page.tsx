@@ -352,21 +352,17 @@ export default function RegistrarAnamnesisFarmacoPage() {
                     <h2 className="font-semibold text-white">1. Datos personales</h2>
                 </div>
                 <div className="p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4">
                         <div className="space-y-2">
-                            <Label>Fecha <span className="text-red-500">*</span></Label>
-                            <Input type="date" className="border border-slate-900" />
+                            <Label>N° HC <span className="text-red-500">*</span></Label>
+                            <Input className="border border-slate-900" />
                         </div>
-                        <div className="space-y-2">
+                        <div className="md:col-span-3 space-y-2">
                             <Label>Apellidos y Nombres <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>Edad <span className="text-red-500">*</span></Label>
-                            <Input className="border border-slate-900" />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>N° HC <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
@@ -377,7 +373,14 @@ export default function RegistrarAnamnesisFarmacoPage() {
                             <Label>Talla <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4 mt-4">
                         <div className="space-y-2">
+                            <Label>Fecha <span className="text-red-500">*</span></Label>
+                            <Input type="date" className="border border-slate-900" />
+                        </div>
+                        <div className="md:col-span-3 space-y-2">
                             <Label>Procedencia <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
@@ -633,13 +636,18 @@ export default function RegistrarAnamnesisFarmacoPage() {
                             <Label htmlFor="otros" className="text-sm font-normal cursor-pointer">Otros</Label>
                         </div>
                     </div>
+
+                    <div className="mb-4 mt-8">
+                        <Label className="font-semibold">OTROS</Label>
+                    </div>
+                    <Textarea className="border border-slate-900" />
                 </div>
 
                 <div className="bg-gradient-to-r from-cyan-800 to-cyan-900 px-4 py-3 mt-6">
                     <h2 className="font-semibold text-white">2.3 Funciones Vitales</h2>
                 </div>
                 <div className="p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 gap-4">
                         <div className="space-y-2">
                             <Label>FC <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
@@ -1039,7 +1047,7 @@ export default function RegistrarAnamnesisFarmacoPage() {
                 </Button>
             </div>
 
-            {/* MODAL DE ÉXITO DEL GUARDADO DEL DOCUMENTO DE SALIDA */}
+            {/* MODAL DE ÉXITO DEL GUARDADO DE LA ANAMNESIS FARMACOLÓGICA */}
             <Dialog open={openModalExito} onOpenChange={setOpenModalExito}>
                 <DialogContent className="max-w-sm">
                     <DialogHeader>
