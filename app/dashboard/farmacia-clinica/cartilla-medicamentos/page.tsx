@@ -161,8 +161,8 @@ export default function CartillaMedicamentosPage() {
   const [nuevaSalida, setNuevaSalida] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showSuccessDelete, setShowSuccessDelete] = useState(false);
-  const [salidaToDelete, setSalidaToDelete] = useState<any>(null);
-  const [seguimientosVisibles, setSeguimientosVisibles] = useState<any[]>([]);
+  const [cartillaToDelete, setCartillaToDelete] = useState<any>(null);
+  const [cartillasVisibles, setCartillasVisibles] = useState<any[]>([]);
   const [showConfirmProcesar, setShowConfirmProcesar] = useState(false);
   const [showSuccessProcesar, setShowSuccessProcesar] = useState(false);
   const [salidaToProcesar, setSalidaToProcesar] = useState<any>(null);
@@ -184,12 +184,12 @@ export default function CartillaMedicamentosPage() {
 
   // INICIALIZAR CUANDO CARGUE LA PÁGINA
   useEffect(() => {
-    setSeguimientosVisibles(seguimientosFarmacoData);
+    setCartillasVisibles(seguimientosFarmacoData);
   }, [seguimientosFarmacoData]);
 
-  // ELIMINAR DOCUMENTO DE SALIDA
+  // ELIMINAR CARTILLA
   const handleDeleteClick = (salida: any) => {
-    setSalidaToDelete(salida);
+    setCartillaToDelete(salida);
     setShowConfirmDelete(true);
   };
 
@@ -197,8 +197,8 @@ export default function CartillaMedicamentosPage() {
     setShowConfirmDelete(false);
 
     // Ocultamiento visual
-    setSeguimientosVisibles((prev) =>
-      prev.filter((s) => s.id !== salidaToDelete.id)
+    setCartillasVisibles((prev) =>
+      prev.filter((s) => s.id !== cartillaToDelete.id)
     );
 
     setTimeout(() => {
@@ -211,7 +211,7 @@ export default function CartillaMedicamentosPage() {
     setShowConfirmProcesar(false);
 
     // Simulación de cambio de estado
-    setSeguimientosVisibles((prev) =>
+    setCartillasVisibles((prev) =>
       prev.map((s) =>
         s.id === salidaToProcesar.id
           ? { ...s, estado: "2" }
@@ -366,22 +366,22 @@ export default function CartillaMedicamentosPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {seguimientosVisibles.map((seguimiento) => (
-              <TableRow key={seguimiento.id} className={selectedItems.includes(seguimiento.id) ? "bg-primary/10" : ""}>
+            {cartillasVisibles.map((cartilla) => (
+              <TableRow key={cartilla.id} className={selectedItems.includes(cartilla.id) ? "bg-primary/10" : ""}>
                 {/*<TableCell>{getEstadoBadge(salida.estado)}</TableCell>*/}
-                <TableCell className="font-medium">{seguimiento.cartillaId}</TableCell>
-                <TableCell className="font-medium">{seguimiento.paciente}</TableCell>
+                <TableCell className="font-medium">{cartilla.cartillaId}</TableCell>
+                <TableCell className="font-medium">{cartilla.paciente}</TableCell>
                 {/*<TableCell className="font-medium">{salida.tipo_transaccion}</TableCell>*/}
-                <TableCell className="font-medium">{seguimiento.servicio}</TableCell>
+                <TableCell className="font-medium">{cartilla.servicio}</TableCell>
                 {/*<TableCell>
                   <div className="font-mediunm">{seguimiento.tipo_transaccion}</div>
                   <div className="text-sm text-gray-500">{seguimiento.nombre_transaccion}</div>
                 </TableCell>*/}
                 <TableCell>
-                  <div className="font-medium">{seguimiento.fecha}</div>
-                  <div className="text-sm text-gray-500">{seguimiento.hora}</div>
+                  <div className="font-medium">{cartilla.fecha}</div>
+                  <div className="text-sm text-gray-500">{cartilla.hora}</div>
                 </TableCell>
-                <TableCell>{seguimiento.usuario}</TableCell>
+                <TableCell>{cartilla.usuario}</TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
                     <Button
@@ -395,10 +395,9 @@ export default function CartillaMedicamentosPage() {
                       title="Ver detalle"
                       variant="outline"
                       className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50"
-                      onClick={() => {
-                        setSeguimientoDetalle(seguimiento);
-                        setShowDetalleModal(true);
-                      }}
+                      onClick={() => 
+                        router.push(`/dashboard/farmacia-clinica/cartilla-medicamentos/detalle/${cartilla.cartillaId}`)
+                      }
                     >
                       <Eye className="w-3 h-3" />
                     </Button>
@@ -406,10 +405,10 @@ export default function CartillaMedicamentosPage() {
                       title="Editar"
                       variant="outline"
                       className={`h-8 w-10 p-1.5 border-yellow-600 text-yellow-600 hover:bg-yellow-50
-                        ${seguimiento.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
-                      disabled={seguimiento.estado !== "1"}
+                        ${cartilla.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
+                      disabled={cartilla.estado !== "1"}
                       onClick={() =>
-                        router.push(`/dashboard/almacenes/salidas/editar/${seguimiento.id}`)
+                        router.push(`/dashboard/farmacia-clinica/cartilla-medicamentos/editar/${cartilla.cartillaId}`)
                       }
                     >
                       <Edit className="w-3 h-3" />
@@ -420,7 +419,7 @@ export default function CartillaMedicamentosPage() {
                       className="h-8 w-10 p-1.5 border-purple-600 text-purple-600 hover:bg-purple-50"
                       onClick={() =>
                         window.open(
-                          `/dashboard/almacenes/salidas/imprimir/${seguimiento.id}`,
+                          `/dashboard/almacenes/salidas/imprimir/${cartilla.id}`,
                           "_blank"
                         )
                       }
@@ -431,9 +430,9 @@ export default function CartillaMedicamentosPage() {
                       title="Eliminar"
                       variant="outline"
                       className={`h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50
-                        ${seguimiento.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
-                      disabled={seguimiento.estado !== "1"}
-                      onClick={() => handleDeleteClick(seguimiento)}
+                        ${cartilla.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
+                      disabled={cartilla.estado !== "1"}
+                      onClick={() => handleDeleteClick(cartilla)}
                     >
                       <Trash2 className="w-3 h-3" />
                     </Button>
@@ -445,14 +444,14 @@ export default function CartillaMedicamentosPage() {
         </Table>
       </div>
 
-      {/* MODAL DE CONFIRMACIÓN DE ELIMINAR DOCUMENTO DE SALIDA */}
+      {/* MODAL DE CONFIRMACIÓN DE ELIMINAR CARTILLA DE USO SEGURO DE MEDICAMENTOS */}
       {showConfirmDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
             <h2 className="text-lg font-semibold mb-2">Confirmar eliminación</h2>
             <p className="text-sm text-gray-600 mb-4">
-              ¿Está seguro de eliminar el documento{" "}
-              <span className="font-semibold">{salidaToDelete?.documento}</span>?
+              ¿Está seguro de eliminar la cartilla{" "}
+              <span className="font-semibold">{cartillaToDelete?.documento}</span>?
             </p>
 
             <div className="flex justify-end gap-2">
@@ -473,7 +472,7 @@ export default function CartillaMedicamentosPage() {
         </div>
       )}
 
-      {/* MODAL DE ÉXITO DE ELIMINACIÓN DE DOCUMENTO DE SALIDA */}
+      {/* MODAL DE ÉXITO DE ELIMINACIÓN DE CARTILLA DE USO SEGURO DE MEDICAMENTOS */}
       {showSuccessDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-center">
@@ -492,202 +491,7 @@ export default function CartillaMedicamentosPage() {
           </div>
         </div>
       )}
-
-      {/* MODAL DE CONFIRMACIÓN DE PROCESAR DOCUMENTO DE SALIDA */}
-      {showConfirmProcesar && (
-        <Dialog open={showConfirmProcesar} onOpenChange={setShowConfirmProcesar}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Confirmar procesamiento</DialogTitle>
-              <DialogDescription>
-                ¿Está seguro de procesar este documento?
-                <br />
-                <span className="text-red-500 font-medium">
-                  Esta acción no podrá deshacerse.
-                </span>
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="flex justify-end gap-3 mt-4">
-              <Button
-                variant="outline"
-                onClick={() => setShowConfirmProcesar(false)}
-              >
-                Cancelar
-              </Button>
-
-              <Button
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={confirmProcesar}
-              >
-                Confirmar
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* MODAL DE ÉXITO DE PROCESAMIENTO DE DOCUMENTO DE SALIDA */}
-      {showSuccessProcesar && (
-        <Dialog open={showSuccessProcesar} onOpenChange={setShowSuccessProcesar}>
-          <DialogContent>
-            <DialogHeader>
-              <CheckCircle className="mx-auto h-12 w-12 text-green-600 mb-3" />
-              <DialogTitle className="text-center">Documento procesado</DialogTitle>
-              <DialogDescription className="text-center">
-                El documento de salida ha sido procesado con éxito.
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="flex justify-end mt-4">
-              <Button
-                className="bg-green-600 hover:bg-green-700 text-white"
-                onClick={() => setShowSuccessProcesar(false)}
-              >
-                Aceptar
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* MODAL DE VER DETALLE (SOLO LECTURA) */}
-      {showDetalleModal && seguimientoDetalle && (
-        <Dialog open={showDetalleModal} onOpenChange={setShowDetalleModal}>
-          <DialogContent className="max-w-6xl" onInteractOutside={(e) => e.preventDefault()}>
-            <DialogHeader>
-              <DialogTitle>Detalle de Documento de Salida</DialogTitle>
-              <DialogDescription>
-                Información del documento de salida (solo lectura)
-              </DialogDescription>
-            </DialogHeader>
-
-            {/* CONTENIDO */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-
-              <div>
-                <Label>Estado</Label>
-                <div className="mt-1">
-                  {getEstadoBadge(seguimientoDetalle.estado)}
-                </div>
-              </div>
-
-              <div>
-                <Label>Salida ID</Label>
-                <Input disabled value={seguimientoDetalle.salidaId} />
-              </div>
-
-              <div>
-                <Label>Documento</Label>
-                <Input disabled value={seguimientoDetalle.documento} />
-              </div>
-
-              <div>
-                <Label>Tipo de Transacción</Label>
-                <Input disabled value={`${seguimientoDetalle.tipo_transaccion} - ${seguimientoDetalle.nombre_transaccion}`} />
-              </div>
-
-              <div>
-                <Label>Fecha Registro</Label>
-                <Input
-                  disabled
-                  value={`${seguimientoDetalle.fecha} ${seguimientoDetalle.hora}`}
-                />
-              </div>
-
-              <div>
-                <Label>Fecha Proceso</Label>
-                <Input
-                  disabled
-                  value={`${seguimientoDetalle.fecha_proceso} ${seguimientoDetalle.hora_proceso}`}
-                />
-              </div>
-
-              <div>
-                <Label>Total (S/.)</Label>
-                <Input disabled value={seguimientoDetalle.total.toFixed(2)} />
-              </div>
-
-              <div>
-                <Label>Usuario</Label>
-                <Input disabled value={seguimientoDetalle.usuario} />
-              </div>
-
-              <div className="md:col-span-2">
-                <Label>Observación</Label>
-                <Input disabled value={seguimientoDetalle.observacion || "-"} />
-              </div>
-
-            </div>
-
-            <div className="mt-6">
-              <h3 className="text-base font-semibold mb-3">
-                Detalle de Productos
-              </h3>
-
-              <div className="border rounded-lg overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>N°</TableHead>
-                      <TableHead>Item</TableHead>
-                      <TableHead>Nombre</TableHead>
-                      <TableHead>Registro Sanitario</TableHead>
-                      <TableHead>Lote</TableHead>
-                      <TableHead>F. Venc.</TableHead>
-                      <TableHead className="text-right">Precio</TableHead>
-                      <TableHead className="text-right">Cantidad</TableHead>
-                      <TableHead className="text-right">Importe</TableHead>
-                    </TableRow>
-                  </TableHeader>
-
-                  <TableBody>
-                    {productosMock.map((prod, index) => {
-                      const importe = prod.precio * prod.cantidad;
-
-                      return (
-                        <TableRow key={prod.id}>
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>{prod.codigo}</TableCell>
-                          <TableCell>{prod.nombre}</TableCell>
-                          <TableCell>{prod.regSan}</TableCell>
-                          <TableCell>{prod.lote}</TableCell>
-                          <TableCell>{prod.fechaVenc}</TableCell>
-                          <TableCell className="text-right">
-                            {prod.precio.toFixed(2)}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            {prod.cantidad}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            {(importe).toFixed(2)}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-
-              <div className="flex justify-end mt-4 font-semibold">
-                Total: S/{" "}
-                {productosMock
-                  .reduce((sum, p) => sum + p.precio * p.cantidad, 0)
-                  .toFixed(2)}
-              </div>
-            </div>
-
-
-            {/* FOOTER */}
-            <div className="flex justify-end mt-6">
-              <Button variant="outline" onClick={() => setShowDetalleModal(false)}>
-                Cerrar
-              </Button>
-            </div>
-
-          </DialogContent>
-        </Dialog>
-      )}
+      
     </div>
   )
 }
