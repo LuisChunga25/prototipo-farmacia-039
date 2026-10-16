@@ -363,7 +363,16 @@ export default function HojaFarmacoForm({
                     </Button>
 
                     <div>
-                        <h1 className="text-xl font-bold">Registrar Hoja Farmacoterapéutica</h1>
+                        <h1 className="text-xl font-bold">
+                            {modo === "crear" &&
+                                "Registrar Hoja Farmacoterapéutica"}
+                            
+                            {modo === "editar" &&
+                                "Editar Hoja Farmacoterapéutica"}
+                            
+                            {modo === "consulta" &&
+                                "Consultar Hoja Farmacoterapéutica"}
+                        </h1>
                         <p className="text-muted-foreground">
                             Complete los datos
                         </p>
