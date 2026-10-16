@@ -395,10 +395,9 @@ export default function SeguimientoFarmacoPage() {
                       title="Ver detalle"
                       variant="outline"
                       className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50"
-                      onClick={() => {
-                        setSeguimientoDetalle(seguimiento);
-                        setShowDetalleModal(true);
-                      }}
+                      onClick={() => 
+                        router.push(`/dashboard/farmacia-clinica/seguimiento-farmaco/detalle/${seguimiento.seguimientoId}`)
+                      }
                     >
                       <Eye className="w-3 h-3" />
                     </Button>
@@ -409,7 +408,7 @@ export default function SeguimientoFarmacoPage() {
                         ${seguimiento.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
                       disabled={seguimiento.estado !== "1"}
                       onClick={() =>
-                        router.push(`/dashboard/almacenes/salidas/editar/${seguimiento.id}`)
+                        router.push(`/dashboard/farmacia-clinica/seguimiento-farmaco/editar/${seguimiento.seguimientoId}`)
                       }
                     >
                       <Edit className="w-3 h-3" />
