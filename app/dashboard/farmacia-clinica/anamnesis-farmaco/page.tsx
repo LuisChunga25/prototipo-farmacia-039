@@ -23,6 +23,7 @@ import {
   Edit,
   Eye,
   CheckCircle,
+  FileSignature,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Label } from "@/components/ui/label"
@@ -383,19 +384,13 @@ export default function AnmanesisFarmacoPage() {
                 <TableCell>{seguimiento.usuario}</TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
-                    {/*<Button
-                      title="Procesar"
+                    <Button
+                      title="Firmar documento"
                       variant="outline"
-                      className={`h-8 w-10 p-1.5 border-green-600 text-green-600 hover:bg-green-50
-                        ${salida.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
-                      disabled={salida.estado !== "1"}
-                      onClick={() => {
-                        setSalidaToProcesar(salida);
-                        setShowConfirmProcesar(true);
-                      }}
+                      className="h-8 w-10 p-1.5 border-green-600 text-green-600 hover:bg-green-50"
                     >
-                      <CheckCircle className="w-3 h-3" />
-                    </Button>*/}
+                      <FileSignature className="w-3 h-3" />
+                    </Button>
                     <Button
                       title="Ver detalle"
                       variant="outline"

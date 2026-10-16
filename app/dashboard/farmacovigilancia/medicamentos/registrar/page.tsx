@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, Save, PlusCircle, Trash2, Loader2, CheckCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -217,6 +218,9 @@ export default function RegistrarNotificacionMedicamentosPage() {
     const [fechaFinalCon, setFechaFinalCon] = useState("");
     const [motivoPrescripcionCon, setMotivoPrescripcionCon] = useState("");
     const [MedicamentosConcRegistrados, setMedicamentosConcRegistrados] = useState<MedicamentoConcomitante[]>([]);
+    const [sexo, setSexo] = useState("");
+    const [tipoNotificacion, setTipoNotificacion] = useState("");
+    const [otroTipoNotificacion, setOtroTipoNotificacion] = useState("");
 
     // CALCULAR LA FECHA Y HORA ACTUALES
     useEffect(() => {
@@ -445,8 +449,8 @@ export default function RegistrarNotificacionMedicamentosPage() {
                     <h2 className="font-semibold text-white">A. DATOS DEL PACIENTE</h2>
                 </div>
                 <div className="p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="space-y-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4">
+                        <div className="md:col-span-2 space-y-2">
                             <Label>Nombres o iniciales <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
@@ -456,21 +460,51 @@ export default function RegistrarNotificacionMedicamentosPage() {
                         </div>
                         <div className="space-y-2">
                             <Label>Sexo <span className="text-red-500">*</span></Label>
-                            <Input className="border border-slate-900" />
+                            <RadioGroup
+                                value={sexo}
+                                onValueChange={setSexo}
+                                className="flex items-center gap-6 h-10 border border-slate-900 rounded-md px-3"
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                        value="F"
+                                        id="sexo-f"
+                                    />
+                                    <Label
+                                        htmlFor="sexo-f"
+                                        className="cursor-pointer"
+                                    >
+                                        F
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                        value="M"
+                                        id="sexo-m"
+                                    />
+                                    <Label
+                                        htmlFor="sexo-m"
+                                        className="cursor-pointer"
+                                    >
+                                        M
+                                    </Label>
+                                </div>
+                            </RadioGroup>
                         </div>
                         <div className="space-y-2">
                             <Label>Peso (Kg) <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
-                            <Label>Historia Clínica y/o DNI <span className="text-red-500">*</span></Label>
+                            <Label>HC y/o DNI <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
-                        <div className="space-y-2">
+                        <div className="md:col-span-3 space-y-2">
                             <Label>Establecimiento <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
-                        <div className="space-y-2">
+                        <div className="md:col-span-3 space-y-2">
                             <Label>Diagnóstico Principal o CIE 10 <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
@@ -485,32 +519,88 @@ export default function RegistrarNotificacionMedicamentosPage() {
                 </div>
                 <div className="p-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="md:col-span-2 space-y-2">
-                            <p className="text-sm font-semibold">Marcar si la notificación corresponde a <span className="text-red-500">*</span></p>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="reaccion-adversa"
-                                />
-                                <Label htmlFor="reaccion-adversa" className="text-sm font-normal cursor-pointer">Reacción adversa</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="error-medicacion"
-                                />
-                                <Label htmlFor="error-medicacion" className="text-sm font-normal cursor-pointer">Error de medicación</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="problema-calidad"
-                                />
-                                <Label htmlFor="problema-calidad" className="text-sm font-normal cursor-pointer">Problema de calidad</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="otro"
-                                />
-                                <Label htmlFor="otro" className="text-sm font-normal cursor-pointer">Otro (Especifique)</Label>
-                            </div>
+                        <div className="md:col-span-2 space-y-3">
+
+                            <p className="text-sm font-semibold">
+                                Marcar si la notificación corresponde a
+                                <span className="text-red-500">*</span>
+                            </p>
+
+                            <RadioGroup
+                                value={tipoNotificacion}
+                                onValueChange={setTipoNotificacion}
+                                className="space-y-2"
+                            >
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                        value="reaccion-adversa"
+                                        id="reaccion-adversa"
+                                    />
+                                    <Label
+                                        htmlFor="reaccion-adversa"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Reacción adversa
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                        value="error-medicacion"
+                                        id="error-medicacion"
+                                    />
+                                    <Label
+                                        htmlFor="error-medicacion"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Error de medicación
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                        value="problema-calidad"
+                                        id="problema-calidad"
+                                    />
+                                    <Label
+                                        htmlFor="problema-calidad"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Problema de calidad
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+
+                                    <RadioGroupItem
+                                        value="otro"
+                                        id="otro"
+                                    />
+
+                                    <Label
+                                        htmlFor="otro"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Otro (Especifique)
+                                    </Label>
+
+                                    {tipoNotificacion === "otro" && (
+                                        <Input
+                                            value={otroTipoNotificacion}
+                                            onChange={(e) =>
+                                                setOtroTipoNotificacion(
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="w-80 h-9 border border-slate-900"
+                                        />
+                                    )}
+
+                                </div>
+
+                            </RadioGroup>
+
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
