@@ -155,19 +155,11 @@ const productosMock = [
 
 export default function SeguimientoFarmacoPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSalida, setSelectedSalida] = useState(null);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const [selectAll, setSelectAll] = useState(false);
-  const [nuevaSalida, setNuevaSalida] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showSuccessDelete, setShowSuccessDelete] = useState(false);
   const [seguimientoToDelete, setSeguimientoToDelete] = useState<any>(null);
   const [seguimientosVisibles, setSeguimientosVisibles] = useState<any[]>([]);
-  const [showConfirmProcesar, setShowConfirmProcesar] = useState(false);
-  const [showSuccessProcesar, setShowSuccessProcesar] = useState(false);
-  const [salidaToProcesar, setSalidaToProcesar] = useState<any>(null);
-  const [showDetalleModal, setShowDetalleModal] = useState(false);
-  const [seguimientoDetalle, setSeguimientoDetalle] = useState<any>(null);
   const router = useRouter();
   const [searchBy, setSearchBy] = useState("seguimientoId");
   const hoy = new Date();
@@ -203,24 +195,6 @@ export default function SeguimientoFarmacoPage() {
 
     setTimeout(() => {
       setShowSuccessDelete(true);
-    }, 200);
-  };
-
-  // SIMULAR PROCESAMIENTO DE UN DOCUMENTO DE SALIDA
-  const confirmProcesar = () => {
-    setShowConfirmProcesar(false);
-
-    // Simulación de cambio de estado
-    setSeguimientosVisibles((prev) =>
-      prev.map((s) =>
-        s.id === salidaToProcesar.id
-          ? { ...s, estado: "2" }
-          : s
-      )
-    );
-
-    setTimeout(() => {
-      setShowSuccessProcesar(true);
     }, 200);
   };
 
@@ -492,201 +466,7 @@ export default function SeguimientoFarmacoPage() {
         </div>
       )}
 
-      {/* MODAL DE CONFIRMACIÓN DE PROCESAR DOCUMENTO DE SALIDA */}
-      {showConfirmProcesar && (
-        <Dialog open={showConfirmProcesar} onOpenChange={setShowConfirmProcesar}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Confirmar procesamiento</DialogTitle>
-              <DialogDescription>
-                ¿Está seguro de procesar este documento?
-                <br />
-                <span className="text-red-500 font-medium">
-                  Esta acción no podrá deshacerse.
-                </span>
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="flex justify-end gap-3 mt-4">
-              <Button
-                variant="outline"
-                onClick={() => setShowConfirmProcesar(false)}
-              >
-                Cancelar
-              </Button>
-
-              <Button
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={confirmProcesar}
-              >
-                Confirmar
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* MODAL DE ÉXITO DE PROCESAMIENTO DE DOCUMENTO DE SALIDA */}
-      {showSuccessProcesar && (
-        <Dialog open={showSuccessProcesar} onOpenChange={setShowSuccessProcesar}>
-          <DialogContent>
-            <DialogHeader>
-              <CheckCircle className="mx-auto h-12 w-12 text-green-600 mb-3" />
-              <DialogTitle className="text-center">Documento procesado</DialogTitle>
-              <DialogDescription className="text-center">
-                El documento de salida ha sido procesado con éxito.
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="flex justify-end mt-4">
-              <Button
-                className="bg-green-600 hover:bg-green-700 text-white"
-                onClick={() => setShowSuccessProcesar(false)}
-              >
-                Aceptar
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* MODAL DE VER DETALLE (SOLO LECTURA) */}
-      {showDetalleModal && seguimientoDetalle && (
-        <Dialog open={showDetalleModal} onOpenChange={setShowDetalleModal}>
-          <DialogContent className="max-w-6xl" onInteractOutside={(e) => e.preventDefault()}>
-            <DialogHeader>
-              <DialogTitle>Detalle de Documento de Salida</DialogTitle>
-              <DialogDescription>
-                Información del documento de salida (solo lectura)
-              </DialogDescription>
-            </DialogHeader>
-
-            {/* CONTENIDO */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-
-              <div>
-                <Label>Estado</Label>
-                <div className="mt-1">
-                  {getEstadoBadge(seguimientoDetalle.estado)}
-                </div>
-              </div>
-
-              <div>
-                <Label>Salida ID</Label>
-                <Input disabled value={seguimientoDetalle.salidaId} />
-              </div>
-
-              <div>
-                <Label>Documento</Label>
-                <Input disabled value={seguimientoDetalle.documento} />
-              </div>
-
-              <div>
-                <Label>Tipo de Transacción</Label>
-                <Input disabled value={`${seguimientoDetalle.tipo_transaccion} - ${seguimientoDetalle.nombre_transaccion}`} />
-              </div>
-
-              <div>
-                <Label>Fecha Registro</Label>
-                <Input
-                  disabled
-                  value={`${seguimientoDetalle.fecha} ${seguimientoDetalle.hora}`}
-                />
-              </div>
-
-              <div>
-                <Label>Fecha Proceso</Label>
-                <Input
-                  disabled
-                  value={`${seguimientoDetalle.fecha_proceso} ${seguimientoDetalle.hora_proceso}`}
-                />
-              </div>
-
-              <div>
-                <Label>Total (S/.)</Label>
-                <Input disabled value={seguimientoDetalle.total.toFixed(2)} />
-              </div>
-
-              <div>
-                <Label>Usuario</Label>
-                <Input disabled value={seguimientoDetalle.usuario} />
-              </div>
-
-              <div className="md:col-span-2">
-                <Label>Observación</Label>
-                <Input disabled value={seguimientoDetalle.observacion || "-"} />
-              </div>
-
-            </div>
-
-            <div className="mt-6">
-              <h3 className="text-base font-semibold mb-3">
-                Detalle de Productos
-              </h3>
-
-              <div className="border rounded-lg overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>N°</TableHead>
-                      <TableHead>Item</TableHead>
-                      <TableHead>Nombre</TableHead>
-                      <TableHead>Registro Sanitario</TableHead>
-                      <TableHead>Lote</TableHead>
-                      <TableHead>F. Venc.</TableHead>
-                      <TableHead className="text-right">Precio</TableHead>
-                      <TableHead className="text-right">Cantidad</TableHead>
-                      <TableHead className="text-right">Importe</TableHead>
-                    </TableRow>
-                  </TableHeader>
-
-                  <TableBody>
-                    {productosMock.map((prod, index) => {
-                      const importe = prod.precio * prod.cantidad;
-
-                      return (
-                        <TableRow key={prod.id}>
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>{prod.codigo}</TableCell>
-                          <TableCell>{prod.nombre}</TableCell>
-                          <TableCell>{prod.regSan}</TableCell>
-                          <TableCell>{prod.lote}</TableCell>
-                          <TableCell>{prod.fechaVenc}</TableCell>
-                          <TableCell className="text-right">
-                            {prod.precio.toFixed(2)}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            {prod.cantidad}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            {(importe).toFixed(2)}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-
-              <div className="flex justify-end mt-4 font-semibold">
-                Total: S/{" "}
-                {productosMock
-                  .reduce((sum, p) => sum + p.precio * p.cantidad, 0)
-                  .toFixed(2)}
-              </div>
-            </div>
-
-
-            {/* FOOTER */}
-            <div className="flex justify-end mt-6">
-              <Button variant="outline" onClick={() => setShowDetalleModal(false)}>
-                Cerrar
-              </Button>
-            </div>
-
-          </DialogContent>
-        </Dialog>
-      )}
+      
     </div>
   )
 }
