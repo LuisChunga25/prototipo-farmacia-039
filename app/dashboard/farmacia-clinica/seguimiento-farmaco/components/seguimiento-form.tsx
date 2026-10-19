@@ -156,6 +156,61 @@ type MedicamentoInvolucrado = {
     interaccionMedicamentos: boolean;
 };
 
+const seguimientoDetalleMock = {
+    seguimientoId: "00000005",
+    fecha: "2026-09-30",
+    hc: "12345678",
+    paciente: "CHUNGA HUAYLINOS LUIS DIEGO",
+
+    nombrePresentacion:
+        "Metformina 850 mg Tableta",
+
+    problemaSalud:
+        "Diabetes Mellitus Tipo 2",
+
+    prmReal: true,
+    prmPotencial: false,
+    reaccionAdversa: false,
+    interaccionMedicamentos: true,
+
+    medicamentosRegistrados: [
+        {
+            id: 1,
+            nombrePresentacion: "Metformina 850 mg Tableta",
+            problemaSalud: "Diabetes Mellitus Tipo 2",
+            prmReal: true,
+            prmPotencial: false,
+            reaccionAdversa: false,
+            interaccionMedicamentos: true,
+        },
+    ],
+
+    dosis: "850 mg",
+    pautaAdministracion:
+        "1 tableta cada 12 horas",
+
+    anadirMedicamento:
+        "Insulina Glargina",
+
+    retirarMedicamento:
+        "Glibenclamida",
+
+    sustituirMedicamento:
+        "Empagliflozina",
+
+    verbal:
+        "Comunicación directa con médico tratante",
+
+    escrita:
+        "Registro en historia clínica",
+
+    intervencionAceptada:
+        "Sí",
+
+    intervencionNoAceptada:
+        "",
+};
+
 interface SeguimientoFormProps {
     modo: "crear" | "editar" | "consulta";
 }
@@ -196,6 +251,19 @@ export default function SeguimientoForm({
     const isRDS = tipoDocumento === "RDS";
     const isDDL = tipoDocumento === "DDL";
 
+    const [fechaSeguimiento, setFechaSeguimiento] = useState("");
+    const [hc, setHc] = useState("");
+    const [paciente, setPaciente] = useState("");
+    const [dosis, setDosis] = useState("");
+    const [pautaAdministracion, setPautaAdministracion] = useState("");
+    const [anadirMedicamento, setAnadirMedicamento] = useState("");
+    const [retirarMedicamento, setRetirarMedicamento] = useState("");
+    const [sustituirMedicamento, setSustituirMedicamento] = useState("");
+    const [verbal, setVerbal] = useState("");
+    const [escrita, setEscrita] = useState("");
+    const [intervencionAceptada, setIntervencionAceptada] = useState("");
+    const [intervencionNoAceptada, setIntervencionNoAceptada] = useState("");
+
     const [nombrePresentacion, setNombrePresentacion] = useState("");
     const [problemaSalud, setProblemaSalud] = useState("");
 
@@ -205,6 +273,90 @@ export default function SeguimientoForm({
     const [interaccionMedicamentos, setInteraccionMedicamentos] = useState(false);
 
     const [medicamentosRegistrados, setMedicamentosRegistrados] = useState<MedicamentoInvolucrado[]>([]);
+
+    // CARGAR DATOS DE PRUEBA AUTOMÁTICAMENTE
+    useEffect(() => {
+
+        if (modo === "consulta") {
+
+            setFechaSeguimiento(
+                seguimientoDetalleMock.fecha
+            );
+
+            setHc(
+                seguimientoDetalleMock.hc
+            );
+
+            setPaciente(
+                seguimientoDetalleMock.paciente
+            );
+
+            setNombrePresentacion(
+                seguimientoDetalleMock.nombrePresentacion
+            );
+
+            setProblemaSalud(
+                seguimientoDetalleMock.problemaSalud
+            );
+
+            setPrmReal(
+                seguimientoDetalleMock.prmReal
+            );
+
+            setPrmPotencial(
+                seguimientoDetalleMock.prmPotencial
+            );
+
+            setReaccionAdversa(
+                seguimientoDetalleMock.reaccionAdversa
+            );
+
+            setInteraccionMedicamentos(
+                seguimientoDetalleMock.interaccionMedicamentos
+            );
+
+            setMedicamentosRegistrados(
+                seguimientoDetalleMock.medicamentosRegistrados
+            );
+
+            setDosis(
+                seguimientoDetalleMock.dosis
+            );
+
+            setPautaAdministracion(
+                seguimientoDetalleMock.pautaAdministracion
+            );
+
+            setAnadirMedicamento(
+                seguimientoDetalleMock.anadirMedicamento
+            );
+
+            setRetirarMedicamento(
+                seguimientoDetalleMock.retirarMedicamento
+            );
+
+            setSustituirMedicamento(
+                seguimientoDetalleMock.sustituirMedicamento
+            );
+
+            setVerbal(
+                seguimientoDetalleMock.verbal
+            );
+
+            setEscrita(
+                seguimientoDetalleMock.escrita
+            );
+
+            setIntervencionAceptada(
+                seguimientoDetalleMock.intervencionAceptada
+            );
+
+            setIntervencionNoAceptada(
+                seguimientoDetalleMock.intervencionNoAceptada
+            );
+        }
+
+    }, [modo]);
 
     // CALCULAR LA FECHA Y HORA ACTUALES
     useEffect(() => {
@@ -421,22 +573,28 @@ export default function SeguimientoForm({
                             <Label>Fecha <span className="text-red-500">*</span></Label>
                             <Input
                                 type="date"
+                                value={fechaSeguimiento}
                                 disabled={soloLectura}
                                 className="border border-slate-900"
+                                onChange={(e) => setFechaSeguimiento(e.target.value)}
                             />
                         </div>
                         <div className="space-y-2">
                             <Label>HC <span className="text-red-500">*</span></Label>
                             <Input
+                                value={hc}
                                 disabled={soloLectura}
                                 className="border border-slate-900"
+                                onChange={(e) => setHc(e.target.value)}
                             />
                         </div>
                         <div className="md:col-span-3 space-y-2">
                             <Label>Paciente <span className="text-red-500">*</span></Label>
                             <Input
+                                value={paciente}
                                 disabled={soloLectura}
                                 className="border border-slate-900"
+                                onChange={(e) => setPaciente(e.target.value)}
                             />
                         </div>
                     </div>
