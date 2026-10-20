@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Database, Home, FileText, DollarSign, AlertTriangle, Pill, ShieldAlert, ShieldCheck } from "lucide-react"
+import { Database, Home, FileText, DollarSign, AlertTriangle, Pill, ShieldAlert, ShieldCheck, Receipt } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { AlertDialogHeader } from "@/components/ui/alert-dialog"
 
@@ -226,6 +226,22 @@ export default function Dashboard() {
             <CardContent className="p-6 pt-0">
               <CardDescription className="text-sm">
                 Formatos del comité de farmacovigilancia y tecnovigilancia para todos los servicios.
+              </CardDescription>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/dashboard/caja" className="block">
+          <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors shadow-sm hover:shadow-md">
+            <CardHeader className="p-6">
+              <CardTitle className="text-xl flex items-center gap-3">
+                <Receipt className="h-8 w-8 text-primary" />
+                Caja
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 pt-0">
+              <CardDescription className="text-sm">
+                Gestión de boletas de pago, notas de venta y más.
               </CardDescription>
             </CardContent>
           </Card>

@@ -55,6 +55,9 @@ import {
     PillBottle,
     StethoscopeIcon,
     Syringe,
+    Receipt,
+    Wallet,
+    Banknote,
 } from "lucide-react"
 import { ThemeToggle } from "./theme-toggle"
 import { useAlmacen } from "@/context/AlmacenContext"
@@ -71,6 +74,7 @@ export default function Sidebar() {
     const [isTransferenciasOpen, setIsTransferenciasOpen] = useState(location.pathname.includes('/almacenes/transferencias'));
     const [isFarmaciaClinicaOpen, setIsFarmaciaClinicaOpen] = useState(pathname.startsWith("/dashboard/farmacia-clinica"));
     const [isFarmacovigilanciaOpen, setIsFarmacovigilanciaOpen] = useState(pathname.startsWith("/dashboard/farmacovigilancia"));
+    const [isCajaOpen, setIsCajaOpen] = useState(pathname.startsWith("/dashboard/caja"));
 
     useEffect(() => {
         // Obtener información del usuario del localStorage
@@ -493,6 +497,47 @@ export default function Sidebar() {
                                 <Syringe className="h-4 w-4" />
                                 <span>Vacunas</span>
                             </a>
+                        </div>
+                    </div>
+
+                    {/* Caja */}
+                    <button
+                        onClick={() => setIsCajaOpen(!isCajaOpen)}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm font-semibold rounded-md text-gray-900 hover:bg-gray-100 transition-colors"
+                    >
+                        <div className="flex items-center gap-3">
+                            <Receipt className="h-5 w-5" />
+                            <span>Caja</span>
+                        </div>
+                        {isCajaOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                    </button>
+                    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isCajaOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                        }`}>
+                        <div className="pl-4 space-y-1 mt-1">
+                            <a
+                                className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname.startsWith("/dashboard/caja/boletas-venta")
+                                    ? "bg-blue-50 text-blue-700"
+                                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    }`}
+                                href="/dashboard/caja/boletas-venta"
+                                data-discover="true"
+                                aria-current="page"
+                            >
+                                <Wallet className="h-4 w-4" />
+                                <span>Boletas de venta</span>
+                            </a>
+                            {/*<a
+                                className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname.startsWith("/dashboard/caja/notas-venta")
+                                    ? "bg-blue-50 text-blue-700"
+                                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    }`}
+                                href="/dashboard/caja/notas-venta"
+                                data-discover="true"
+                                aria-current="page"
+                            >
+                                <Banknote className="h-4 w-4" />
+                                <span>Notas de venta</span>
+                            </a>*/}
                         </div>
                     </div>
                 </nav>
