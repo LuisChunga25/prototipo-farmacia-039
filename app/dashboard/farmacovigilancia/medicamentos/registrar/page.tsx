@@ -221,6 +221,16 @@ export default function RegistrarNotificacionMedicamentosPage() {
     const [sexo, setSexo] = useState("");
     const [tipoNotificacion, setTipoNotificacion] = useState("");
     const [otroTipoNotificacion, setOtroTipoNotificacion] = useState("");
+    const [gravedadRam, setGravedadRam] = useState("");
+    const [ramGraveTipo, setRamGraveTipo] = useState("");
+    const [fechaMuerte, setFechaMuerte] = useState("");
+    const [desenlace, setDesenlace] = useState("");
+    const [tratamientoRam, setTratamientoRam] = useState("");
+    const [suspensionMedicamento, setSuspensionMedicamento] = useState("");
+    const [suspensionDosis, setSuspensionDosis] = useState("");
+    const [reexposicionMedicamento, setReexposicionMedicamento] = useState("");
+    const [reaccionAnterior, setReaccionAnterior] = useState("");
+
 
     // CALCULAR LA FECHA Y HORA ACTUALES
     useEffect(() => {
@@ -403,6 +413,38 @@ export default function RegistrarNotificacionMedicamentosPage() {
         setFechaFinalCon("");
         setMotivoPrescripcionCon("");
     };
+
+    const renderOpcionRespuesta = (
+        valorActual: string,
+        setValor: (valor: string) => void,
+        opcion: string,
+        texto: string
+    ) => (
+        <Button
+            type="button"
+            variant={
+                valorActual === opcion
+                    ? "default"
+                    : "outline"
+            }
+            size="sm"
+            onClick={() => setValor(opcion)}
+            className={`
+            min-w-[70px]
+            h-8
+            ${valorActual === opcion
+                    ? opcion === "si"
+                        ? "bg-green-600 hover:bg-green-700 text-white"
+                        : opcion === "no"
+                            ? "bg-red-600 hover:bg-red-700 text-white"
+                            : "bg-slate-600 hover:bg-slate-700 text-white"
+                    : ""
+                }
+        `}
+        >
+            {texto}
+        </Button>
+    );
 
 
     return (
@@ -623,92 +665,216 @@ export default function RegistrarNotificacionMedicamentosPage() {
 
                         <div className="md:col-span-2 space-y-2">
                             <p className="text-sm font-semibold">Gravedad de la RAM <span className="text-red-500">*</span></p>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="leve"
-                                />
-                                <Label htmlFor="leve" className="text-sm font-normal cursor-pointer">Leve</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="moderada"
-                                />
-                                <Label htmlFor="moderada" className="text-sm font-normal cursor-pointer">Moderada</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="grave"
-                                />
-                                <Label htmlFor="grave" className="text-sm font-normal cursor-pointer">Grave</Label>
-                            </div>
+
+                            <RadioGroup
+                                value={gravedadRam}
+                                onValueChange={setGravedadRam}
+                                className="space-y-2"
+                            >
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                        value="leve"
+                                        id="gravedad-leve"
+                                    />
+                                    <Label
+                                        htmlFor="gravedad-leve"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Leve
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                        value="moderada"
+                                        id="gravedad-moderada"
+                                    />
+                                    <Label
+                                        htmlFor="gravedad-moderada"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Moderada
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                        value="grave"
+                                        id="gravedad-grave"
+                                    />
+                                    <Label
+                                        htmlFor="gravedad-grave"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Grave
+                                    </Label>
+                                </div>
+
+                            </RadioGroup>
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
                             <p className="text-sm font-semibold">Solo para RAM grave <span className="text-red-500">*</span></p>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="ram-grave-01"
-                                />
-                                <Label htmlFor="ram-grave-01" className="text-sm font-normal cursor-pointer">Muerte</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="ram-grave-02"
-                                />
-                                <Label htmlFor="ram-grave-02" className="text-sm font-normal cursor-pointer">Puso en grave riesgo la vida del paciente</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="ram-grave-03"
-                                />
-                                <Label htmlFor="ram-grave-03" className="text-sm font-normal cursor-pointer">Produjo o prolongó su hospitalización</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="ram-grave-04"
-                                />
-                                <Label htmlFor="ram-grave-04" className="text-sm font-normal cursor-pointer">Produjo discapacidad / incapacidad</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="ram-grave-05"
-                                />
-                                <Label htmlFor="ram-grave-05" className="text-sm font-normal cursor-pointer">Produjo anomalía congénita</Label>
-                            </div>
+
+                            <RadioGroup
+                                value={ramGraveTipo}
+                                onValueChange={setRamGraveTipo}
+                                className="space-y-2"
+                            >
+
+                                <div className="flex items-center space-x-2">
+
+                                    <RadioGroupItem
+                                        value="muerte"
+                                        id="ram-muerte"
+                                    />
+
+                                    <Label
+                                        htmlFor="ram-muerte"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Muerte
+                                    </Label>
+
+                                    {ramGraveTipo === "muerte" && (
+                                        <>
+                                            <Label
+                                                htmlFor="fecha-muerte"
+                                                className="ml-4 whitespace-nowrap"
+                                            >
+                                                Fecha:
+                                            </Label>
+
+                                            <Input
+                                                id="fecha-muerte"
+                                                type="date"
+                                                value={fechaMuerte}
+                                                onChange={(e) =>
+                                                    setFechaMuerte(
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-[180px] border border-slate-900"
+                                            />
+                                        </>
+                                    )}
+
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                        value="riesgo"
+                                        id="ram-riesgo"
+                                    />
+                                    <Label
+                                        htmlFor="ram-riesgo"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Puso en grave riesgo la vida del paciente
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                        value="hospitalizacion"
+                                        id="ram-hospitalizacion"
+                                    />
+                                    <Label
+                                        htmlFor="ram-hospitalizacion"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Produjo o prolongó su hospitalización
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                        value="discapacidad"
+                                        id="ram-discapacidad"
+                                    />
+                                    <Label
+                                        htmlFor="ram-discapacidad"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Produjo discapacidad / incapacidad
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem
+                                        value="anomalia"
+                                        id="ram-anomalia"
+                                    />
+                                    <Label
+                                        htmlFor="ram-anomalia"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Produjo anomalía congénita
+                                    </Label>
+                                </div>
+
+                            </RadioGroup>
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
                             <p className="text-sm font-semibold">Desenlace <span className="text-red-500">*</span></p>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="ram-grave-01"
-                                />
-                                <Label htmlFor="ram-grave-01" className="text-sm font-normal cursor-pointer">Recuperado</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="ram-grave-02"
-                                />
-                                <Label htmlFor="ram-grave-02" className="text-sm font-normal cursor-pointer">Recuperado con secuela</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="ram-grave-03"
-                                />
-                                <Label htmlFor="ram-grave-03" className="text-sm font-normal cursor-pointer">No recuperado</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="ram-grave-04"
-                                />
-                                <Label htmlFor="ram-grave-04" className="text-sm font-normal cursor-pointer">Mortal</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="ram-grave-05"
-                                />
-                                <Label htmlFor="ram-grave-05" className="text-sm font-normal cursor-pointer">Desconocido</Label>
-                            </div>
+
+                            <RadioGroup
+                                value={desenlace}
+                                onValueChange={setDesenlace}
+                                className="space-y-2"
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="recuperado" id="desenlace-recuperado" />
+                                    <Label
+                                        htmlFor="desenlace-recuperado"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Recuperado
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="recuperado-secuela" id="desenlace-recuperado-secuela" />
+                                    <Label
+                                        htmlFor="desenlace-recuperado-secuela"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Recuperado con secuela
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="no-recuperado" id="desenlace-no-recuperado" />
+                                    <Label
+                                        htmlFor="desenlace-no-recuperado"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        No Recuperado
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="mortal" id="desenlace-mortal" />
+                                    <Label
+                                        htmlFor="desenlace-mortal"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Mortal
+                                    </Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="desconocido" id="desenlace-desconocido" />
+                                    <Label
+                                        htmlFor="desenlace-desconocido"
+                                        className="cursor-pointer font-normal"
+                                    >
+                                        Desconocido
+                                    </Label>
+                                </div>
+                            </RadioGroup>
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
@@ -920,35 +1086,69 @@ export default function RegistrarNotificacionMedicamentosPage() {
                             <thead className="bg-slate-100">
                                 <tr>
                                     <th className="px-3 py-2 text-left">Suspensión</th>
-                                    <th className="px-3 py-2 text-left">Sí</th>
-                                    <th className="px-3 py-2 text-left">No</th>
-                                    <th className="px-3 py-2 text-left">No aplica</th>
+                                    <th className="px-3 py-2 text-left"></th>
+                                    <th className="px-3 py-2 text-left"></th>
+                                    <th className="px-3 py-2 text-left"></th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 <tr>
                                     <td className="px-3 py-2">¿Desapareció la reacción adversa al suspender el medicamento u otro producto farmacéutico?</td>
-                                    <td className="px-3 py-2">
-                                        <Checkbox id="suspension-si" />
+                                    <td className="px-3 py-2 text-center">
+                                        {renderOpcionRespuesta(
+                                            suspensionMedicamento,
+                                            setSuspensionMedicamento,
+                                            "si",
+                                            "Sí"
+                                        )}
                                     </td>
-                                    <td className="px-3 py-2">
-                                        <Checkbox id="suspension-no" />
+
+                                    <td className="px-3 py-2 text-center">
+                                        {renderOpcionRespuesta(
+                                            suspensionMedicamento,
+                                            setSuspensionMedicamento,
+                                            "no",
+                                            "No"
+                                        )}
                                     </td>
-                                    <td className="px-3 py-2">
-                                        <Checkbox id="suspension-no-aplica" />
+
+                                    <td className="px-3 py-2 text-center">
+                                        {renderOpcionRespuesta(
+                                            suspensionMedicamento,
+                                            setSuspensionMedicamento,
+                                            "na",
+                                            "No aplica"
+                                        )}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">¿Desapareció la reacción adversa al disminuir la dosis?</td>
-                                    <td className="px-3 py-2">
-                                        <Checkbox id="suspension-si" />
+                                    <td className="px-3 py-2 text-center">
+                                        {renderOpcionRespuesta(
+                                            suspensionDosis,
+                                            setSuspensionDosis,
+                                            "si",
+                                            "Sí"
+                                        )}
                                     </td>
-                                    <td className="px-3 py-2">
-                                        <Checkbox id="suspension-no" />
+
+                                    <td className="px-3 py-2 text-center">
+                                        {renderOpcionRespuesta(
+                                            suspensionDosis,
+                                            setSuspensionDosis,
+                                            "no",
+                                            "No"
+                                        )}
                                     </td>
-                                    <td className="px-3 py-2">
-                                        <Checkbox id="suspension-no-aplica" />
+
+                                    <td className="px-3 py-2 text-center">
+                                        {renderOpcionRespuesta(
+                                            suspensionDosis,
+                                            setSuspensionDosis,
+                                            "na",
+                                            "No aplica"
+                                        )}
                                     </td>
                                 </tr>
                             </tbody>
@@ -960,35 +1160,69 @@ export default function RegistrarNotificacionMedicamentosPage() {
                             <thead className="bg-slate-100">
                                 <tr>
                                     <th className="px-3 py-2 text-left">Reexposición</th>
-                                    <th className="px-3 py-2 text-left">Sí</th>
-                                    <th className="px-3 py-2 text-left">No</th>
-                                    <th className="px-3 py-2 text-left">No aplica</th>
+                                    <th className="px-3 py-2 text-left"></th>
+                                    <th className="px-3 py-2 text-left"></th>
+                                    <th className="px-3 py-2 text-left"></th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 <tr>
                                     <td className="px-3 py-2">Reapareció la reacción adversa al administrar nuevamente el medicamento u otro producto farmacéutico?</td>
-                                    <td className="px-3 py-2">
-                                        <Checkbox id="suspension-si" />
+                                    <td className="px-3 py-2 text-center">
+                                        {renderOpcionRespuesta(
+                                            reexposicionMedicamento,
+                                            setReexposicionMedicamento,
+                                            "si",
+                                            "Sí"
+                                        )}
                                     </td>
-                                    <td className="px-3 py-2">
-                                        <Checkbox id="suspension-no" />
+
+                                    <td className="px-3 py-2 text-center">
+                                        {renderOpcionRespuesta(
+                                            reexposicionMedicamento,
+                                            setReexposicionMedicamento,
+                                            "no",
+                                            "No"
+                                        )}
                                     </td>
-                                    <td className="px-3 py-2">
-                                        <Checkbox id="suspension-no-aplica" />
+
+                                    <td className="px-3 py-2 text-center">
+                                        {renderOpcionRespuesta(
+                                            reexposicionMedicamento,
+                                            setReexposicionMedicamento,
+                                            "na",
+                                            "No aplica"
+                                        )}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td className="px-3 py-2">El paciente ha presentado anteriormente la reacción adversa al medicamento u otro producto farmacéutico?</td>
-                                    <td className="px-3 py-2">
-                                        <Checkbox id="suspension-si" />
+                                    <td className="px-3 py-2 text-center">
+                                        {renderOpcionRespuesta(
+                                            reaccionAnterior,
+                                            setReaccionAnterior,
+                                            "si",
+                                            "Sí"
+                                        )}
                                     </td>
-                                    <td className="px-3 py-2">
-                                        <Checkbox id="suspension-no" />
+
+                                    <td className="px-3 py-2 text-center">
+                                        {renderOpcionRespuesta(
+                                            reaccionAnterior,
+                                            setReaccionAnterior,
+                                            "no",
+                                            "No"
+                                        )}
                                     </td>
-                                    <td className="px-3 py-2">
-                                        <Checkbox id="suspension-no-aplica" />
+
+                                    <td className="px-3 py-2 text-center">
+                                        {renderOpcionRespuesta(
+                                            reaccionAnterior,
+                                            setReaccionAnterior,
+                                            "na",
+                                            "No aplica"
+                                        )}
                                     </td>
                                 </tr>
                             </tbody>
@@ -997,18 +1231,43 @@ export default function RegistrarNotificacionMedicamentosPage() {
 
                     <div className="md:col-span-2 space-y-2 mt-6">
                         <p className="text-sm font-semibold">El paciente recibió tratamiento para la reacción adversa <span className="text-red-500">*</span></p>
-                        <div className="flex items-center space-x-2">
-                            <Checkbox
-                                id="si"
-                            />
-                            <Label htmlFor="si" className="text-sm font-normal cursor-pointer">Sí</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Checkbox
-                                id="no"
-                            />
-                            <Label htmlFor="no" className="text-sm font-normal cursor-pointer">No</Label>
-                        </div>
+                        <RadioGroup
+                            value={tratamientoRam}
+                            onValueChange={setTratamientoRam}
+                            className="space-y-2"
+                        >
+                            <div className="flex items-center space-x-2">
+
+                                <RadioGroupItem
+                                    value="si"
+                                    id="tratamiento-si"
+                                />
+
+                                <Label
+                                    htmlFor="tratamiento-si"
+                                    className="text-sm font-normal cursor-pointer"
+                                >
+                                    Sí
+                                </Label>
+
+                            </div>
+
+                            <div className="flex items-center space-x-2">
+
+                                <RadioGroupItem
+                                    value="no"
+                                    id="tratamiento-no"
+                                />
+
+                                <Label
+                                    htmlFor="tratamiento-no"
+                                    className="text-sm font-normal cursor-pointer"
+                                >
+                                    No
+                                </Label>
+
+                            </div>
+                        </RadioGroup>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">

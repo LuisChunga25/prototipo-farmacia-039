@@ -414,7 +414,7 @@ export default function DispositivosMedicosPage() {
                     >
                       <Edit className="w-3 h-3" />
                     </Button>
-                    <Button
+                    {/*<Button
                       title="Imprimir"
                       variant="outline"
                       className="h-8 w-10 p-1.5 border-purple-600 text-purple-600 hover:bg-purple-50"
@@ -426,7 +426,7 @@ export default function DispositivosMedicosPage() {
                       }
                     >
                       <Printer className="w-3 h-3" />
-                    </Button>
+                    </Button>*/}
                     <Button
                       title="Eliminar"
                       variant="outline"
