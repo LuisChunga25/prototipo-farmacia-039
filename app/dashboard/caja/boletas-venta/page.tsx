@@ -25,6 +25,11 @@ import {
   CheckCircle,
   FileSignature,
   X,
+  Stethoscope,
+  FileText,
+  Receipt,
+  Check,
+  CheckCircle2,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Label } from "@/components/ui/label"
@@ -135,6 +140,59 @@ const boletasVentaData = [
   },
 ]
 
+const pacientesData = [
+  {
+    historia: "76516872",
+    documento: "76516872",
+    nombre: "CHUNGA HUAYLINOS LUIS DIEGO",
+    sexo: "M",
+    fechaNacimiento: "08/03/1996",
+    seguro: "Pagante",
+    direccion: "S/N",
+    distrito: "LURIGANCHO",
+  },
+  {
+    historia: "41877141",
+    documento: "41877141",
+    nombre: "HILARIO GARCIA MIGUEL ANGEL",
+    sexo: "M",
+    fechaNacimiento: "16/02/1983",
+    seguro: "Pagante",
+    direccion: "S/N",
+    distrito: "MATUCANA",
+  },
+  {
+    historia: "73101361",
+    documento: "73101361",
+    nombre: "HOLGUIN CUCALON JORGE ALBERTO",
+    sexo: "M",
+    fechaNacimiento: "11/05/1994",
+    seguro: "Pagante",
+    direccion: "S/N",
+    distrito: "JESUS MARIA",
+  },
+  {
+    historia: "46428041",
+    documento: "46428041",
+    nombre: "QUISPE JAVIER TERRY ANFONI",
+    sexo: "M",
+    fechaNacimiento: "26/07/1990",
+    seguro: "Pagante",
+    direccion: "S/N",
+    distrito: "LURIGANCHO",
+  },
+  {
+    historia: "76478385",
+    documento: "76478385",
+    nombre: "PRADO DAVILA CARLOS ENRIQUE ALBERTO",
+    sexo: "M",
+    fechaNacimiento: "12/04/1997",
+    seguro: "Pagante",
+    direccion: "S/N",
+    distrito: "LURIGANCHO",
+  },
+];
+
 
 export default function BoletasVentaPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -151,6 +209,17 @@ export default function BoletasVentaPage() {
   const [fechaInicio, setFechaInicio] = useState(formatoISO(primerDiaMes));
   const [fechaFin, setFechaFin] = useState(formatoISO(hoy));
   const [openEmisionBoleta, setOpenEmisionBoleta] = useState(false);
+  const [showBusquedaPaciente, setShowBusquedaPaciente] = useState(false);
+  const [tipoBusquedaPaciente, setTipoBusquedaPaciente] = useState("Documento");
+  const [tipoDocumento, setTipoDocumento] = useState("DNI");
+  const [pacienteSeleccionado, setPacienteSeleccionado] = useState<any>(null);
+  const [pacientesEncontrados, setPacientesEncontrados] = useState<any[]>([]);
+  const [valorBusquedaPaciente, setValorBusquedaPaciente] = useState("");
+  const [showEmisionBoleta, setShowEmisionBoleta] = useState(false);
+  const [showCobroCita, setShowCobroCita] = useState(false);
+  const [showCobroProforma, setShowCobroProforma] = useState(false);
+  const [fechaHoraActual, setFechaHoraActual] = useState(new Date());
+  const [showSuccessCobroCita, setShowSuccessCobroCita] = useState(false);
 
   const opcionesBusqueda = [
     { value: "pagoId", label: "Pago ID" },
@@ -162,6 +231,43 @@ export default function BoletasVentaPage() {
   useEffect(() => {
     setBoletasVisibles(boletasVentaData);
   }, [boletasVentaData]);
+
+  // RELOJ EN TIEMPO REAL
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      setFechaHoraActual(new Date());
+    }, 1000);
+
+    return () => clearInterval(intervalo);
+  }, []);
+
+  // FUNCIÓN BUSCAR PACIENTE
+  const buscarPacientes = () => {
+    const texto = valorBusquedaPaciente
+      .trim()
+      .toLowerCase();
+
+    if (!texto) {
+      return;
+    }
+
+    const resultados = pacientesData.filter((paciente) =>
+      paciente.nombre.toLowerCase().includes(texto) ||
+      paciente.historia.includes(texto)
+    );
+
+    setPacientesEncontrados(resultados);
+
+  };
+
+  // FUNCIÓN LIMPIAR CAMPOS PARA BÚSQUEDA DE PACIENTE
+  const abrirBusquedaPaciente = () => {
+    setTipoBusquedaPaciente("Documento");
+    setTipoDocumento("DNI");
+    setValorBusquedaPaciente("");
+    setPacientesEncontrados([]);
+    setShowBusquedaPaciente(true);
+  };
 
   // ELIMINAR SEGUIMIENTO FARMACOTERAPÉUTICO
   const handleDeleteClick = (boleta: any) => {
@@ -180,6 +286,25 @@ export default function BoletasVentaPage() {
     setTimeout(() => {
       setShowSuccessDelete(true);
     }, 200);
+  };
+
+  // OBTENER LA FECHA ACTUAL
+  const obtenerFechaActual = () => {
+    return fechaHoraActual.toLocaleDateString("es-PE", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  // OBTENER LA HORA ACTUAL
+  const obtenerHoraActual = () => {
+    return fechaHoraActual.toLocaleTimeString("es-PE", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
   };
 
   const getEstadoBadge = (estado: string) => {
@@ -300,7 +425,7 @@ export default function BoletasVentaPage() {
             <Button
               className="bg-teal-600 hover:bg-teal-700 text-white gap-2 font-semibold h-10 px-4"
               size="sm"
-              onClick={() => setOpenEmisionBoleta(true)}
+              onClick={abrirBusquedaPaciente}
             >
               <Plus className="h-5 w-5" strokeWidth={3} />
               Emisión de Boleta
@@ -402,58 +527,522 @@ export default function BoletasVentaPage() {
         </Table>
       </div>
 
+      {/* MODAL DE BÚDQUEDA DE PACIENTE */}
+      <Dialog
+        open={showBusquedaPaciente}
+        onOpenChange={setShowBusquedaPaciente}
+      >
+        <DialogContent
+          className="max-w-6xl"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle>Buscar Paciente</DialogTitle>
+            <DialogDescription>Seleccione un paciente para generar la boleta.</DialogDescription>
+          </DialogHeader>
+
+          <div className="grid grid-cols-12 gap-3 text-sm">
+            <div className="col-span-2">
+              <Label>Buscar por</Label>
+              <select
+                className="w-full h-10 border rounded-md px-2"
+                value={tipoBusquedaPaciente}
+                onChange={(e) => setTipoBusquedaPaciente(e.target.value)}
+              >
+                <option value="Documento">Documento</option>
+                <option value="Historia Clínica">Historia Clínica</option>
+                <option value="Apellidos y Nombres">Apellidos y Nombres</option>
+              </select>
+            </div>
+
+            {tipoBusquedaPaciente === "Documento" && (
+              <div className="col-span-2">
+                <Label className="invisible">Tipo de documento</Label>
+                <select className="w-full h-10 border rounded-md px-2">
+                  <option value="DNI">DNI</option>
+                  <option value="carnet-ext">Carnet de Extranjería</option>
+                  <option value="carnet-seg">Carnet de Seguro</option>
+                  <option value="cedula-ie">Cédula de Identidad Extranjera</option>
+                  <option value="cnv">Certificado de nacido vivo</option>
+                  <option value="cip">CIP (Policía)</option>
+                  <option value="partida-nac">Partida Nacimiento</option>
+                  <option value="pasaporte">Pasaporte</option>
+                  <option value="ninguno">Ninguno</option>
+                </select>
+              </div>
+            )}
+
+            <div
+              className={
+                tipoBusquedaPaciente === "Documento"
+                  ? "col-span-6"
+                  : "col-span-8"
+              }
+            >
+              <Label className="invisible">Valor</Label>
+              <Input
+                placeholder="Ingrese dato de búsqueda..."
+                value={valorBusquedaPaciente}
+                onChange={(e) =>
+                  setValorBusquedaPaciente(e.target.value)
+                }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    buscarPacientes();
+                  }
+                }}
+              />
+            </div>
+
+            <div className="col-span-2 flex items-end">
+              <Button className="w-full" onClick={buscarPacientes}>
+                Buscar
+              </Button>
+            </div>
+          </div>
+
+          {pacientesEncontrados.length > 0 && (
+            <div className="border rounded-md mt-4">
+              <Table className="text-sm">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Historia</TableHead>
+                    <TableHead>Paciente</TableHead>
+                    <TableHead className="text-center">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+
+                <TableBody>
+                  {pacientesEncontrados.map((paciente) => (
+                    <TableRow key={paciente.historia}>
+                      <TableCell>{paciente.historia}</TableCell>
+                      <TableCell>{paciente.nombre}</TableCell>
+                      <TableCell>
+                        <div className="flex justify-center gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="border-cyan-600 text-cyan-600 hover:bg-cyan-50"
+                            onClick={() => {
+                              setPacienteSeleccionado(paciente);
+                              setShowBusquedaPaciente(false);
+                              setShowCobroCita(true);
+                            }}
+                          >
+                            <Stethoscope className="w-4 h-4 mr-1" />
+                            Cobrar Cita
+                          </Button>
+
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="border-purple-600 text-purple-600 hover:bg-purple-50"
+                            onClick={() => {
+                              setPacienteSeleccionado(paciente);
+                              setShowBusquedaPaciente(false);
+                              setShowCobroProforma(true);
+                            }}
+                          >
+                            <FileText className="w-4 h-4 mr-1" />
+                            Cobrar Prof./Orden
+                          </Button>
+
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="border-green-600 text-green-600 hover:bg-green-50"
+                            onClick={() => {
+                              setPacienteSeleccionado(paciente);
+                              setShowBusquedaPaciente(false);
+                              setOpenEmisionBoleta(true);
+                            }}
+                          >
+                            <Receipt className="w-4 h-4 mr-1" />
+                            Cobranza Manual
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* MODAL DE COBRO DE CITA */}
+      <Dialog
+        open={showCobroCita}
+        onOpenChange={setShowCobroCita}
+      >
+        <DialogContent
+          className="max-w-4xl max-h-[90vh] overflow-y-auto"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle>Cobro de Cita</DialogTitle>
+            <DialogDescription>Registro y cobro de atención médica.</DialogDescription>
+          </DialogHeader>
+
+          {/* DATOS DEL PACIENTE */}
+          <Card>
+            <CardContent className="pt-5">
+              <h3 className="font-semibold text-cyan-700 mb-4">Datos del paciente</h3>
+
+              <div className="grid grid-cols-4 gap-4">
+                <div>
+                  <Label>Historia Clínica</Label>
+                  <Input
+                    value={pacienteSeleccionado?.historia}
+                    className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <Label>Apellidos y Nombres</Label>
+                  <Input
+                    value={pacienteSeleccionado?.nombre}
+                    className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled
+                  />
+                </div>
+
+                <div>
+                  <Label>Seguro</Label>
+                  <Input
+                    value={pacienteSeleccionado?.seguro}
+                    className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* INFORMACIÓN DE LA CITA */}
+          <Card>
+            <CardContent className="pt-5">
+              <h3 className="font-semibold text-cyan-700 mb-4">Ingresar número de la Cita</h3>
+
+              <div className="grid grid-cols-8 gap-4">
+                <div>
+                  <Label>N° Cita</Label>
+                  <Input value="26" />
+                </div>
+
+                <div className="md:col-span-2">
+                  <Label className="invisible">Valores restantes</Label>
+                  <Input value="26047887" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* PACIENTE */}
+          <Card>
+            <CardContent className="pt-5">
+              <h3 className="font-semibold text-cyan-700 mb-4">Datos de la Cita</h3>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Consultorio</Label>
+                  <Input
+                    value="MEDICINA INTERNA"
+                    className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-100"
+                    disabled
+                  />
+                </div>
+
+                <div>
+                  <Label>N° Cuenta</Label>
+                  <Input />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* COBRANZA */}
+          <Card>
+            <CardContent className="pt-5">
+              <h3 className="font-semibold text-cyan-700 mb-4">Datos de Cobro</h3>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label>Categoría</Label>
+                  <Input value="A [Principal]" />
+                </div>
+
+                <div>
+                  <Label>N° Boleta S.S.</Label>
+                  <Input />
+                </div>
+
+                <div>
+                  <Label>Tipo de Pago</Label>
+                  <Input value="C" className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50" disabled />
+                  {/*<select className="w-full h-10 border rounded-md px-3">
+                    <option>CONTADO</option>
+                    <option>SIS</option>
+                    <option>SOAT</option>
+                  </select>*/}
+                </div>
+
+                <div>
+                  <Label>Admisión</Label>
+                  <Input value="0.00" className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-100" disabled />
+                </div>
+
+                <div>
+                  <Label>Consulta</Label>
+                  <Input value="10.00" className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-100" disabled />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* TOTAL */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-5">
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-lg">Total a Cobrar</span>
+              <span className="text-3xl font-bold text-blue-700">S/ 10.00</span>
+            </div>
+          </div>
+
+          {/* BOTONES */}
+          <div className="bg-white border-t pt-4 flex justify-end gap-3">
+            <Button
+              className="bg-green-600 hover:bg-green-700"
+              onClick={() => {
+                setShowCobroCita(false);
+                setShowSuccessCobroCita(true);
+              }}
+            >
+              Guardar Cobranza de Cita
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => setShowCobroCita(false)}
+            >
+              Cancelar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODAL DE COBRO DE PROFORMA */}
+      <Dialog
+        open={showCobroProforma}
+        onOpenChange={setShowCobroProforma}
+      >
+        <DialogContent
+          className="max-w-5xl max-h-[90vh] overflow-y-auto"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle>Cobro de Proforma / Orden</DialogTitle>
+            <DialogDescription>Cobro de servicios generados por módulos asistenciales.</DialogDescription>
+          </DialogHeader>
+
+          {/* PACIENTE */}
+          <Card>
+            <CardContent className="pt-5">
+              <h3 className="font-semibold text-cyan-700 mb-4">Paciente Seleccionado</h3>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Historia Clínica</Label>
+                  <Input
+                    value={pacienteSeleccionado?.historia}
+                    className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled
+                  />
+                </div>
+
+                <div>
+                  <Label>Paciente</Label>
+                  <Input
+                    value={pacienteSeleccionado?.nombre}
+                    className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* MODULO */}
+          <Card>
+            <CardContent className="pt-5">
+              <h3 className="font-semibold text-cyan-700 mb-4">Módulo de Origen</h3>
+
+              <div className="grid grid-cols-2 gap-3">
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="modulo" />
+                  Farmacia
+                </label>
+
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="modulo" />
+                  Liquidaciones
+                </label>
+
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="modulo" />
+                  Laboratorio
+                </label>
+
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="modulo" />
+                  Rayos X
+                </label>
+
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="modulo" />
+                  Ecografía
+                </label>
+
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="modulo" />
+                  Pendientes de Pago Medicamentos
+                </label>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* DATOS */}
+          <Card>
+            <CardContent className="pt-5">
+              <h3 className="font-semibold text-cyan-700 mb-4">Datos de la Proforma</h3>
+
+              <div className="grid grid-cols-8 gap-4">
+                <div>
+                  <Label>N° Proforma</Label>
+                  <Input />
+                </div>
+
+                <div>
+                  <Label>N° Orden</Label>
+                  <Input />
+                </div>
+
+                <div className="md:col-span-2">
+                  <Label>N° Cuenta</Label>
+                  <Input />
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" />
+                  Exonerar Pago
+                </label>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* RESULTADO */}
+          <Card>
+            <CardContent className="pt-5">
+              <h3 className="font-semibold text-cyan-700 mb-4">Información de Cobro</h3>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Tipo de Paciente</Label>
+
+                  <Input
+                    value="PAGANTE"
+                    className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled
+                  />
+                </div>
+
+                <div>
+                  <Label>Departamento</Label>
+                  <Input
+                    value="MEDICINA"
+                    className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* TOTAL */}
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-5">
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-lg">Total a Cobrar</span>
+              <span className="text-3xl font-bold text-amber-700">S/ 25.00</span>
+            </div>
+          </div>
+
+          {/* BOTONES */}
+          <div className="bg-white border-t pt-4 flex justify-end gap-3">
+            <Button
+              className="bg-green-600 hover:bg-green-700"
+            >
+              Guardar Cobranza
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => setShowCobroProforma(false)}
+            >
+              Cancelar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* MODAL DE EMISIÓN DE BOLETA DE PAGO */}
       <Dialog
         open={openEmisionBoleta}
         onOpenChange={setOpenEmisionBoleta}
       >
-        <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
-
+        <DialogContent
+          className="max-w-7xl max-h-[90vh] overflow-y-auto"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
           <DialogHeader>
-            <DialogTitle>
-              Emisión de Boleta de Venta
-            </DialogTitle>
-
-            <DialogDescription>
-              Registro de servicios médicos y generación de boleta.
-            </DialogDescription>
+            <DialogTitle>Emisión de Boleta de Venta</DialogTitle>
+            <DialogDescription>Registro de servicios médicos y generación de boleta.</DialogDescription>
           </DialogHeader>
 
           {/* CABECERA */}
           <div className="grid grid-cols-4 gap-4 rounded-lg bg-slate-50 border p-4">
-
             <div>
               <Label>Turno</Label>
-              <Input value="GD" readOnly />
+              <Input value="GD" className="bg-gray-100 text-gray-600 font-semibold" disabled />
             </div>
 
             <div>
               <Label>Boleta</Label>
-              <Input value="B004-0015090" readOnly />
+              <Input value="B004-0015090" className="bg-gray-100 text-gray-600 font-semibold" disabled />
             </div>
 
             <div>
               <Label>Fecha</Label>
-              <Input value="20/10/2026" readOnly />
+              <Input value={obtenerFechaActual()} className="bg-gray-100 text-gray-600 font-semibold" disabled />
             </div>
 
             <div>
               <Label>Hora</Label>
-              <Input value="15:26:45" readOnly />
+              <Input value={obtenerHoraActual()} className="bg-gray-100 text-gray-600 font-semibold" disabled />
             </div>
-
           </div>
 
           {/* DATOS DEL PACIENTE */}
           <Card>
             <CardContent className="pt-5">
-
-              <h3 className="font-semibold text-cyan-700 mb-4">
-                Datos del Paciente
-              </h3>
-
+              <h3 className="font-semibold text-cyan-700 mb-4">Datos del Paciente</h3>
               <div className="grid grid-cols-4 gap-3">
-
                 <div>
                   <Label>Pago ID</Label>
                   <Input />
@@ -461,7 +1050,7 @@ export default function BoletasVentaPage() {
 
                 <div>
                   <Label>Historia Clínica</Label>
-                  <Input />
+                  <Input value={pacienteSeleccionado?.historia} className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50" disabled />
                 </div>
 
                 <div>
@@ -476,7 +1065,7 @@ export default function BoletasVentaPage() {
 
                 <div className="col-span-2">
                   <Label>Paciente</Label>
-                  <Input />
+                  <Input value={pacienteSeleccionado?.nombre} />
                 </div>
 
                 <div>
@@ -488,129 +1077,87 @@ export default function BoletasVentaPage() {
                   <Label>N° SS</Label>
                   <Input />
                 </div>
-
               </div>
-
-            </CardContent>
-          </Card>
-
-          {/* ITEMS SELECCIONADOS */}
-          <Card>
-            <CardContent className="pt-5">
-
-              <div className="flex justify-between items-center mb-3">
-
-                <h3 className="font-semibold text-cyan-700">
-                  Conceptos de la Boleta
-                </h3>
-
-                <div className="text-xl font-bold text-blue-700">
-                  Total: S/. 0.00
-                </div>
-
-              </div>
-
-              <Table>
-
-                <TableHeader>
-
-                  <TableRow>
-
-                    <TableHead>Código</TableHead>
-
-                    <TableHead>Descripción</TableHead>
-
-                    <TableHead>Cant.</TableHead>
-
-                    <TableHead>Precio</TableHead>
-
-                    <TableHead>Importe</TableHead>
-
-                    <TableHead></TableHead>
-
-                  </TableRow>
-
-                </TableHeader>
-
-                <TableBody>
-                  {/* Items agregados */}
-                </TableBody>
-
-              </Table>
-
             </CardContent>
           </Card>
 
           {/* CATÁLOGO */}
           <Card>
-
             <CardContent className="pt-5">
-
-              <h3 className="font-semibold text-cyan-700 mb-4">
-
-                Ingreso de Conceptos
-
-              </h3>
-
-              <div className="flex gap-3 mb-4">
-
-                <Input
-                  placeholder="Buscar CPT o concepto..."
-                />
-
-                <Button>
-                  Buscar
-                </Button>
-
+              <div className="mb-4">
+                <h3 className="font-semibold text-cyan-700">Ingreso de Ítems</h3>
               </div>
 
-              <div className="border rounded-md h-64 overflow-auto">
+              {/* FORMULARIO DE INGRESO */}
+              <div className="grid grid-cols-12 gap-3 mb-5">
+                <div className="col-span-7">
+                  <Label>CPT</Label>
+                  <Input
+                    placeholder="Ingrese código CPT o nombre del concepto..."
+                  />
+                </div>
 
+                <div className="col-span-2">
+                  <Label>Cantidad</Label>
+
+                  <Input
+                    type="number"
+                    defaultValue="1"
+                  />
+                </div>
+
+                <div className="col-span-3 flex items-end">
+                  <Button
+                    className="w-full bg-green-600 hover:bg-green-700"
+                  >
+                    <Plus className="h-5 w-5" strokeWidth={3} />
+                    Agregar
+                  </Button>
+                </div>
+              </div>
+
+              {/* TABLA */}
+              <div className="border rounded-md overflow-auto">
                 <Table>
-
                   <TableHeader>
-
                     <TableRow>
-
-                      <TableHead>Código</TableHead>
-
-                      <TableHead>Descripción</TableHead>
-
-                      <TableHead>Precio</TableHead>
-
+                      <TableHead className="w-[120px]">Código CPT</TableHead>
+                      <TableHead className="w-[80px]">Item</TableHead>
+                      <TableHead>Nombre</TableHead>
+                      <TableHead className="w-[90px] text-center">Cantidad</TableHead>
+                      <TableHead className="w-[100px] text-right">Precio</TableHead>
+                      <TableHead className="w-[100px] text-right">Descuento</TableHead>
+                      <TableHead className="w-[120px] text-right">Importe</TableHead>
+                      <TableHead className="w-[90px] text-center">Acción</TableHead>
                     </TableRow>
-
                   </TableHeader>
 
                   <TableBody>
-                    {/* Resultados */}
+
+                    {/* Ítems registrados */}
+
                   </TableBody>
-
                 </Table>
-
               </div>
 
-            </CardContent>
+              <div className="flex justify-end items-center gap-3 mt-4">
+                <span className="text-lg font-semibold text-gray-700">Total a Pagar:</span>
 
+                <div className="bg-blue-50 border border-blue-200 rounded-lg px-6 py-4 min-w-[150px]">
+                  <div className="text-2xl font-bold text-blue-700 text-center">
+                    S/ 0.00
+                  </div>
+                </div>
+              </div>
+            </CardContent>
           </Card>
 
           {/* BOTONES */}
           <div className="flex justify-end gap-3">
-
             <Button
               className="bg-green-600 hover:bg-green-700"
             >
-              Grabar
-            </Button>
-
-            <Button variant="outline">
-              Nuevo
-            </Button>
-
-            <Button
-              variant="outline"
-            >
-              Cobrar Cita
+              Guardar Boleta
             </Button>
 
             <Button
@@ -619,9 +1166,32 @@ export default function BoletasVentaPage() {
             >
               Cerrar
             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
+      {/* MODAL DE ÉXITO DE COBRANZA DE CITA */}
+      <Dialog
+        open={showSuccessCobroCita}
+        onOpenChange={setShowSuccessCobroCita}
+      >
+        <DialogContent
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <div className="text-center mb-4">
+            <CheckCircle2 className="mx-auto h-12 w-12 text-green-600 mb-4" />
+            <p>La cobranza de la cita se ha realizado con éxito</p>
           </div>
 
+          <div className="flex justify-center">
+            <Button
+              className="bg-green-600 hover:bg-green-700"
+              onClick={() => setShowSuccessCobroCita(false)}
+            >
+              Finalizar
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 
