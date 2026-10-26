@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
@@ -217,6 +218,16 @@ export default function RegistrarNotificacionDispMedicosPage() {
     const [fechaFinalCon, setFechaFinalCon] = useState("");
     const [motivoPrescripcionCon, setMotivoPrescripcionCon] = useState("");
     const [MedicamentosConcRegistrados, setMedicamentosConcRegistrados] = useState<MedicamentoConcomitante[]>([]);
+    const [sexo, setSexo] = useState("");
+    const [dmSoloUso, setDmSoloUso] = useState("");
+    const [deteccionTemporalidad, setDeteccionTemporalidad] = useState("");
+    const [tipoAfectado, setTipoAfectado] = useState("");
+    const [otroTipoAfectado, setOtroTipoAfectado] = useState("");
+    const [clasifSospecha, setClasifSospecha] = useState("");
+    const [consecuencia, setConsecuencia] = useState("");
+    const [otrosConsecuencia, setOtrosConsecuencia] = useState("");
+    const [causaProbable, setCausaProbable] = useState("");
+    const [otrosCausaProbable, setOtrosCausaProbable] = useState("");
 
     // CALCULAR LA FECHA Y HORA ACTUALES
     useEffect(() => {
@@ -439,7 +450,7 @@ export default function RegistrarNotificacionDispMedicosPage() {
                 </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+            <div className="bg-blue-50 border border-slate-200 rounded-lg shadow-sm overflow-hidden">
                 <div className="p-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
                         <div className="space-y-2">
@@ -460,8 +471,8 @@ export default function RegistrarNotificacionDispMedicosPage() {
                     <h2 className="font-semibold text-white">I. IDENTIFICACIÓN DEL PACIENTE</h2>
                 </div>
                 <div className="p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="space-y-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 gap-4">
+                        <div className="md:col-span-2 space-y-2">
                             <Label>Iniciales del paciente <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
@@ -469,15 +480,29 @@ export default function RegistrarNotificacionDispMedicosPage() {
                             <Label>Edad <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
-                        <div className="space-y-2">
+                        <div className="md:col-span-2 space-y-2">
                             <Label>Historia Clínica y/o DNI <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
                         <div className="space-y-2">
                             <Label>Sexo <span className="text-red-500">*</span></Label>
-                            <Input className="border border-slate-900" />
+                            <RadioGroup
+                                value={sexo}
+                                onValueChange={setSexo}
+                                className="flex items-center gap-6 h-10 border border-slate-900 rounded-md px-3"
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="F" id="sexo-f" />
+                                    <Label htmlFor="sexo-f" className="cursor-pointer">F</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="M" id="sexo-m" />
+                                    <Label htmlFor="sexo-m" className="cursor-pointer">M</Label>
+                                </div>
+                            </RadioGroup>
                         </div>
-                        <div className="space-y-2">
+                        <div className="md:col-span-3 space-y-2">
                             <Label>Diagnóstico principal o CIE10 <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
@@ -546,18 +571,21 @@ export default function RegistrarNotificacionDispMedicosPage() {
                         </div>
                         <div className="space-y-2">
                             <Label>Indique si el dispositivo médico de un solo uso ha sido utilizado más de una vez <span className="text-red-500">*</span></Label>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="mas-de-una-vez"
-                                />
-                                <Label htmlFor="mas-de-una-vez" className="text-sm font-normal cursor-pointer">Sí</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="uso-unico"
-                                />
-                                <Label htmlFor="uso-unico" className="text-sm font-normal cursor-pointer">No</Label>
-                            </div>
+                            <RadioGroup
+                                value={dmSoloUso}
+                                onValueChange={setDmSoloUso}
+                                className="space-y-2"
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="si" id="mas-de-una-vez" />
+                                    <Label htmlFor="mas-de-una-vez" className="text-sm font-normal cursor-pointer">Sí</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="no" id="solo-una-vez" />
+                                    <Label htmlFor="solo-una-vez" className="text-sm font-normal cursor-pointer">No</Label>
+                                </div>
+                            </RadioGroup>
                         </div>
                     </div>
                 </div>
@@ -572,24 +600,25 @@ export default function RegistrarNotificacionDispMedicosPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2 space-y-2">
                             <p className="text-sm font-semibold">1. Detección de la temporalidad del incidente adverso <span className="text-red-500">*</span></p>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="antes-dm"
-                                />
-                                <Label htmlFor="antes-dm" className="text-sm font-normal cursor-pointer">Antes del uso del DM</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="durante-dm"
-                                />
-                                <Label htmlFor="durante-dm" className="text-sm font-normal cursor-pointer">Durante el uso del DM</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="despues-dm"
-                                />
-                                <Label htmlFor="despues-dm" className="text-sm font-normal cursor-pointer">Después del uso del DM</Label>
-                            </div>
+                            <RadioGroup
+                                value={deteccionTemporalidad}
+                                onValueChange={setDeteccionTemporalidad}
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="antes" id="antes-dm" />
+                                    <Label htmlFor="antes-dm" className="text-sm font-normal cursor-pointer">Antes del uso del DM</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="durante" id="durante-dm" />
+                                    <Label htmlFor="durante-dm" className="text-sm font-normal cursor-pointer">Durante el uso del DM</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="despues" id="despues-dm" />
+                                    <Label htmlFor="despues-dm" className="text-sm font-normal cursor-pointer">Después del uso del DM</Label>
+                                </div>
+                            </RadioGroup>
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
@@ -601,24 +630,33 @@ export default function RegistrarNotificacionDispMedicosPage() {
 
                         <div className="md:col-span-2 space-y-2 mt-6">
                             <p className="text-sm font-semibold">2. Tipo de afectado <span className="text-red-500">*</span></p>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="paciente"
-                                />
-                                <Label htmlFor="paciente" className="text-sm font-normal cursor-pointer">Paciente</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="operario"
-                                />
-                                <Label htmlFor="operario" className="text-sm font-normal cursor-pointer">Operario</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="otros"
-                                />
-                                <Label htmlFor="otros" className="text-sm font-normal cursor-pointer">Otros (especificar)</Label>
-                            </div>
+                            <RadioGroup
+                                value={tipoAfectado}
+                                onValueChange={setTipoAfectado}
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="paciente" id="paciente-afectado" />
+                                    <Label htmlFor="paciente-afectado" className="text-sm font-normal cursor-pointer">Paciente</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="operario" id="operario-afectado" />
+                                    <Label htmlFor="operario-afectado" className="text-sm font-normal cursor-pointer">Operario</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="otros" id="otros-afectado" />
+                                    <Label htmlFor="otros-afectado" className="text-sm font-normal cursor-pointer">Otros (especificar)</Label>
+                                </div>
+
+                                {tipoAfectado === "otros" && (
+                                    <Input
+                                        value={otroTipoAfectado}
+                                        onChange={(e) => setOtroTipoAfectado(e.target.value)}
+                                        className="w-80 h-9 border border-slate-900"
+                                    />
+                                )}
+                            </RadioGroup>
                         </div>
 
                         <div className="md:col-span-2 space-y-2 mt-6">
@@ -630,116 +668,127 @@ export default function RegistrarNotificacionDispMedicosPage() {
 
                         <div className="md:col-span-2 space-y-2 mt-6">
                             <p className="text-sm font-semibold">4. Clasificación de la sospecha del incidente adverso <span className="text-red-500">*</span></p>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="leve"
-                                />
-                                <Label htmlFor="leve" className="text-sm font-normal cursor-pointer">Leve</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="moderado"
-                                />
-                                <Label htmlFor="moderado" className="text-sm font-normal cursor-pointer">Moderado</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="grave"
-                                />
-                                <Label htmlFor="grave" className="text-sm font-normal cursor-pointer">Grave</Label>
-                            </div>
+                            <RadioGroup
+                                value={clasifSospecha}
+                                onValueChange={setClasifSospecha}
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="leve" id="sospecha-leve" />
+                                    <Label htmlFor="sospecha-leve" className="text-sm font-normal cursor-pointer">Leve</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="moderado" id="sospecha-moderado" />
+                                    <Label htmlFor="sospecha-moderado" className="text-sm font-normal cursor-pointer">Moderado</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="grave" id="sospecha-grave" />
+                                    <Label htmlFor="sospecha-grave" className="text-sm font-normal cursor-pointer">Grave</Label>
+                                </div>
+                            </RadioGroup>
                         </div>
 
                         <div className="md:col-span-2 space-y-2 mt-6">
                             <p className="text-sm font-semibold">5. Consecuencia <span className="text-red-500">*</span></p>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="muerte"
-                                />
-                                <Label htmlFor="muerte" className="text-sm font-normal cursor-pointer">Muerte</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="lesion-permanente"
-                                />
-                                <Label htmlFor="lesion-permanente" className="text-sm font-normal cursor-pointer">Lesión permanente</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="lesion-temporal"
-                                />
-                                <Label htmlFor="lesion-temporal" className="text-sm font-normal cursor-pointer">Lesión temporal</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="requiere-intervencion-quirurgica"
-                                />
-                                <Label htmlFor="requiere-intervencion-quirurgica" className="text-sm font-normal cursor-pointer">Requiere intervención quirúrgica</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="produjo-prolongo-hospitalizacion"
-                                />
-                                <Label htmlFor="produjo-prolongo-hospitalizacion" className="text-sm font-normal cursor-pointer">Produjo o prolongó su hospitalización</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="no-tuvo-consecuencias"
-                                />
-                                <Label htmlFor="no-tuvo-consecuencias" className="text-sm font-normal cursor-pointer">No tuvo consecuencias</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="otros-especificar"
-                                />
-                                <Label htmlFor="otros-especificar" className="text-sm font-normal cursor-pointer">Otros (especificar)</Label>
-                            </div>
+                            <RadioGroup
+                                value={consecuencia}
+                                onValueChange={setConsecuencia}
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="muerte" id="muerte" />
+                                    <Label htmlFor="muerte" className="text-sm font-normal cursor-pointer">Muerte</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="lesion-permanente" id="lesion-permanente" />
+                                    <Label htmlFor="lesion-permanente" className="text-sm font-normal cursor-pointer">Lesión permanente</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="lesion-temporal" id="lesion-temporal" />
+                                    <Label htmlFor="lesion-temporal" className="text-sm font-normal cursor-pointer">Lesión temporal</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="req-int-quir" id="req-int-quir" />
+                                    <Label htmlFor="req-int-quir" className="text-sm font-normal cursor-pointer">Requiere intervención quirúrgica</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="prod-prol-hosp" id="prod-prol-hosp" />
+                                    <Label htmlFor="prod-prol-hosp" className="text-sm font-normal cursor-pointer">Produjo o prolongó su hospitalización</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="no-consec" id="no-consec" />
+                                    <Label htmlFor="no-consec" className="text-sm font-normal cursor-pointer">No tuvo consecuencias</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="otros-consec" id="otros-consec" />
+                                    <Label htmlFor="otros-consec" className="text-sm font-normal cursor-pointer">Otros (especificar)</Label>
+                                </div>
+
+                                {consecuencia === "otros-consec" && (
+                                    <Input
+                                        value={otrosConsecuencia}
+                                        onChange={(e) => setOtrosConsecuencia(e.target.value)}
+                                        className="w-80 h-9 border border-slate-900"
+                                    />
+                                )}
+                            </RadioGroup>
                         </div>
 
                         <div className="md:col-span-2 space-y-2 mt-6">
                             <p className="text-sm font-semibold">6. Causa probable <span className="text-red-500">*</span></p>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="mala-calidad"
-                                />
-                                <Label htmlFor="mala-calidad" className="text-sm font-normal cursor-pointer">Mala calidad</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="error-de-uso"
-                                />
-                                <Label htmlFor="error-de-uso" className="text-sm font-normal cursor-pointer">Error de uso</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="condiciones-de-almacenamiento"
-                                />
-                                <Label htmlFor="condiciones-de-almacenamiento" className="text-sm font-normal cursor-pointer">Condiciones de almacenamiento</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="mantenimiento"
-                                />
-                                <Label htmlFor="mantenimiento" className="text-sm font-normal cursor-pointer">Mantenimiento</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="ambiente-inapropiado"
-                                />
-                                <Label htmlFor="ambiente-inapropiado" className="text-sm font-normal cursor-pointer">Ambiente inapropiado</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="condicion-del-paciente"
-                                />
-                                <Label htmlFor="condicion-del-paciente" className="text-sm font-normal cursor-pointer">Condición del paciente</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="otros-esp"
-                                />
-                                <Label htmlFor="otros-esp" className="text-sm font-normal cursor-pointer">Otros (especificar)</Label>
-                            </div>
+                            <RadioGroup
+                                value={causaProbable}
+                                onValueChange={setCausaProbable}
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="mala-calidad" id="mala-calidad" />
+                                    <Label htmlFor="mala-calidad" className="text-sm font-normal cursor-pointer">Mala calidad</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="error-uso" id="error-uso" />
+                                    <Label htmlFor="error-uso" className="text-sm font-normal cursor-pointer">Error de uso</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="cond-almac" id="cond-almac" />
+                                    <Label htmlFor="cond-almac" className="text-sm font-normal cursor-pointer">Condiciones de almacenamiento</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="mantenimiento" id="mantenimiento" />
+                                    <Label htmlFor="mantenimiento" className="text-sm font-normal cursor-pointer">Mantenimiento</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="ambiente-inap" id="ambiente-inap" />
+                                    <Label htmlFor="ambiente-inap" className="text-sm font-normal cursor-pointer">Ambiente inapropiado</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="cond-pac" id="cond-pac" />
+                                    <Label htmlFor="cond-pac" className="text-sm font-normal cursor-pointer">Condición del paciente</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="otros-causa" id="otros-causa" />
+                                    <Label htmlFor="otros-causa" className="text-sm font-normal cursor-pointer">Otros (especificar)</Label>
+                                </div>
+
+                                {causaProbable === "otros-causa" && (
+                                    <Input
+                                        value={otrosCausaProbable}
+                                        onChange={(e) => setOtrosCausaProbable(e.target.value)}
+                                        className="w-80 h-9 border border-slate-900"
+                                    />
+                                )}
+                            </RadioGroup>
                         </div>
 
                         <div className="md:col-span-2 space-y-2 mt-6">

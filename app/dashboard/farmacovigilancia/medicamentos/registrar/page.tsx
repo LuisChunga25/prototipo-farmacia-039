@@ -714,108 +714,110 @@ export default function RegistrarNotificacionMedicamentosPage() {
                             </RadioGroup>
                         </div>
 
-                        <div className="md:col-span-2 space-y-2">
-                            <p className="text-sm font-semibold">Solo para RAM grave <span className="text-red-500">*</span></p>
+                        {gravedadRam === "grave" && (
+                            <div className="md:col-span-2 space-y-2">
+                                <p className="text-sm font-semibold">Solo para RAM grave <span className="text-red-500">*</span></p>
 
-                            <RadioGroup
-                                value={ramGraveTipo}
-                                onValueChange={setRamGraveTipo}
-                                className="space-y-2"
-                            >
+                                <RadioGroup
+                                    value={ramGraveTipo}
+                                    onValueChange={setRamGraveTipo}
+                                    className="space-y-2"
+                                >
 
-                                <div className="flex items-center space-x-2">
+                                    <div className="flex items-center space-x-2">
 
-                                    <RadioGroupItem
-                                        value="muerte"
-                                        id="ram-muerte"
-                                    />
+                                        <RadioGroupItem
+                                            value="muerte"
+                                            id="ram-muerte"
+                                        />
 
-                                    <Label
-                                        htmlFor="ram-muerte"
-                                        className="cursor-pointer font-normal"
-                                    >
-                                        Muerte
-                                    </Label>
+                                        <Label
+                                            htmlFor="ram-muerte"
+                                            className="cursor-pointer font-normal"
+                                        >
+                                            Muerte
+                                        </Label>
 
-                                    {ramGraveTipo === "muerte" && (
-                                        <>
-                                            <Label
-                                                htmlFor="fecha-muerte"
-                                                className="ml-4 whitespace-nowrap"
-                                            >
-                                                Fecha:
-                                            </Label>
+                                        {ramGraveTipo === "muerte" && (
+                                            <>
+                                                <Label
+                                                    htmlFor="fecha-muerte"
+                                                    className="ml-4 whitespace-nowrap"
+                                                >
+                                                    Fecha:
+                                                </Label>
 
-                                            <Input
-                                                id="fecha-muerte"
-                                                type="date"
-                                                value={fechaMuerte}
-                                                onChange={(e) =>
-                                                    setFechaMuerte(
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-[180px] border border-slate-900"
-                                            />
-                                        </>
-                                    )}
+                                                <Input
+                                                    id="fecha-muerte"
+                                                    type="date"
+                                                    value={fechaMuerte}
+                                                    onChange={(e) =>
+                                                        setFechaMuerte(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    className="w-[180px] border border-slate-900"
+                                                />
+                                            </>
+                                        )}
 
-                                </div>
+                                    </div>
 
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem
-                                        value="riesgo"
-                                        id="ram-riesgo"
-                                    />
-                                    <Label
-                                        htmlFor="ram-riesgo"
-                                        className="cursor-pointer font-normal"
-                                    >
-                                        Puso en grave riesgo la vida del paciente
-                                    </Label>
-                                </div>
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem
+                                            value="riesgo"
+                                            id="ram-riesgo"
+                                        />
+                                        <Label
+                                            htmlFor="ram-riesgo"
+                                            className="cursor-pointer font-normal"
+                                        >
+                                            Puso en grave riesgo la vida del paciente
+                                        </Label>
+                                    </div>
 
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem
-                                        value="hospitalizacion"
-                                        id="ram-hospitalizacion"
-                                    />
-                                    <Label
-                                        htmlFor="ram-hospitalizacion"
-                                        className="cursor-pointer font-normal"
-                                    >
-                                        Produjo o prolongó su hospitalización
-                                    </Label>
-                                </div>
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem
+                                            value="hospitalizacion"
+                                            id="ram-hospitalizacion"
+                                        />
+                                        <Label
+                                            htmlFor="ram-hospitalizacion"
+                                            className="cursor-pointer font-normal"
+                                        >
+                                            Produjo o prolongó su hospitalización
+                                        </Label>
+                                    </div>
 
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem
-                                        value="discapacidad"
-                                        id="ram-discapacidad"
-                                    />
-                                    <Label
-                                        htmlFor="ram-discapacidad"
-                                        className="cursor-pointer font-normal"
-                                    >
-                                        Produjo discapacidad / incapacidad
-                                    </Label>
-                                </div>
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem
+                                            value="discapacidad"
+                                            id="ram-discapacidad"
+                                        />
+                                        <Label
+                                            htmlFor="ram-discapacidad"
+                                            className="cursor-pointer font-normal"
+                                        >
+                                            Produjo discapacidad / incapacidad
+                                        </Label>
+                                    </div>
 
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem
-                                        value="anomalia"
-                                        id="ram-anomalia"
-                                    />
-                                    <Label
-                                        htmlFor="ram-anomalia"
-                                        className="cursor-pointer font-normal"
-                                    >
-                                        Produjo anomalía congénita
-                                    </Label>
-                                </div>
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem
+                                            value="anomalia"
+                                            id="ram-anomalia"
+                                        />
+                                        <Label
+                                            htmlFor="ram-anomalia"
+                                            className="cursor-pointer font-normal"
+                                        >
+                                            Produjo anomalía congénita
+                                        </Label>
+                                    </div>
 
-                            </RadioGroup>
-                        </div>
+                                </RadioGroup>
+                            </div>
+                        )}
 
                         <div className="md:col-span-2 space-y-2">
                             <p className="text-sm font-semibold">Desenlace <span className="text-red-500">*</span></p>

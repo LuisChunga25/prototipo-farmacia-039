@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
@@ -219,6 +220,12 @@ export default function RegistrarNotificacionVacunasPage() {
     const [fechaFinal, setFechaFinal] = useState("");
     const [motivoPrescripcion, setMotivoPrescripcion] = useState("");
     const [medicamentosUtilizadosRegistrados, setMedicamentosUtilizadosRegistrados] = useState<MedicamentoUtilizado[]>([]);
+    const [gravedad, setGravedad] = useState("");
+    const [esaviGrave, setEsaviGrave] = useState("");
+    const [fechaFallecimiento, setFechaFallecimiento] = useState("");
+    const [desenlace, setDesenlace] = useState("");
+    const [autopsia, setAutopsia] = useState("");
+    const [recibioTratamiento, setRecibioTratamiento] = useState("");
 
     // CALCULAR LA FECHA Y HORA ACTUALES
     useEffect(() => {
@@ -449,8 +456,8 @@ export default function RegistrarNotificacionVacunasPage() {
                     <h2 className="font-semibold text-white">A. DATOS DEL PACIENTE</h2>
                 </div>
                 <div className="p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="space-y-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 gap-4">
+                        <div className="md:col-span-3 space-y-2">
                             <Label>Nombres o iniciales <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
@@ -466,15 +473,15 @@ export default function RegistrarNotificacionVacunasPage() {
                             <Label>Peso (Kg) <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
-                        <div className="space-y-2">
+                        <div className="md:col-span-2 space-y-2">
                             <Label>Historia Clínica y/o DNI <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
-                        <div className="space-y-2">
+                        <div className="md:col-span-2 space-y-2">
                             <Label>Semanas de gestación (solo gestantes) <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
-                        <div className="space-y-2">
+                        <div className="md:col-span-4 space-y-2">
                             <Label>Establecimiento donde se vacunó <span className="text-red-500">*</span></Label>
                             <Input className="border border-slate-900" />
                         </div>
@@ -509,121 +516,143 @@ export default function RegistrarNotificacionVacunasPage() {
 
                         <div className="md:col-span-2 space-y-2">
                             <p className="text-sm font-semibold">Gravedad del ESAVI <span className="text-red-500">*</span></p>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="leve"
-                                />
-                                <Label htmlFor="leve" className="text-sm font-normal cursor-pointer">Leve</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="moderada"
-                                />
-                                <Label htmlFor="moderada" className="text-sm font-normal cursor-pointer">Moderada</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="grave"
-                                />
-                                <Label htmlFor="grave" className="text-sm font-normal cursor-pointer">Grave</Label>
-                            </div>
+                            <RadioGroup
+                                value={gravedad}
+                                onValueChange={setGravedad}
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="leve" id="esavi-leve" />
+                                    <Label htmlFor="esavi-leve" className="text-sm font-normal cursor-pointer">Leve</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="moderado" id="esavi-moderado" />
+                                    <Label htmlFor="esavi-moderado" className="text-sm font-normal cursor-pointer">Moderado</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="grave" id="esavi-grave" />
+                                    <Label htmlFor="esavi-grave" className="text-sm font-normal cursor-pointer">Grave</Label>
+                                </div>
+                            </RadioGroup>
                         </div>
 
-                        <div className="md:col-span-2 space-y-2">
-                            <p className="text-sm font-semibold">Solo para ESAVI grave <span className="text-red-500">*</span></p>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="esavi-hospitalizacion"
-                                />
-                                <Label htmlFor="esavi-hospitalizacion" className="text-sm font-normal cursor-pointer">Hospitalización</Label>
+                        {gravedad === "grave" && (
+                            <div className="md:col-span-2 space-y-2">
+                                <p className="text-sm font-semibold">Solo para ESAVI grave <span className="text-red-500">*</span></p>
+                                <RadioGroup
+                                    value={esaviGrave}
+                                    onValueChange={setEsaviGrave}
+                                >
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="hospitalizacion" id="hospitalizacion" />
+                                        <Label htmlFor="hospitalizacion" className="text-sm font-normal cursor-pointer">Hospitalización</Label>
+                                    </div>
+
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="riesgo-muerte" id="riesgo-muerte" />
+                                        <Label htmlFor="riesgo-muerte" className="text-sm font-normal cursor-pointer">Riesgo de muerte</Label>
+                                    </div>
+
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="discapacidad" id="discapacidad" />
+                                        <Label htmlFor="discapacidad" className="text-sm font-normal cursor-pointer">Discapacidad</Label>
+                                    </div>
+
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="anomalia-congenita" id="anomalia-congenita" />
+                                        <Label htmlFor="anomalia-congenita" className="text-sm font-normal cursor-pointer">Anomalía congénita</Label>
+                                    </div>
+
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="fallecimiento" id="fallecimiento" />
+                                        <Label htmlFor="fallecimiento" className="text-sm font-normal cursor-pointer">Fallecimiento</Label>
+                                    </div>
+
+                                    {esaviGrave === "fallecimiento" && (
+                                        <>
+                                            <Label
+                                                htmlFor="fecha-fallecimiento"
+                                                className="ml-4 whitespace-nowrap"
+                                            >
+                                                Fecha:
+                                            </Label>
+
+                                            <Input
+                                                id="fecha-muerte"
+                                                type="date"
+                                                value={fechaFallecimiento}
+                                                onChange={(e) => setFechaFallecimiento(e.target.value)}
+                                                className="w-[180px] border border-slate-900"
+                                            />
+                                        </>
+                                    )}
+                                </RadioGroup>
                             </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="esavi-riesgo-muerte"
-                                />
-                                <Label htmlFor="esavi-riesgo-muerte" className="text-sm font-normal cursor-pointer">Riesgo de muerte</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="esavi-discapacidad"
-                                />
-                                <Label htmlFor="esavi-discapacidad" className="text-sm font-normal cursor-pointer">Discapacidad</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="esavi-anomalia-congenita"
-                                />
-                                <Label htmlFor="esavi-anomalia-congenita" className="text-sm font-normal cursor-pointer">Anomalía congénita</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="esavi-fallecimiento"
-                                />
-                                <Label htmlFor="esavi-fallecimiento" className="text-sm font-normal cursor-pointer">Fallecimiento</Label>
-                            </div>
-                        </div>
+                        )}
 
                         <div className="md:col-span-2 space-y-2">
                             <p className="text-sm font-semibold">Desenlace <span className="text-red-500">*</span></p>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="esavi-remision"
-                                />
-                                <Label htmlFor="esavi-remision" className="text-sm font-normal cursor-pointer">En remisión</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="esavi-recuperado"
-                                />
-                                <Label htmlFor="esavi-recuperado" className="text-sm font-normal cursor-pointer">Recuperado</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="esavi-recuperado-secuela"
-                                />
-                                <Label htmlFor="esavi-recuperado-secuela" className="text-sm font-normal cursor-pointer">Recuperado con secuela</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="esavi-no-recuperado"
-                                />
-                                <Label htmlFor="esavi-no-recuperado" className="text-sm font-normal cursor-pointer">No recuperado</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="esavi-mortal"
-                                />
-                                <Label htmlFor="esavi-mortal" className="text-sm font-normal cursor-pointer">Mortal</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="esavi-desconocido"
-                                />
-                                <Label htmlFor="esavi-desconocido" className="text-sm font-normal cursor-pointer">Desconocido</Label>
-                            </div>
+                            <RadioGroup
+                                value={desenlace}
+                                onValueChange={setDesenlace}
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="remision" id="remision" />
+                                    <Label htmlFor="remision" className="text-sm font-normal cursor-pointer">En remisión</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="recuperado" id="recuperado" />
+                                    <Label htmlFor="recuperado" className="text-sm font-normal cursor-pointer">Recuperado</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="recuperado-secuela" id="recuperado-secuela" />
+                                    <Label htmlFor="recuperado-secuela" className="text-sm font-normal cursor-pointer">Recuperado con secuela</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="no-recuperado" id="no-recuperado" />
+                                    <Label htmlFor="no-recuperado" className="text-sm font-normal cursor-pointer">No recuperado</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="mortal" id="mortal" />
+                                    <Label htmlFor="mortal" className="text-sm font-normal cursor-pointer">Mortal</Label>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="desconocido" id="desconocido" />
+                                    <Label htmlFor="desconocido" className="text-sm font-normal cursor-pointer">Desconocido</Label>
+                                </div>
+                            </RadioGroup>
                         </div>
 
-                        <div className="md:col-span-2 space-y-2">
-                            <p className="text-sm font-semibold">Se realizó autopsia (mortal) <span className="text-red-500">*</span></p>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="esavi-autopsia-si"
-                                />
-                                <Label htmlFor="esavi-autopsia-si" className="text-sm font-normal cursor-pointer">Sí</Label>
+                        {desenlace === "mortal" && (
+                            <div className="md:col-span-2 space-y-2">
+                                <p className="text-sm font-semibold">Se realizó autopsia (mortal) <span className="text-red-500">*</span></p>
+                                <RadioGroup
+                                    value={autopsia}
+                                    onValueChange={setAutopsia}
+                                >
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="autopsia-si" id="autopsia-si" />
+                                        <Label htmlFor="autopsia-si" className="text-sm font-normal cursor-pointer">Sí</Label>
+                                    </div>
+
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="autopsia-no" id="autopsia-no" />
+                                        <Label htmlFor="autopsia-no" className="text-sm font-normal cursor-pointer">No</Label>
+                                    </div>
+
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="autopsia-desconocido" id="autopsia-desconocido" />
+                                        <Label htmlFor="autopsia-desconocido" className="text-sm font-normal cursor-pointer">Desconocido</Label>
+                                    </div>
+                                </RadioGroup>
                             </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="esavi-autopsia-no"
-                                />
-                                <Label htmlFor="esavi-autopsia-no" className="text-sm font-normal cursor-pointer">No</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="esavi-autopsia-desconocido"
-                                />
-                                <Label htmlFor="esavi-autopsia-desconocido" className="text-sm font-normal cursor-pointer">Desconocido</Label>
-                            </div>
-                        </div>
+                        )}
 
                         <div className="md:col-span-2 space-y-2">
                             <Label>Resultados relevantes de exámenes de laboratorio (incluir fechas) <span className="text-red-500">*</span></Label>
@@ -845,18 +874,20 @@ export default function RegistrarNotificacionVacunasPage() {
 
                     <div className="md:col-span-2 space-y-2 mt-6">
                         <p className="text-sm font-semibold">El paciente recibió tratamiento para la reacción adversa <span className="text-red-500">*</span></p>
-                        <div className="flex items-center space-x-2">
-                            <Checkbox
-                                id="si"
-                            />
-                            <Label htmlFor="si" className="text-sm font-normal cursor-pointer">Sí</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Checkbox
-                                id="no"
-                            />
-                            <Label htmlFor="no" className="text-sm font-normal cursor-pointer">No</Label>
-                        </div>
+                        <RadioGroup
+                            value={recibioTratamiento}
+                            onValueChange={setRecibioTratamiento}
+                        >
+                            <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="si" id="si-recibio" />
+                                <Label htmlFor="si-recibio" className="text-sm font-normal cursor-pointer">Sí</Label>
+                            </div>
+
+                            <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="no" id="no-recibio" />
+                                <Label htmlFor="no-recibio" className="text-sm font-normal cursor-pointer">No</Label>
+                            </div>
+                        </RadioGroup>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
