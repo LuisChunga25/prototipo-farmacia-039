@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { use, useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -144,6 +144,7 @@ const pacientesData = [
   {
     historia: "76516872",
     documento: "76516872",
+    codPaciente: "2026000001",
     nombre: "CHUNGA HUAYLINOS LUIS DIEGO",
     sexo: "M",
     fechaNacimiento: "08/03/1996",
@@ -154,6 +155,7 @@ const pacientesData = [
   {
     historia: "41877141",
     documento: "41877141",
+    codPaciente: "2026000002",
     nombre: "HILARIO GARCIA MIGUEL ANGEL",
     sexo: "M",
     fechaNacimiento: "16/02/1983",
@@ -164,6 +166,7 @@ const pacientesData = [
   {
     historia: "73101361",
     documento: "73101361",
+    codPaciente: "2026000003",
     nombre: "HOLGUIN CUCALON JORGE ALBERTO",
     sexo: "M",
     fechaNacimiento: "11/05/1994",
@@ -174,6 +177,7 @@ const pacientesData = [
   {
     historia: "46428041",
     documento: "46428041",
+    codPaciente: "2026000004",
     nombre: "QUISPE JAVIER TERRY ANFONI",
     sexo: "M",
     fechaNacimiento: "26/07/1990",
@@ -184,6 +188,7 @@ const pacientesData = [
   {
     historia: "76478385",
     documento: "76478385",
+    codPaciente: "2026000005",
     nombre: "PRADO DAVILA CARLOS ENRIQUE ALBERTO",
     sexo: "M",
     fechaNacimiento: "12/04/1997",
@@ -191,6 +196,19 @@ const pacientesData = [
     direccion: "S/N",
     distrito: "LURIGANCHO",
   },
+];
+
+const catalogoItems = [
+  { codigo: "CPT001", nombre: "Consulta médica general", precio: 35.00, descuento: 0.00 },
+  { codigo: "CPT002", nombre: "Consulta médica especializada", precio: 60.00, descuento: 0.00 },
+  { codigo: "CPT003", nombre: "Consulta odontológica", precio: 45.00, descuento: 0.00 },
+  { codigo: "CPT004", nombre: "Hemograma completo", precio: 25.00, descuento: 0.00 },
+  { codigo: "CPT005", nombre: "Glucosa en sangre", precio: 12.00, descuento: 0.00 },
+  { codigo: "CPT006", nombre: "Radiografía de tórax", precio: 50.00, descuento: 0.00 },
+  { codigo: "CPT007", nombre: "Ecografía abdominal", precio: 80.00, descuento: 0.00 },
+  { codigo: "CPT008", nombre: "Electrocardiograma", precio: 40.00, descuento: 0.00 },
+  { codigo: "CPT009", nombre: "Curación de heridas", precio: 20.00, descuento: 0.00 },
+  { codigo: "CPT010", nombre: "Inyectable intramuscular", precio: 15.00, descuento: 0.00 },
 ];
 
 
@@ -209,6 +227,14 @@ export default function BoletasVentaPage() {
   const [fechaInicio, setFechaInicio] = useState(formatoISO(primerDiaMes));
   const [fechaFin, setFechaFin] = useState(formatoISO(hoy));
   const [openEmisionBoleta, setOpenEmisionBoleta] = useState(false);
+  const origenInputRef = useRef<HTMLInputElement>(null);
+  const itemInputRef = useRef<HTMLInputElement>(null);
+  const cantidadInputRef = useRef<HTMLInputElement>(null);
+  const busquedaPacienteInputRef = useRef<HTMLInputElement>(null);
+  const [itemBusqueda, setItemBusqueda] = useState("");
+  const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
+  const [indiceSugerencia, setIndiceSugerencia] = useState(-1);
+  const [itemConfirmado, setItemConfirmado] = useState(false);
   const [showBusquedaPaciente, setShowBusquedaPaciente] = useState(false);
   const [tipoBusquedaPaciente, setTipoBusquedaPaciente] = useState("Documento");
   const [tipoDocumento, setTipoDocumento] = useState("DNI");
@@ -221,11 +247,108 @@ export default function BoletasVentaPage() {
   const [fechaHoraActual, setFechaHoraActual] = useState(new Date());
   const [showSuccessCobroCita, setShowSuccessCobroCita] = useState(false);
 
+  const [itemsRegistrados, setItemsRegistrados] = useState<
+    Array<{
+      id: number;
+      codigo: string;
+      nombre: string;
+      cantidad: number;
+      precio: number;
+      descuento: number;
+    }>
+  >([]);
+
   const opcionesBusqueda = [
     { value: "pagoId", label: "Pago ID" },
     { value: "paciente", label: "Paciente" },
     { value: "historiaClinica", label: "Historia Clínica" }
   ];
+
+  // FUNCIÓN AGREGAR ÍTEM
+  const agregarItem = () => {
+    const itemSeleccionado = catalogoItems.find(
+      (item) => item.nombre === itemBusqueda
+    );
+
+    const cantidad = Number(cantidadInputRef.current?.value ?? 1);
+
+    // Validar que se haya seleccionado un ítem válido
+    if (!itemConfirmado || !itemSeleccionado) {
+      return;
+    }
+
+    // Validar que la cantidad sea mayor que cero
+    if (!Number.isFinite(cantidad) || cantidad <= 0) {
+      return;
+    }
+
+    const nuevoItem = {
+      id: Date.now(),
+      codigo: itemSeleccionado.codigo,
+      nombre: itemSeleccionado.nombre,
+      cantidad,
+      precio: itemSeleccionado.precio,
+      descuento: itemSeleccionado.descuento,
+    };
+
+    setItemsRegistrados((itemsActuales) => [
+      ...itemsActuales,
+      nuevoItem,
+    ]);
+
+    // Limpiar el campo Ítem para registrar otro
+    setItemBusqueda("");
+    setItemConfirmado(false);
+    setMostrarSugerencias(false);
+    setIndiceSugerencia(-1);
+
+    // Restablecer la cantidad
+    if (cantidadInputRef.current) {
+      cantidadInputRef.current.value = "1";
+    }
+
+    // Devolver el foco al campo Ítem
+    requestAnimationFrame(() => {
+      itemInputRef.current?.focus();
+    });
+  };
+
+  // FUNCIÓN ELIMINAR ÍTEM
+  const eliminarItem = (id: number) => {
+    setItemsRegistrados((itemsActuales) =>
+      itemsActuales.filter((item) => item.id !== id)
+    );
+  };
+
+  // CALCULAR TOTAL A PAGAR
+  const totalPagar = itemsRegistrados.reduce(
+    (total, item) =>
+      total + item.cantidad * item.precio - item.descuento,
+    0
+  );
+
+  // FILTRAR ÍTEMS SEGÚN EL TEXTO INGRESADO
+  const itemsFiltrados = catalogoItems.filter((item) =>
+    item.nombre
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .includes(
+        itemBusqueda
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .trim()
+      )
+  );
+
+  // SELECCIONAR UNA OPCIÓN DEL DESPLEGABLE
+  const seleccionarItem = (nombre: string) => {
+    setItemBusqueda(nombre);
+    setItemConfirmado(true);
+    setMostrarSugerencias(false);
+    setIndiceSugerencia(-1);
+  };
 
   // INICIALIZAR CUANDO CARGUE LA PÁGINA
   useEffect(() => {
@@ -535,7 +658,11 @@ export default function BoletasVentaPage() {
         <DialogContent
           className="max-w-6xl"
           onPointerDownOutside={(e) => e.preventDefault()}
-          onEscapeKeyDown={(e) => e.preventDefault()}
+          //onEscapeKeyDown={(e) => e.preventDefault()}
+          onOpenAutoFocus={(e) => {
+            e.preventDefault();
+            busquedaPacienteInputRef.current?.focus();
+          }}
         >
           <DialogHeader>
             <DialogTitle>Buscar Paciente</DialogTitle>
@@ -583,10 +710,9 @@ export default function BoletasVentaPage() {
               <Label className="invisible">Valor</Label>
               <Input
                 placeholder="Ingrese dato de búsqueda..."
+                ref={busquedaPacienteInputRef}
                 value={valorBusquedaPaciente}
-                onChange={(e) =>
-                  setValorBusquedaPaciente(e.target.value)
-                }
+                onChange={(e) => setValorBusquedaPaciente(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     buscarPacientes();
@@ -683,8 +809,30 @@ export default function BoletasVentaPage() {
           onEscapeKeyDown={(e) => e.preventDefault()}
         >
           <DialogHeader>
-            <DialogTitle>Cobro de Cita</DialogTitle>
-            <DialogDescription>Registro y cobro de atención médica.</DialogDescription>
+            <div className="flex items-center gap-3">
+              {/* BOTÓN PARA REGRESAR A LA BÚSQUEDA DE PACIENTE */}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="shrink-0 text-slate-600 hover:text-cyan-700"
+                title="Volver a búsqueda de paciente"
+                aria-label="Volver a búsqueda de paciente"
+                onClick={() => {
+                  setShowCobroCita(false);
+                  setValorBusquedaPaciente("");
+                  setPacientesEncontrados([]);
+                  setShowBusquedaPaciente(true);
+                }}
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+
+              {/* TÍTULO */}
+              <div>
+                <DialogTitle>Cobro de Cita</DialogTitle>
+              </div>
+            </div>
           </DialogHeader>
 
           {/* DATOS DEL PACIENTE */}
@@ -844,10 +992,36 @@ export default function BoletasVentaPage() {
           onPointerDownOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
         >
+
           <DialogHeader>
-            <DialogTitle>Cobro de Proforma / Orden</DialogTitle>
-            <DialogDescription>Cobro de servicios generados por módulos asistenciales.</DialogDescription>
+            <div className="flex items-center gap-3">
+              {/* BOTÓN PARA REGRESAR A LA BÚSQUEDA */}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="shrink-0 text-slate-600 hover:text-cyan-700"
+                title="Volver a búsqueda de paciente"
+                aria-label="Volver a búsqueda de paciente"
+                onClick={() => {
+                  setShowCobroProforma(false);
+                  setValorBusquedaPaciente("");
+                  setPacientesEncontrados([]);
+                  setShowBusquedaPaciente(true);
+                }}
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+
+              {/* TÍTULO */}
+              <div>
+                <DialogTitle>
+                  Cobro de Proforma / Orden
+                </DialogTitle>
+              </div>
+            </div>
           </DialogHeader>
+
 
           {/* PACIENTE */}
           <Card>
@@ -876,75 +1050,83 @@ export default function BoletasVentaPage() {
             </CardContent>
           </Card>
 
-          {/* MODULO */}
-          <Card>
-            <CardContent className="pt-5">
-              <h3 className="font-semibold text-cyan-700 mb-4">Módulo de Origen</h3>
+          {/* MODULO Y DATOS DE LA PROFORMA */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-strecht">
 
-              <div className="grid grid-cols-2 gap-3">
-                <label className="flex items-center gap-2">
-                  <input type="radio" name="modulo" />
-                  Farmacia
-                </label>
+            {/* MÓDULO DE ORIGEN - COLUMNA IZQUIERDA */}
+            <Card>
+              <CardContent className="pt-5">
+                <h3 className="font-semibold text-cyan-700 mb-4">
+                  Módulo de Origen
+                </h3>
 
-                <label className="flex items-center gap-2">
-                  <input type="radio" name="modulo" />
-                  Liquidaciones
-                </label>
+                <div className="grid grid-cols-1 gap-3 text-sm">
+                  <label className="flex items-center gap-2">
+                    <input type="radio" name="modulo" />
+                    Farmacia
+                  </label>
 
-                <label className="flex items-center gap-2">
-                  <input type="radio" name="modulo" />
-                  Laboratorio
-                </label>
+                  <label className="flex items-center gap-2">
+                    <input type="radio" name="modulo" />
+                    Liquidaciones
+                  </label>
 
-                <label className="flex items-center gap-2">
-                  <input type="radio" name="modulo" />
-                  Rayos X
-                </label>
+                  <label className="flex items-center gap-2">
+                    <input type="radio" name="modulo" />
+                    Laboratorio
+                  </label>
 
-                <label className="flex items-center gap-2">
-                  <input type="radio" name="modulo" />
-                  Ecografía
-                </label>
+                  <label className="flex items-center gap-2">
+                    <input type="radio" name="modulo" />
+                    Rayos X
+                  </label>
 
-                <label className="flex items-center gap-2">
-                  <input type="radio" name="modulo" />
-                  Pendientes de Pago Medicamentos
-                </label>
-              </div>
-            </CardContent>
-          </Card>
+                  <label className="flex items-center gap-2">
+                    <input type="radio" name="modulo" />
+                    Ecografía
+                  </label>
 
-          {/* DATOS */}
-          <Card>
-            <CardContent className="pt-5">
-              <h3 className="font-semibold text-cyan-700 mb-4">Datos de la Proforma</h3>
+                  <label className="flex items-center gap-2">
+                    <input type="radio" name="modulo" />
+                    Pendientes de Pago Medicamentos
+                  </label>
+                </div>
+              </CardContent>
+            </Card>
 
-              <div className="grid grid-cols-8 gap-4">
-                <div>
-                  <Label>N° Proforma</Label>
-                  <Input />
+            {/* DATOS DE LA PROFORMA - COLUMNA DERECHA */}
+            <Card>
+              <CardContent className="pt-5">
+                <h3 className="font-semibold text-cyan-700 mb-4">
+                  Datos de la Proforma
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <Label>N° Proforma</Label>
+                    <Input />
+                  </div>
+
+                  <div>
+                    <Label>N° Orden</Label>
+                    <Input />
+                  </div>
+
+                  <div>
+                    <Label>N° Cuenta</Label>
+                    <Input />
+                  </div>
                 </div>
 
-                <div>
-                  <Label>N° Orden</Label>
-                  <Input />
+                <div className="mt-4">
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" />
+                    Exonerar Pago
+                  </label>
                 </div>
-
-                <div className="md:col-span-2">
-                  <Label>N° Cuenta</Label>
-                  <Input />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" />
-                  Exonerar Pago
-                </label>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* RESULTADO */}
           <Card>
@@ -1009,30 +1191,56 @@ export default function BoletasVentaPage() {
           className="max-w-7xl max-h-[90vh] overflow-y-auto"
           onPointerDownOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
+          onOpenAutoFocus={(e) => {
+            e.preventDefault();
+            origenInputRef.current?.focus();
+          }}
         >
           <DialogHeader>
-            <DialogTitle>Emisión de Boleta de Venta</DialogTitle>
-            <DialogDescription>Registro de servicios médicos y generación de boleta.</DialogDescription>
+            <div className="flex items-center gap-3">
+              {/* BOTÓN PARA REGRESAR A LA BÚSQUEDA DE PACIENTE */}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="shrink-0 text-slate-600 hover:text-cyan-700"
+                title="Volver a búsqueda de paciente"
+                aria-label="Volver a búsqueda de paciente"
+                onClick={() => {
+                  setOpenEmisionBoleta(false);
+                  setValorBusquedaPaciente("");
+                  setPacientesEncontrados([]);
+                  setShowBusquedaPaciente(true);
+                }}
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+
+              {/* TÍTULO */}
+              <div>
+                <DialogTitle>Emisión de Boleta de Venta</DialogTitle>
+              </div>
+            </div>
           </DialogHeader>
 
           {/* CABECERA */}
           <div className="grid grid-cols-4 gap-4 rounded-lg bg-slate-50 border p-4">
-            <div>
+            <div className="flex items-center gap-2">
               <Label>Turno</Label>
               <Input value="GD" className="bg-gray-100 text-gray-600 font-semibold" disabled />
             </div>
 
-            <div>
+            <div className="flex items-center gap-2">
               <Label>Boleta</Label>
               <Input value="B004-0015090" className="bg-gray-100 text-gray-600 font-semibold" disabled />
             </div>
 
-            <div>
+            <div className="flex items-center gap-2">
               <Label>Fecha</Label>
               <Input value={obtenerFechaActual()} className="bg-gray-100 text-gray-600 font-semibold" disabled />
             </div>
 
-            <div>
+            <div className="flex items-center gap-2">
               <Label>Hora</Label>
               <Input value={obtenerHoraActual()} className="bg-gray-100 text-gray-600 font-semibold" disabled />
             </div>
@@ -1044,8 +1252,8 @@ export default function BoletasVentaPage() {
               <h3 className="font-semibold text-cyan-700 mb-4">Datos del Paciente</h3>
               <div className="grid grid-cols-4 gap-3">
                 <div>
-                  <Label>Pago ID</Label>
-                  <Input />
+                  <Label>Paciente</Label>
+                  <Input value={pacienteSeleccionado?.nombre} className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50" disabled />
                 </div>
 
                 <div>
@@ -1054,18 +1262,54 @@ export default function BoletasVentaPage() {
                 </div>
 
                 <div>
-                  <Label>Origen</Label>
-                  <Input />
+                  <Label>Código de Paciente</Label>
+                  <Input value={pacienteSeleccionado?.codPaciente} className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50" disabled />
                 </div>
 
                 <div>
-                  <Label>Tipo Pago</Label>
-                  <Input />
+                  <Label>Seguro</Label>
+                  <Input value={pacienteSeleccionado?.seguro} className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50" disabled />
                 </div>
+              </div>
+            </CardContent>
+          </Card>
 
-                <div className="col-span-2">
-                  <Label>Paciente</Label>
-                  <Input value={pacienteSeleccionado?.nombre} />
+          <Card>
+            <CardContent className="pt-5">
+              <h3 className="font-semibold text-cyan-700 mb-4">Registro de información</h3>
+              <div
+                className="grid grid-cols-3 gap-3"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+
+                    const inputs = Array.from(
+                      e.currentTarget.querySelectorAll<HTMLInputElement>(
+                        'input:not([disabled]):not([type="hidden"])'
+                      )
+                    );
+
+                    const currentIndex = inputs.indexOf(
+                      e.target as HTMLInputElement
+                    );
+
+                    if (
+                      currentIndex !== -1 &&
+                      currentIndex < inputs.length - 1
+                    ) {
+                      inputs[currentIndex + 1].focus();
+                    } else if (
+                      currentIndex === inputs.length - 1
+                    ) {
+                      // Pasar del último campo habilitado al campo CPT
+                      itemInputRef.current?.focus();
+                    }
+                  }
+                }}
+              >
+                <div>
+                  <Label>Origen</Label>
+                  <Input ref={origenInputRef} />
                 </div>
 
                 <div>
@@ -1074,8 +1318,23 @@ export default function BoletasVentaPage() {
                 </div>
 
                 <div>
+                  <Label>Categoría</Label>
+                  <Input />
+                </div>
+
+                <div>
+                  <Label>Cobro SIS</Label>
+                  <Input />
+                </div>
+
+                <div>
                   <Label>N° SS</Label>
                   <Input />
+                </div>
+
+                <div>
+                  <Label>Tipo de Pago</Label>
+                  <Input value="C" className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50" disabled />
                 </div>
               </div>
             </CardContent>
@@ -1090,24 +1349,123 @@ export default function BoletasVentaPage() {
 
               {/* FORMULARIO DE INGRESO */}
               <div className="grid grid-cols-12 gap-3 mb-5">
-                <div className="col-span-7">
-                  <Label>CPT</Label>
+                <div className="col-span-7 relative">
+                  <Label>Ítem</Label>
                   <Input
-                    placeholder="Ingrese código CPT o nombre del concepto..."
+                    ref={itemInputRef}
+                    value={itemBusqueda}
+                    placeholder="Escriba el nombre del ítem..."
+                    autoComplete="off"
+                    onChange={(e) => {
+                      setItemBusqueda(e.target.value);
+                      setItemConfirmado(false);
+                      setIndiceSugerencia(-1);
+                      setMostrarSugerencias(e.target.value.trim().length > 0);
+                    }}
+                    onFocus={() => {
+                      if (itemBusqueda.trim().length > 0 && !itemConfirmado) {
+                        setMostrarSugerencias(true);
+                      }
+                    }}
+                    onBlur={() => {
+                      setMostrarSugerencias(false);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "ArrowDown" && mostrarSugerencias && itemsFiltrados.length > 0) {
+                        e.preventDefault();
+                        setIndiceSugerencia((actual) =>
+                          actual < itemsFiltrados.length - 1 ? actual + 1 : 0
+                        );
+                        return;
+                      }
+
+                      if (e.key === "ArrowUp" && mostrarSugerencias && itemsFiltrados.length > 0) {
+                        e.preventDefault();
+                        setIndiceSugerencia((actual) =>
+                          actual > 0 ? actual - 1 : itemsFiltrados.length - 1
+                        );
+                        return;
+                      }
+
+                      if (e.key === "Escape" && mostrarSugerencias) {
+                        e.preventDefault();
+                        setMostrarSugerencias(false);
+                        setIndiceSugerencia(-1);
+                        return;
+                      }
+
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+
+                        // Primera pulsación: seleccionar un ítem del desplegable
+                        if (mostrarSugerencias && itemsFiltrados.length > 0) {
+                          const indice =
+                            indiceSugerencia >= 0 ? indiceSugerencia : 0;
+
+                          seleccionarItem(itemsFiltrados[indice].nombre);
+                          return;
+                        }
+
+                        // Segunda pulsación: avanzar a Cantidad
+                        if (itemConfirmado) {
+                          cantidadInputRef.current?.focus();
+                        }
+                      }
+                    }}
                   />
+
+                  {mostrarSugerencias && itemBusqueda.trim().length > 0 && (
+                    <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-60 overflow-y-auto rounded-md border border-slate-200 bg-white shadow-lg">
+                      {itemsFiltrados.length > 0 ? (
+                        itemsFiltrados.map((item, index) => (
+                          <button
+                            key={item.codigo}
+                            type="button"
+                            className={`flex w-full items-center gap-3 px-3 py-2 text-left text-sm ${indiceSugerencia === index
+                              ? "bg-cyan-100 text-cyan-900"
+                              : "hover:bg-slate-100"
+                              }`}
+                            onMouseDown={(e) => {
+                              // Evita que el input pierda el foco antes de seleccionar
+                              e.preventDefault();
+                            }}
+                            onClick={() => seleccionarItem(item.nombre)}
+                          >
+                            <span className="shrink-0 text-xs text-slate-500">
+                              {item.codigo}
+                            </span>
+                            <span>{item.nombre}</span>
+                          </button>
+                        ))
+                      ) : (
+                        <div className="px-3 py-2 text-sm text-slate-500">
+                          No se encontraron ítems.
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="col-span-2">
                   <Label>Cantidad</Label>
 
                   <Input
+                    ref={cantidadInputRef}
                     type="number"
                     defaultValue="1"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        agregarItem();
+                      }
+                    }}
                   />
                 </div>
 
                 <div className="col-span-3 flex items-end">
                   <Button
+                    type="button"
+                    onClick={agregarItem}
                     className="w-full bg-green-600 hover:bg-green-700"
                   >
                     <Plus className="h-5 w-5" strokeWidth={3} />
@@ -1134,8 +1492,61 @@ export default function BoletasVentaPage() {
 
                   <TableBody>
 
-                    {/* Ítems registrados */}
+                    {itemsRegistrados.length > 0 ? (
+                      itemsRegistrados.map((item, index) => {
+                        const importe =
+                          item.cantidad * item.precio - item.descuento;
 
+                        return (
+                          <TableRow key={item.id}>
+                            <TableCell>{item.codigo}</TableCell>
+
+                            <TableCell>{index + 1}</TableCell>
+
+                            <TableCell>{item.nombre}</TableCell>
+
+                            <TableCell className="text-center">
+                              {item.cantidad}
+                            </TableCell>
+
+                            <TableCell className="text-right">
+                              {item.precio.toFixed(2)}
+                            </TableCell>
+
+                            <TableCell className="text-right">
+                              {item.descuento.toFixed(2)}
+                            </TableCell>
+
+                            <TableCell className="text-right font-medium">
+                              {importe.toFixed(2)}
+                            </TableCell>
+
+                            <TableCell className="text-center">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                title="Eliminar ítem"
+                                aria-label={`Eliminar ${item.nombre}`}
+                                className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                                onClick={() => eliminarItem(item.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    ) : (
+                      <TableRow>
+                        <TableCell
+                          colSpan={8}
+                          className="h-20 text-center text-slate-500"
+                        >
+                          No hay ítems registrados.
+                        </TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </div>
@@ -1145,7 +1556,7 @@ export default function BoletasVentaPage() {
 
                 <div className="bg-blue-50 border border-blue-200 rounded-lg px-6 py-4 min-w-[150px]">
                   <div className="text-2xl font-bold text-blue-700 text-center">
-                    S/ 0.00
+                    S/ {totalPagar.toFixed(2)}
                   </div>
                 </div>
               </div>
