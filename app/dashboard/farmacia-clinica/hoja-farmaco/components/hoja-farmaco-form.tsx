@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ArrowLeft, Save, PlusCircle, Trash2, Loader2, CheckCircle } from "lucide-react"
+import { ArrowLeft, Save, PlusCircle, Trash2, Loader2, CheckCircle, PlayCircle, Ban, CalendarCheck, RotateCcw } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 
@@ -146,11 +146,25 @@ type ProductoSalida = {
     lotesAsignados: LoteAsignado[];
 };
 
+type EventoSuspension = {
+    id: number;
+    accion: "SUSPENSION" | "REACTIVACION";
+    fecha: string;
+    motivo?: string;
+};
+
 type MedicamentoFarmaco = {
     id: number;
     nombre: string;
     dias: boolean[];
-}
+    suspendido: boolean;
+    motivoSuspension?: string;
+    fechaSuspension?: string;
+    historialSuspensiones: EventoSuspension[];
+
+    // Índice del día de la última aplicación
+    ultimaAplicacionIndex: number | null;
+};
 
 interface HojaFarmacoFormProps {
     modo: "crear" | "editar" | "consulta";
@@ -189,6 +203,23 @@ export default function HojaFarmacoForm({
     const [medicamento, setMedicamento] = useState("");
 
     const [medicamentosRegistrados, setMedicamentosRegistrados] = useState<MedicamentoFarmaco[]>([]);
+    const [openModalSuspension, setOpenModalSuspension] = useState(false);
+    const [medicamentoPendienteSuspension, setMedicamentoPendienteSuspension] = useState<number | null>(null);
+    const [motivoSuspension, setMotivoSuspension] = useState("");
+    const [fechaSuspension, setFechaSuspension] = useState("");
+
+    const obtenerFechaLocal = () => {
+        const hoy = new Date();
+        const anio = hoy.getFullYear();
+        const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+        const dia = String(hoy.getDate()).padStart(2, "0");
+
+        return `${anio}-${mes}-${dia}`;
+    };
+
+    const [openModalUltimaAplicacion, setOpenModalUltimaAplicacion] = useState(false);
+    const [medicamentoUltimaAplicacionId, setMedicamentoUltimaAplicacionId] = useState<number | null>(null);
+    const [diaUltimaAplicacionSeleccionado, setDiaUltimaAplicacionSeleccionado] = useState("");
 
     // CALCULAR LA FECHA Y HORA ACTUALES
     useEffect(() => {
@@ -298,6 +329,7 @@ export default function HojaFarmacoForm({
 
     const fechasTratamiento = generarFechas();
 
+    // AGREGAR MEDICAMENTO A LA TABLA
     const agregarMedicamento = () => {
 
         if (!medicamento.trim()) return;
@@ -306,6 +338,11 @@ export default function HojaFarmacoForm({
             id: Date.now(),
             nombre: medicamento,
             dias: Array(24).fill(false),
+            suspendido: false,
+            motivoSuspension: undefined,
+            fechaSuspension: undefined,
+            historialSuspensiones: [],
+            ultimaAplicacionIndex: null,
         };
 
         setMedicamentosRegistrados((prev) => [
@@ -316,6 +353,162 @@ export default function HojaFarmacoForm({
         setMedicamento("");
     };
 
+    // SUSPENDER O REACTIVAR UN MEDICAMENTO
+
+    const solicitarSuspension = (medicamentoId: number) => {
+        if (soloLectura) return;
+
+        setMedicamentoPendienteSuspension(medicamentoId);
+        setMotivoSuspension("");
+        setFechaSuspension(obtenerFechaLocal());
+        setOpenModalSuspension(true);
+    };
+
+    const confirmarSuspension = () => {
+        if (soloLectura) return;
+        if (medicamentoPendienteSuspension === null) return;
+        if (!motivoSuspension.trim() || !fechaSuspension) return;
+
+        setMedicamentosRegistrados((prev) =>
+            prev.map((med) => {
+                if (med.id !== medicamentoPendienteSuspension) {
+                    return med;
+                }
+
+                // Evitar registrar una suspensión duplicada
+                if (med.suspendido) {
+                    return med;
+                }
+
+                const nuevoEvento: EventoSuspension = {
+                    id: Date.now(),
+                    accion: "SUSPENSION",
+                    fecha: fechaSuspension,
+                    motivo: motivoSuspension.trim(),
+                };
+
+                return {
+                    ...med,
+                    suspendido: true,
+                    motivoSuspension: motivoSuspension.trim(),
+                    fechaSuspension,
+                    historialSuspensiones: [
+                        ...med.historialSuspensiones,
+                        nuevoEvento,
+                    ],
+                };
+            })
+        );
+
+        setOpenModalSuspension(false);
+        setMedicamentoPendienteSuspension(null);
+        setMotivoSuspension("");
+        setFechaSuspension("");
+    };
+
+    const reactivarMedicamento = (medicamentoId: number) => {
+        if (soloLectura) return;
+
+        setMedicamentosRegistrados((prev) =>
+            prev.map((med) => {
+                if (med.id !== medicamentoId || !med.suspendido) {
+                    return med;
+                }
+
+                const nuevoEvento: EventoSuspension = {
+                    id: Date.now(),
+                    accion: "REACTIVACION",
+                    fecha: obtenerFechaLocal(),
+                };
+
+                return {
+                    ...med,
+                    suspendido: false,
+                    historialSuspensiones: [
+                        ...med.historialSuspensiones,
+                        nuevoEvento,
+                    ],
+                };
+            })
+        );
+    };
+
+    // REGISTRAR Y QUITAR LA ÚLTIMA APLICACIÓN
+
+    const solicitarUltimaAplicacion = (med: MedicamentoFarmaco) => {
+        if (soloLectura || med.suspendido) return;
+
+        // Solo se puede elegir un día que tenga aplicación registrada
+        const diasMarcados = med.dias
+            .map((marcado, index) => (marcado ? index : -1))
+            .filter((index) => index !== -1);
+
+        if (diasMarcados.length === 0) return;
+
+        setMedicamentoUltimaAplicacionId(med.id);
+
+        // Seleccionar inicialmente el último día marcado
+        setDiaUltimaAplicacionSeleccionado(
+            String(diasMarcados[diasMarcados.length - 1])
+        );
+
+        setOpenModalUltimaAplicacion(true);
+    };
+
+    const confirmarUltimaAplicacion = () => {
+        if (soloLectura) return;
+        if (medicamentoUltimaAplicacionId === null) return;
+        if (diaUltimaAplicacionSeleccionado === "") return;
+
+        const indice = Number(diaUltimaAplicacionSeleccionado);
+
+        setMedicamentosRegistrados((prev) =>
+            prev.map((med) => {
+                if (med.id !== medicamentoUltimaAplicacionId) {
+                    return med;
+                }
+
+                if (med.suspendido) return med;
+                if (!med.dias[indice]) return med;
+
+                // No admitir aplicaciones registradas después
+                // de la fecha elegida como última aplicación.
+                const existenAplicacionesPosteriores = med.dias.some(
+                    (marcado, index) => index > indice && marcado
+                );
+
+                if (existenAplicacionesPosteriores) {
+                    return med;
+                }
+
+                return {
+                    ...med,
+                    ultimaAplicacionIndex: indice,
+                };
+            })
+        );
+
+        setOpenModalUltimaAplicacion(false);
+        setMedicamentoUltimaAplicacionId(null);
+        setDiaUltimaAplicacionSeleccionado("");
+    };
+
+    const quitarUltimaAplicacion = (medicamentoId: number) => {
+        if (soloLectura) return;
+
+        setMedicamentosRegistrados((prev) =>
+            prev.map((med) =>
+                med.id === medicamentoId
+                    ? {
+                        ...med,
+                        ultimaAplicacionIndex: null,
+                    }
+                    : med
+            )
+        );
+    };
+
+
     const toggleDia = (
         medicamentoId: number,
         diaIndex: number
@@ -324,13 +517,26 @@ export default function HojaFarmacoForm({
         setMedicamentosRegistrados((prev) =>
             prev.map((med) => {
 
-                if (med.id !== medicamentoId)
+                if (med.id !== medicamentoId) {
                     return med;
+                }
+
+                // Bloquear el día de la última aplicación y todos los posteriores
+                if (
+                    med.ultimaAplicacionIndex !== null &&
+                    diaIndex >= med.ultimaAplicacionIndex
+                ) {
+                    return med;
+                }
+
+                // No permitir modificar los días si está suspendido
+                if (med.suspendido) {
+                    return med;
+                }
 
                 const nuevosDias = [...med.dias];
 
-                nuevosDias[diaIndex] =
-                    !nuevosDias[diaIndex];
+                nuevosDias[diaIndex] = !nuevosDias[diaIndex];
 
                 return {
                     ...med,
@@ -366,10 +572,10 @@ export default function HojaFarmacoForm({
                         <h1 className="text-xl font-bold">
                             {modo === "crear" &&
                                 "Registrar Hoja Farmacoterapéutica"}
-                            
+
                             {modo === "editar" &&
                                 "Editar Hoja Farmacoterapéutica"}
-                            
+
                             {modo === "consulta" &&
                                 "Consultar Hoja Farmacoterapéutica"}
                         </h1>
@@ -494,74 +700,159 @@ export default function HojaFarmacoForm({
                     <div className="mt-6 border rounded-lg overflow-hidden">
                         <div className="flex">
                             {/* PANEL IZQUIERDO */}
-                            <div className="w-[350px] flex-shrink-0 border-r">
+                            <div className="w-[500px] flex-shrink-0 border-r">
                                 <table className="w-full text-xs">
                                     <thead className="bg-slate-100">
                                         <tr>
-                                            <th
-                                                className="px-3 py-2 text-center h-[32px]"
-                                            >
-                                                Medicamentos
-                                            </th>
+                                            <th className="px-3 py-2 text-center h-[32px]">Medicamentos</th>
                                         </tr>
 
                                         <tr>
-                                            <th
-                                                className="px-3 py-2 h-[32px]"
-                                            >
-                                            </th>
+                                            <th className="px-3 py-2 h-[32px]"></th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
                                         {medicamentosRegistrados.length === 0 ? (
-
                                             <tr>
                                                 <td className="px-3 py-4 text-center text-slate-500">
                                                     No hay registro de medicamentos involucrados
                                                 </td>
                                             </tr>
-
                                         ) : (
-
                                             medicamentosRegistrados.map((med) => (
-
                                                 <tr
                                                     key={med.id}
                                                     className="border-t h-[52px]"
                                                 >
-
                                                     <td className="px-3 h-[52px] align-middle">
+                                                        <div className="flex items-center justify-between gap-1">
+                                                            <div className="min-w-0 flex-1">
+                                                                <span
+                                                                    className={
+                                                                        med.suspendido
+                                                                            ? "text-slate-500"
+                                                                            : "text-slate-900"
+                                                                    }
+                                                                >
+                                                                    {med.nombre}
+                                                                </span>
 
-                                                        <div className="flex items-center justify-between">
+                                                                {med.suspendido && (
+                                                                    <div className="text-[10px] font-semibold text-red-600">
+                                                                        SUSPENDIDO
+                                                                    </div>
+                                                                )}
 
-                                                            <span>
-                                                                {med.nombre}
-                                                            </span>
+                                                                {/*{med.suspendido && (
+                                                                    <div className="mt-1 text-[10px] text-red-600">
+                                                                        <div className="font-semibold">SUSPENDIDO</div>
+                                                                        <div>
+                                                                            Fecha: {med.fechaSuspension?.split("-").reverse().join("/")}
+                                                                        </div>
+                                                                        <div
+                                                                            className="max-w-[220px] whitespace-normal break-words"
+                                                                            title={med.motivoSuspension}
+                                                                        >
+                                                                            Motivo: {med.motivoSuspension}
+                                                                        </div>
+                                                                    </div>
+                                                                )}*/}
+                                                            </div>
 
                                                             {!soloLectura && (
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    onClick={() =>
-                                                                        eliminarMedicamento(
-                                                                            med.id
-                                                                        )
-                                                                    }
-                                                                    className="text-red-600 hover:bg-red-50"
-                                                                >
-                                                                    <Trash2 className="w-4 h-4" />
-                                                                </Button>
+                                                                <div className="flex shrink-0 items-center gap-1">
+                                                                    <Button
+                                                                        type="button"
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        disabled={soloLectura}
+                                                                        onClick={() =>
+                                                                            med.suspendido
+                                                                                ? reactivarMedicamento(med.id)
+                                                                                : solicitarSuspension(med.id)
+                                                                        }
+                                                                        title={
+                                                                            med.suspendido
+                                                                                ? "Reactivar medicamento"
+                                                                                : "Suspender medicamento"
+                                                                        }
+                                                                        aria-label={
+                                                                            med.suspendido
+                                                                                ? "Reactivar medicamento"
+                                                                                : "Suspender medicamento"
+                                                                        }
+                                                                        className={`h-7 w-7 p-0 ${med.suspendido
+                                                                            ? "border-green-600 text-green-700 hover:bg-green-50"
+                                                                            : "border-amber-500 text-amber-700 hover:bg-amber-50"
+                                                                            }`}
+                                                                    >
+                                                                        {med.suspendido ? (
+                                                                            <PlayCircle className="h-4 w-4" />
+                                                                        ) : (
+                                                                            <Ban className="h-4 w-4" />
+                                                                        )}
+                                                                    </Button>
+
+                                                                    <Button
+                                                                        type="button"
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        disabled={
+                                                                            soloLectura ||
+                                                                            med.suspendido ||
+                                                                            !med.dias.some(Boolean)
+                                                                        }
+                                                                        onClick={() => solicitarUltimaAplicacion(med)}
+                                                                        title={
+                                                                            med.ultimaAplicacionIndex !== null
+                                                                                ? "Modificar última aplicación"
+                                                                                : "Registrar última aplicación"
+                                                                        }
+                                                                        aria-label={
+                                                                            med.ultimaAplicacionIndex !== null
+                                                                                ? "Modificar última aplicación"
+                                                                                : "Registrar última aplicación"
+                                                                        }
+                                                                        className="h-7 w-7 p-0 border-blue-500 text-blue-700 hover:bg-blue-50"
+                                                                    >
+                                                                        <CalendarCheck className="h-4 w-4" />
+                                                                    </Button>
+
+                                                                    {med.ultimaAplicacionIndex !== null && (
+                                                                        <Button
+                                                                            type="button"
+                                                                            variant="ghost"
+                                                                            size="sm"
+                                                                            disabled={soloLectura}
+                                                                            onClick={() => quitarUltimaAplicacion(med.id)}
+                                                                            title="Quitar marca de última aplicación"
+                                                                            aria-label="Quitar marca de última aplicación"
+                                                                            className="h-7 w-7 p-0 text-slate-600 hover:bg-slate-100"
+                                                                        >
+                                                                            <RotateCcw className="h-4 w-4" />
+                                                                        </Button>
+                                                                    )}
+
+                                                                    {!soloLectura && (
+                                                                        <Button
+                                                                            type="button"
+                                                                            variant="outline"
+                                                                            size="sm"
+                                                                            onClick={() => eliminarMedicamento(med.id)}
+                                                                            title="Eliminar medicamento"
+                                                                            aria-label="Eliminar medicamento"
+                                                                            className="h-7 w-7 p-0 border-red-500 text-red-600 hover:bg-red-50"
+                                                                        >
+                                                                            <Trash2 className="h-4 w-4" />
+                                                                        </Button>
+                                                                    )}
+                                                                </div>
                                                             )}
-
                                                         </div>
-
                                                     </td>
-
                                                 </tr>
-
                                             ))
-
                                         )}
                                     </tbody>
                                 </table>
@@ -570,11 +861,8 @@ export default function HojaFarmacoForm({
                             {/* PANEL DERECHO */}
                             <div className="overflow-x-auto flex-1">
                                 <table className="min-w-[1680px] text-xs">
-
                                     <thead className="bg-slate-100">
-
                                         <tr>
-
                                             {Array.from(
                                                 { length: 24 },
                                                 (_, i) => (
@@ -586,11 +874,9 @@ export default function HojaFarmacoForm({
                                                     </th>
                                                 )
                                             )}
-
                                         </tr>
 
                                         <tr>
-
                                             {fechasTratamiento.map(
                                                 (fecha, index) => (
                                                     <th
@@ -601,56 +887,62 @@ export default function HojaFarmacoForm({
                                                     </th>
                                                 )
                                             )}
-
                                         </tr>
-
                                     </thead>
 
                                     <tbody>
-
                                         {medicamentosRegistrados.map(
                                             (med) => (
-
                                                 <tr
                                                     key={med.id}
                                                     className="border-t h-[52px]"
                                                 >
-
                                                     {med.dias.map(
                                                         (
                                                             valor,
                                                             index
                                                         ) => (
-
                                                             <td
                                                                 key={index}
-                                                                className="text-center align-middle h-[52px]"
+                                                                className={`text-center align-middle h-[52px] ${med.ultimaAplicacionIndex === index
+                                                                    ? "bg-amber-100 ring-1 ring-inset ring-amber-500"
+                                                                    : ""
+                                                                    }`}
+                                                                title={
+                                                                    med.ultimaAplicacionIndex === index
+                                                                        ? "Última aplicación registrada"
+                                                                        : undefined
+                                                                }
                                                             >
-
                                                                 <Checkbox
-                                                                    checked={
-                                                                        valor
-                                                                    }
-                                                                    onCheckedChange={() =>
-                                                                        toggleDia(
-                                                                            med.id,
-                                                                            index
+                                                                    checked={valor}
+
+                                                                    disabled={
+                                                                        soloLectura ||
+                                                                        med.suspendido ||
+                                                                        (
+                                                                            med.ultimaAplicacionIndex !== null &&
+                                                                            index >= med.ultimaAplicacionIndex
                                                                         )
+                                                                    }
+
+                                                                    onCheckedChange={() =>
+                                                                        toggleDia(med.id, index)
                                                                     }
                                                                 />
 
+                                                                {med.ultimaAplicacionIndex === index && (
+                                                                    <div className="mt-1 text-[9px] font-bold text-amber-800">
+                                                                        ÚLTIMA
+                                                                    </div>
+                                                                )}
                                                             </td>
-
                                                         )
                                                     )}
-
                                                 </tr>
-
                                             )
                                         )}
-
                                     </tbody>
-
                                 </table>
                             </div>
                         </div>
@@ -681,6 +973,190 @@ export default function HojaFarmacoForm({
                     </Button>
                 )}
             </div>
+
+
+
+            {/* MODAL PARA REGISTRAR LA ÚLTIMA APLICACIÓN */}
+            <Dialog
+                open={openModalUltimaAplicacion}
+                onOpenChange={(open) => {
+                    setOpenModalUltimaAplicacion(open);
+
+                    if (!open) {
+                        setMedicamentoUltimaAplicacionId(null);
+                        setDiaUltimaAplicacionSeleccionado("");
+                    }
+                }}
+            >
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>
+                            Registrar última aplicación
+                        </DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-4 py-2">
+                        <p className="text-sm text-muted-foreground">
+                            Seleccione la última fecha en la que se administró
+                            el medicamento. Solo se muestran días con
+                            aplicaciones registradas.
+                        </p>
+
+                        <div className="space-y-2">
+                            <Label>Fecha de última aplicación *</Label>
+
+                            <select
+                                value={diaUltimaAplicacionSeleccionado}
+                                onChange={(e) =>
+                                    setDiaUltimaAplicacionSeleccionado(e.target.value)
+                                }
+                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                            >
+                                <option value="">
+                                    Seleccione una fecha
+                                </option>
+
+                                {medicamentosRegistrados
+                                    .find(
+                                        (med) =>
+                                            med.id === medicamentoUltimaAplicacionId
+                                    )
+                                    ?.dias.map((marcado, index, dias) => {
+                                        if (!marcado) return null;
+
+                                        const hayAplicacionesPosteriores =
+                                            dias.some(
+                                                (otroDia, otroIndex) =>
+                                                    otroIndex > index && otroDia
+                                            );
+
+                                        return (
+                                            <option
+                                                key={index}
+                                                value={String(index)}
+                                                disabled={hayAplicacionesPosteriores}
+                                            >
+                                                Día {index + 1} — {fechasTratamiento[index]}
+                                                {hayAplicacionesPosteriores
+                                                    ? " (hay aplicaciones posteriores)"
+                                                    : ""}
+                                            </option>
+                                        );
+                                    })}
+                            </select>
+                        </div>
+
+                        <p className="text-xs text-muted-foreground">
+                            Una vez confirmada la fecha, se bloquearán
+                            las aplicaciones desde ese día en adelante.
+                        </p>
+                    </div>
+
+                    <DialogFooter>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setOpenModalUltimaAplicacion(false)}
+                        >
+                            Cancelar
+                        </Button>
+
+                        <Button
+                            type="button"
+                            disabled={!diaUltimaAplicacionSeleccionado}
+                            onClick={confirmarUltimaAplicacion}
+                            className="bg-blue-600 text-white hover:bg-blue-700"
+                        >
+                            Confirmar última aplicación
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* MODAL PARA REGISTRAR LA SUSPENSIÓN DE UN MEDICAMENTO */}
+            <Dialog
+                open={openModalSuspension}
+                onOpenChange={(open) => {
+                    setOpenModalSuspension(open);
+
+                    if (!open) {
+                        setMedicamentoPendienteSuspension(null);
+                        setMotivoSuspension("");
+                        setFechaSuspension("");
+                    }
+                }}
+            >
+                <DialogContent
+                    className="sm:max-w-md"
+                    onPointerDownOutside={(e) => e.preventDefault()}
+                >
+                    <DialogHeader>
+                        <DialogTitle>
+                            Suspender medicamento
+                        </DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-4 py-2">
+                        <p className="text-sm text-muted-foreground">
+                            Registre el motivo y la fecha de suspensión
+                            antes de confirmar esta acción.
+                        </p>
+
+                        <div className="space-y-2">
+                            <Label>Motivo de suspensión *</Label>
+
+                            <Input
+                                value={motivoSuspension}
+                                onChange={(e) =>
+                                    setMotivoSuspension(e.target.value)
+                                }
+                                placeholder="Ej. Reacción adversa del paciente"
+                                maxLength={500}
+                                autoFocus
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label>Fecha de suspensión *</Label>
+
+                            <Input
+                                type="date"
+                                value={fechaSuspension}
+                                onChange={(e) =>
+                                    setFechaSuspension(e.target.value)
+                                }
+                                required
+                            />
+                        </div>
+
+                        <p className="text-xs text-muted-foreground">
+                            Los campos marcados con * son obligatorios.
+                        </p>
+                    </div>
+
+                    <DialogFooter>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setOpenModalSuspension(false)}
+                        >
+                            Cancelar
+                        </Button>
+
+                        <Button
+                            type="button"
+                            disabled={
+                                !motivoSuspension.trim() ||
+                                !fechaSuspension
+                            }
+                            onClick={confirmarSuspension}
+                            className="bg-amber-600 text-white hover:bg-amber-700"
+                        >
+                            Confirmar suspensión
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* MODAL DE ÉXITO DEL GUARDADO DEL DOCUMENTO DE SALIDA */}
             <Dialog open={openModalExito} onOpenChange={setOpenModalExito}>

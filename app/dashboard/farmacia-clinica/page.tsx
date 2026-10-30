@@ -54,20 +54,6 @@ export default function FarmaciaClinicaPage() {
       {/* No info bar needed here as it's already in the footer */}
 
       <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
-        <Link href="/dashboard/farmacia-clinica/seguimiento-farmaco" className="block">
-          <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
-            <CardHeader className="p-4">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <ShoppingCart className="h-5 w-5 text-primary" />
-                Seguimiento Farmacoterapéutico
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 pt-0">
-              <CardDescription className="text-xs">Problemas relacionados a medicamentos</CardDescription>
-            </CardContent>
-          </Card>
-        </Link>
-
         <Link href="/dashboard/farmacia-clinica/hoja-farmaco" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
             <CardHeader className="p-4">
@@ -78,6 +64,20 @@ export default function FarmaciaClinicaPage() {
             </CardHeader>
             <CardContent className="p-4 pt-0">
               <CardDescription className="text-xs">Control de medicamentos del paciente hospitalizado</CardDescription>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/dashboard/farmacia-clinica/seguimiento-farmaco" className="block">
+          <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
+            <CardHeader className="p-4">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <ShoppingCart className="h-5 w-5 text-primary" />
+                Seguimiento Farmacoterapéutico
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0">
+              <CardDescription className="text-xs">Problemas relacionados a medicamentos</CardDescription>
             </CardContent>
           </Card>
         </Link>

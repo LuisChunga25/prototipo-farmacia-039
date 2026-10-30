@@ -186,6 +186,85 @@ export default function AnamnesisFarmacoForm({
     const isACTA = tipoDocumento === "ACTA";
     const isRDS = tipoDocumento === "RDS";
     const isDDL = tipoDocumento === "DDL";
+    const [fechaIngreso, setFechaIngreso] = useState("");
+
+    // LISTA DE PRUEBAS DE LABORATORIO
+    const pruebasLaboratorio = [
+        { id: "leucocitos", nombre: "Leucocitos" },
+        { id: "hb", nombre: "HB" },
+        { id: "plaquetas", nombre: "Plaquetas" },
+        { id: "neutrofilos", nombre: "Neutrófilos" },
+        { id: "pcr", nombre: "PCR" },
+        { id: "na", nombre: "Na" },
+        { id: "k", nombre: "K" },
+        { id: "albumina", nombre: "Albúmina" },
+        { id: "prot_totales", nombre: "Prot. Totales" },
+        { id: "probnp", nombre: "Probnp" },
+        { id: "urea", nombre: "Urea" },
+        { id: "creat", nombre: "Creat." },
+        { id: "fa", nombre: "FA" },
+        { id: "tgo", nombre: "TGO" },
+        { id: "tgp", nombre: "TGP" },
+        { id: "bt", nombre: "BT" },
+        { id: "bd", nombre: "BD" },
+        { id: "bi", nombre: "BI" },
+        { id: "ggt", nombre: "GGT" },
+        { id: "amilasa", nombre: "Amilasa" },
+        { id: "lipasa", nombre: "Lipasa" },
+        { id: "urocultivo", nombre: "Urocultivo" },
+        { id: "antibiograma", nombre: "Antibiograma" },
+    ]
+
+    const [resultadosLaboratorio, setResultadosLaboratorio] = useState<
+        Record<string, Record<number, string>>
+    >({})
+
+    // FUNCIÓN PARA REGISTRAR LOS CAMBIOS
+    const actualizarResultadoLaboratorio = (
+        pruebaId: string,
+        dia: number,
+        valor: string
+    ) => {
+        setResultadosLaboratorio((prev) => ({
+            ...prev,
+            [pruebaId]: {
+                ...prev[pruebaId],
+                [dia]: valor,
+            },
+        }))
+    }
+
+    // GENERAR FECHAS PARA LA TABLA DE 24 DÍAS A PARTIR DE LA FECHA DE INGRESO
+    const generarFechas = () => {
+
+        if (!fechaIngreso) {
+            return Array(24).fill("/");
+        }
+
+        const [anio, mes, dia] = fechaIngreso
+            .split("-")
+            .map(Number);
+
+        const fechaBase = new Date(
+            anio,
+            mes - 1,
+            dia
+        );
+
+        return Array.from({ length: 24 }, (_, index) => {
+
+            const fecha = new Date(fechaBase);
+
+            fecha.setDate(fechaBase.getDate() + index);
+
+            const dia = String(fecha.getDate()).padStart(2, "0");
+            const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+
+            return `${dia}/${mes}`;
+        });
+    };
+
+    const fechasTratamiento = generarFechas();
 
     // CALCULAR LA FECHA Y HORA ACTUALES
     useEffect(() => {
@@ -334,10 +413,10 @@ export default function AnamnesisFarmacoForm({
                         <h1 className="text-xl font-bold">
                             {modo === "crear" &&
                                 "Registrar Anamnesis Farmacológica"}
-                            
+
                             {modo === "editar" &&
                                 "Editar Anamnesis Farmacológica"}
-                            
+
                             {modo === "consulta" &&
                                 "Consultar Anamnesis Farmacológica"}
                         </h1>
@@ -412,6 +491,8 @@ export default function AnamnesisFarmacoForm({
                             <Input
                                 type="date"
                                 disabled={soloLectura}
+                                value={fechaIngreso}
+                                onChange={(e) => setFechaIngreso(e.target.value)}
                                 className="border border-slate-900"
                             />
                         </div>
@@ -713,6 +794,94 @@ export default function AnamnesisFarmacoForm({
                     <h2 className="font-semibold text-white">2.4 Pruebas de Laboratorio</h2>
                 </div>
                 <div className="p-4">
+                    <div className="mt-6 border rounded-lg overflow-hidden">
+                        <div className="flex">
+                            {/* PANEL IZQUIERDO */}
+                            <div className="w-[200px] flex-shrink-0 border-r">
+                                <table className="w-full text-sm">
+                                    <thead className="bg-slate-100">
+                                        <tr className="h-10">
+                                            <th className="h-10 px-3 py-0 text-center align-middle">
+                                                Prueba
+                                            </th>
+                                        </tr>
+
+                                        <tr className="h-10">
+                                            <th className="h-10 px-3 py-0 align-middle"></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {pruebasLaboratorio.map((prueba) => (
+                                            <tr key={prueba.id} className="h-10">
+                                                <td className="h-10 px-3 py-1 align-middle">
+                                                    {prueba.nombre}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* PANEL DERECHO */}
+                            <div className="overflow-x-auto flex-1">
+                                <table className="min-w-[1680px] text-xs">
+                                    <thead className="bg-slate-100">
+                                        <tr className="h-10">
+                                            {Array.from({ length: 24 }, (_, i) => (
+                                                <th
+                                                    key={i}
+                                                    className="h-10 w-[70px] min-w-[70px] px-0 py-0 text-center align-middle"
+                                                >
+                                                    {i + 1}
+                                                </th>
+                                            ))}
+                                        </tr>
+
+                                        <tr className="h-10">
+                                            {fechasTratamiento.map((fecha, index) => (
+                                                <th
+                                                    key={index}
+                                                    className="h-10 w-[70px] min-w-[70px] px-0 py-0 text-center align-middle text-[10px]"
+                                                >
+                                                    {fecha}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {pruebasLaboratorio.map((prueba) => (
+                                            <tr key={prueba.id} className="h-10">
+                                                {fechasTratamiento.map((fecha, index) => (
+                                                    <td
+                                                        key={`${prueba.id}-${index}`}
+                                                        className="h-10 w-[70px] min-w-[70px] p-1 border-t border-slate-200"
+                                                    >
+                                                        <Input
+                                                            disabled={soloLectura}
+                                                            value={
+                                                                resultadosLaboratorio[prueba.id]?.[index + 1] ?? ""
+                                                            }
+                                                            onChange={(e) =>
+                                                                actualizarResultadoLaboratorio(
+                                                                    prueba.id,
+                                                                    index + 1,
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                            className="h-8 w-full px-1 text-center text-xs border border-slate-300"
+                                                        />
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="mt-6 border border-slate-300 rounded-lg overflow-hidden">
                         <table className="w-full table-fixed text-sm">
                             <thead className="bg-slate-100">
@@ -815,7 +984,7 @@ export default function AnamnesisFarmacoForm({
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td className="px-3 py-2">Urae</td>
+                                    <td className="px-3 py-2">Urea</td>
                                     <td className="px-3 py-2">
                                         <Input disabled={soloLectura} className="h-8 border border-slate-900" />
                                     </td>
@@ -987,7 +1156,6 @@ export default function AnamnesisFarmacoForm({
                                     <th className="px-3 py-2 text-left">CIE 10</th>
                                     <th className="px-3 py-2 text-left">Descripción</th>
                                     <th className="px-3 py-2 text-left">Tipo de DX</th>
-                                    <th className="px-3 py-2 text-left">Usuario</th>
                                     <th className="px-3 py-2 text-left">Acción</th>
                                 </tr>
                             </thead>
@@ -997,7 +1165,6 @@ export default function AnamnesisFarmacoForm({
                                     <td className="px-3 py-2">Z981</td>
                                     <td className="px-3 py-2">Estado de Artrodesis</td>
                                     <td className="px-3 py-2">P</td>
-                                    <td className="px-3 py-2">Nora Liz Baltuano Villafuerte</td>
                                     <td className="px-3 py-2">
                                         <Button
                                             title="Eliminar"
@@ -1029,9 +1196,9 @@ export default function AnamnesisFarmacoForm({
                                 <table className="w-full table-fixed text-sm">
                                     <thead className="bg-slate-100">
                                         <tr>
-                                            <th className="px-3 py-2 text-left">N</th>
-                                            <th className="px-3 py-2 text-left">E</th>
-                                            <th className="px-3 py-2 text-left">S</th>
+                                            <th className="px-3 py-2 text-left">Necesidad</th>
+                                            <th className="px-3 py-2 text-left">Efectividad</th>
+                                            <th className="px-3 py-2 text-left">Seguridad</th>
                                         </tr>
                                     </thead>
 

@@ -397,18 +397,6 @@ export default function Sidebar() {
                         }`}>
                         <div className="pl-4 space-y-1 mt-1">
                             <a
-                                className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname.startsWith("/dashboard/farmacia-clinica/seguimiento-farmaco")
-                                    ? "bg-blue-50 text-blue-700"
-                                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                    }`}
-                                href="/dashboard/farmacia-clinica/seguimiento-farmaco"
-                                data-discover="true"
-                                aria-current="page"
-                            >
-                                <Package className="h-4 w-4" />
-                                <span>Seguimiento</span>
-                            </a>
-                            <a
                                 className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname.startsWith("/dashboard/farmacia-clinica/hoja-farmaco")
                                     ? "bg-blue-50 text-blue-700"
                                     : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
@@ -419,6 +407,18 @@ export default function Sidebar() {
                             >
                                 <ArrowUpDown className="h-4 w-4" />
                                 <span>Hoja Farmacoterapéutica</span>
+                            </a>
+                            <a
+                                className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname.startsWith("/dashboard/farmacia-clinica/seguimiento-farmaco")
+                                    ? "bg-blue-50 text-blue-700"
+                                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    }`}
+                                href="/dashboard/farmacia-clinica/seguimiento-farmaco"
+                                data-discover="true"
+                                aria-current="page"
+                            >
+                                <Package className="h-4 w-4" />
+                                <span>Seguimiento</span>
                             </a>
                             <a
                                 className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname.startsWith("/dashboard/farmacia-clinica/anamnesis-farmaco")

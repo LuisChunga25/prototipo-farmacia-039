@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, Save, PlusCircle, Trash2, Loader2, CheckCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
@@ -149,12 +150,54 @@ type ProductoSalida = {
 type MedicamentoInvolucrado = {
     id: number;
     nombrePresentacion: string;
-    problemaSalud: string;
+    ciex: string;
     prmReal: boolean;
     prmPotencial: boolean;
     reaccionAdversa: boolean;
     interaccionMedicamentos: boolean;
 };
+
+
+type DiagnosticoCIE10 = {
+    codigo: string;
+    nombre: string;
+};
+
+const diagnosticosCIE10: DiagnosticoCIE10[] = [
+    {
+        codigo: "E11.9",
+        nombre: "Diabetes mellitus tipo 2",
+    },
+    {
+        codigo: "I10",
+        nombre: "Hipertensión esencial (primaria)",
+    },
+    {
+        codigo: "D64.9",
+        nombre: "Anemia no especificada",
+    },
+    {
+        codigo: "J06.9",
+        nombre: "Infección aguda de las vías respiratorias superiores",
+    },
+    {
+        codigo: "K29.7",
+        nombre: "Gastritis no especificada",
+    },
+    {
+        codigo: "E78.5",
+        nombre: "Hiperlipidemia no especificada",
+    },
+    {
+        codigo: "N39.0",
+        nombre: "Infección de vías urinarias, sitio no especificado",
+    },
+    {
+        codigo: "M54.5",
+        nombre: "Lumbalgia",
+    },
+];
+
 
 const seguimientoDetalleMock = {
     seguimientoId: "00000005",
@@ -165,7 +208,7 @@ const seguimientoDetalleMock = {
     nombrePresentacion:
         "Metformina 850 mg Tableta",
 
-    problemaSalud:
+    ciex:
         "Diabetes Mellitus Tipo 2",
 
     prmReal: true,
@@ -177,7 +220,7 @@ const seguimientoDetalleMock = {
         {
             id: 1,
             nombrePresentacion: "Metformina 850 mg Tableta",
-            problemaSalud: "Diabetes Mellitus Tipo 2",
+            ciex: "Diabetes Mellitus Tipo 2",
             prmReal: true,
             prmPotencial: false,
             reaccionAdversa: false,
@@ -265,10 +308,10 @@ export default function SeguimientoForm({
     const [intervencionNoAceptada, setIntervencionNoAceptada] = useState("");
 
     const [nombrePresentacion, setNombrePresentacion] = useState("");
-    const [problemaSalud, setProblemaSalud] = useState("");
+    const [ciex, setciex] = useState("");
+    const [diagnosticoSeleccionado, setDiagnosticoSeleccionado] = useState<DiagnosticoCIE10 | null>(null);
 
-    const [prmReal, setPrmReal] = useState(false);
-    const [prmPotencial, setPrmPotencial] = useState(false);
+    const [situacion, setSituacion] = useState<"real" | "potencial" | "">("");
     const [reaccionAdversa, setReaccionAdversa] = useState(false);
     const [interaccionMedicamentos, setInteraccionMedicamentos] = useState(false);
 
@@ -295,16 +338,24 @@ export default function SeguimientoForm({
                 seguimientoDetalleMock.nombrePresentacion
             );
 
-            setProblemaSalud(
-                seguimientoDetalleMock.problemaSalud
+            setciex(
+                seguimientoDetalleMock.ciex
             );
 
-            setPrmReal(
+            setDiagnosticoSeleccionado(
+                diagnosticosCIE10.find(
+                    (diagnostico) =>
+                        diagnostico.nombre.toLowerCase() ===
+                        seguimientoDetalleMock.ciex.toLowerCase()
+                ) ?? null
+            );
+
+            setSituacion(
                 seguimientoDetalleMock.prmReal
-            );
-
-            setPrmPotencial(
-                seguimientoDetalleMock.prmPotencial
+                    ? "real"
+                    : seguimientoDetalleMock.prmPotencial
+                        ? "potencial"
+                        : ""
             );
 
             setReaccionAdversa(
@@ -423,6 +474,19 @@ export default function SeguimientoForm({
         }
     }, [productoId]);
 
+    // FILTRAR DIAGNÓSTICOS
+    const diagnosticosFiltrados = diagnosticosCIE10
+        .filter((diagnostico) => {
+            const busqueda = ciex.trim().toLowerCase();
+
+            return (
+                diagnostico.nombre.toLowerCase().includes(busqueda) ||
+                diagnostico.codigo.toLowerCase().includes(busqueda)
+            );
+        })
+        .slice(0, 6);
+
+
     // FUNCIÓN GUARDAR SEGUIMIENTO
     const handleGuardarSeguimiento = () => {
         setGuardando(true);
@@ -489,14 +553,14 @@ export default function SeguimientoForm({
     const handleAgregarMedicamento = () => {
 
         if (!nombrePresentacion.trim()) return;
-        if (!problemaSalud.trim()) return;
+        if (!diagnosticoSeleccionado) return;
 
         const nuevoRegistro: MedicamentoInvolucrado = {
             id: Date.now(),
             nombrePresentacion,
-            problemaSalud,
-            prmReal,
-            prmPotencial,
+            ciex: diagnosticoSeleccionado.nombre,
+            prmReal: situacion === "real",
+            prmPotencial: situacion === "potencial",
             reaccionAdversa,
             interaccionMedicamentos,
         };
@@ -504,15 +568,15 @@ export default function SeguimientoForm({
         setMedicamentosRegistrados(prev => [...prev, nuevoRegistro]);
 
         // Limpiar formulario
-
         setNombrePresentacion("");
-        setProblemaSalud("");
+        setciex("");
+        setDiagnosticoSeleccionado(null);
 
-        setPrmReal(false);
-        setPrmPotencial(false);
+        setSituacion("");
         setReaccionAdversa(false);
         setInteraccionMedicamentos(false);
     };
+
 
 
 
@@ -619,35 +683,99 @@ export default function SeguimientoForm({
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
-                            <Label>Problema de salud <span className="text-red-500">*</span></Label>
-                            <Input
-                                className="border border-slate-900"
-                                value={problemaSalud}
-                                disabled={soloLectura}
-                                onChange={(e) => setProblemaSalud(e.target.value)}
-                            />
+                            <Label>Diagnóstico CIE10 <span className="text-red-500">*</span></Label>
+
+                            <div className="relative">
+                                <Input
+                                    className="border border-slate-900"
+                                    value={ciex}
+                                    disabled={soloLectura}
+                                    autoComplete="off"
+                                    placeholder="Escriba el código o nombre del diagnóstico..."
+                                    onChange={(e) => {
+                                        setciex(e.target.value);
+                                        setDiagnosticoSeleccionado(null);
+                                    }}
+                                />
+
+                                {!soloLectura &&
+                                    ciex.trim() !== "" &&
+                                    !diagnosticoSeleccionado && (
+                                        <div className="absolute left-0 right-0 top-full mt-1 z-50 max-h-60 overflow-y-auto rounded-md border border-slate-200 bg-white shadow-lg">
+
+                                            {diagnosticosFiltrados.length > 0 ? (
+                                                diagnosticosFiltrados.map((diagnostico) => (
+                                                    <button
+                                                        key={diagnostico.codigo}
+                                                        type="button"
+                                                        className="flex w-full flex-col items-start gap-1 border-b border-slate-100 px-3 py-2 text-left last:border-b-0 hover:bg-cyan-50 focus:bg-cyan-50 focus:outline-none"
+                                                        onClick={() => {
+                                                            setciex(diagnostico.nombre);
+                                                            setDiagnosticoSeleccionado(diagnostico);
+                                                        }}
+                                                    >
+                                                        <span className="text-sm font-medium text-slate-800">
+                                                            {diagnostico.nombre}
+                                                        </span>
+
+                                                        <span className="text-xs text-slate-500">
+                                                            Código CIE-10: {diagnostico.codigo}
+                                                        </span>
+                                                    </button>
+                                                ))
+                                            ) : (
+                                                <p className="px-3 py-3 text-sm text-slate-500">
+                                                    No se encontraron diagnósticos coincidentes.
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
+                            </div>
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
                             <p className="text-sm font-semibold">Situación:</p>
+
                             <div className="flex items-center space-x-2">
-                                <Checkbox
+                                <input
+                                    type="radio"
                                     id="prm-real"
+                                    name="situacion-prm"
+                                    className="h-4 w-4 accent-blue-600"
                                     disabled={soloLectura}
-                                    checked={prmReal}
-                                    onCheckedChange={(checked) => setPrmReal(checked === true)}
+                                    checked={situacion === "real"}
+                                    onChange={() => setSituacion("real")}
                                 />
-                                <Label htmlFor="prm-real" className="text-sm font-normal cursor-pointer">PRM Real (Manifestado)</Label>
+                                <Label
+                                    htmlFor="prm-real"
+                                    className="text-sm font-normal cursor-pointer"
+                                >
+                                    PRM Real (Manifestado)
+                                </Label>
                             </div>
+
                             <div className="flex items-center space-x-2">
-                                <Checkbox
+                                <input
+                                    type="radio"
                                     id="prm-potencial"
+                                    name="situacion-prm"
+                                    className="h-4 w-4 accent-blue-600"
                                     disabled={soloLectura}
-                                    checked={prmPotencial}
-                                    onCheckedChange={(checked) => setPrmPotencial(checked === true)}
+                                    checked={situacion === "potencial"}
+                                    onChange={() => setSituacion("potencial")}
                                 />
-                                <Label htmlFor="prm-potencial" className="text-sm font-normal cursor-pointer">PRM Potencial (Riesgo de Aparición)</Label>
+                                <Label
+                                    htmlFor="prm-potencial"
+                                    className="text-sm font-normal cursor-pointer"
+                                >
+                                    PRM Potencial (Riesgo de Aparición)
+                                </Label>
                             </div>
+                        </div>
+
+                        <div className="md:col-span-2 space-y-2">
+                            <p className="text-sm font-semibold">Resultado:</p>
+
                             <div className="flex items-center space-x-2">
                                 <Checkbox
                                     id="reaccion-adversa"
@@ -703,7 +831,7 @@ export default function SeguimientoForm({
                             <thead className="bg-slate-100">
                                 <tr>
                                     <th className="px-3 py-2 text-left">Nombre, Concentración y Presentación</th>
-                                    <th className="px-3 py-2 text-left">Problema de Salud</th>
+                                    <th className="px-3 py-2 text-left">Diagnóstico CIE10</th>
                                     <th className="px-3 py-2 text-left">PRM Real (Manifestado)</th>
                                     <th className="px-3 py-2 text-left">PRM Potencial (Riesgo de Aparición)</th>
                                     <th className="px-3 py-2 text-left">Reacción Adversa</th>
@@ -731,7 +859,7 @@ export default function SeguimientoForm({
                                             </td>
 
                                             <td className="px-3 py-2">
-                                                {item.problemaSalud}
+                                                {item.ciex}
                                             </td>
 
                                             <td className="px-3 py-2 text-center font-bold">
@@ -859,6 +987,16 @@ export default function SeguimientoForm({
 
                 <div className="p-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <h3 className="font-semibold">RESUMEN DE LA INTERVENCIÓN</h3>
+
+                        <div className="md:col-span-2 space-y-2">
+                            <Textarea className="border border-slate-900" />
+                        </div>
+                    </div>
+                </div>
+
+                {/*<div className="p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <h3 className="font-semibold">RESULTADO</h3>
 
                         <div className="md:col-span-2 space-y-2">
@@ -877,7 +1015,7 @@ export default function SeguimientoForm({
                             />
                         </div>
                     </div>
-                </div>
+                </div>*/}
             </div>
 
             <div className="flex justify-end gap-3">
