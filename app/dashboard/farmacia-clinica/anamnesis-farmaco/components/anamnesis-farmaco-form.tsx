@@ -188,6 +188,8 @@ export default function AnamnesisFarmacoForm({
     const isDDL = tipoDocumento === "DDL";
     const [fechaIngreso, setFechaIngreso] = useState("");
 
+    const ROW_HEIGHT = 50;
+
     // LISTA DE PRUEBAS DE LABORATORIO
     const pruebasLaboratorio = [
         { id: "leucocitos", nombre: "Leucocitos" },
@@ -798,7 +800,7 @@ export default function AnamnesisFarmacoForm({
                         <div className="flex">
                             {/* PANEL IZQUIERDO */}
                             <div className="w-[200px] flex-shrink-0 border-r">
-                                <table className="w-full text-sm">
+                                <table className="w-full table-fixed text-sm">
                                     <thead className="bg-slate-100">
                                         <tr className="h-10">
                                             <th className="h-10 px-3 py-0 text-center align-middle">
@@ -813,8 +815,8 @@ export default function AnamnesisFarmacoForm({
 
                                     <tbody>
                                         {pruebasLaboratorio.map((prueba) => (
-                                            <tr key={prueba.id} className="h-10">
-                                                <td className="h-10 px-3 py-1 align-middle">
+                                            <tr key={prueba.id} style={{ height: `${ROW_HEIGHT}px` }}>
+                                                <td className="px-3 py-0 align-middle border-t border-slate-200" style={{ height: `${ROW_HEIGHT}px` }}>
                                                     {prueba.nombre}
                                                 </td>
                                             </tr>
@@ -825,7 +827,7 @@ export default function AnamnesisFarmacoForm({
 
                             {/* PANEL DERECHO */}
                             <div className="overflow-x-auto flex-1">
-                                <table className="min-w-[1680px] text-xs">
+                                <table className="min-w-[1680px] table-fixed text-sm">
                                     <thead className="bg-slate-100">
                                         <tr className="h-10">
                                             {Array.from({ length: 24 }, (_, i) => (
@@ -852,11 +854,12 @@ export default function AnamnesisFarmacoForm({
 
                                     <tbody>
                                         {pruebasLaboratorio.map((prueba) => (
-                                            <tr key={prueba.id} className="h-10">
+                                            <tr key={prueba.id} style={{ height: `${ROW_HEIGHT}px` }}>
                                                 {fechasTratamiento.map((fecha, index) => (
                                                     <td
                                                         key={`${prueba.id}-${index}`}
-                                                        className="h-10 w-[70px] min-w-[70px] p-1 border-t border-slate-200"
+                                                        className="w-[100px] min-w-[100px] px-1 py-0 border-t border-slate-200 align-middle"
+                                                        style={{ height: `${ROW_HEIGHT}px` }}
                                                     >
                                                         <Input
                                                             disabled={soloLectura}
@@ -880,228 +883,6 @@ export default function AnamnesisFarmacoForm({
                                 </table>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="mt-6 border border-slate-300 rounded-lg overflow-hidden">
-                        <table className="w-full table-fixed text-sm">
-                            <thead className="bg-slate-100">
-                                <tr>
-                                    <th className="w-[150px] px-3 py-2 text-left">Prueba</th>
-                                    <th className="px-3 py-2 text-left">Resultado</th>
-                                    <th className="w-[180px] px-3 py-2 text-left">Fecha</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr>
-                                    <td className="px-3 py-2">Leucocitos</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">HB</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">Plaquetas</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">Neutrofilos</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">PCR</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">Na</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">K</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">Albúmina</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">Prot. Totales</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">Probnp</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">Urea</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">Creat.</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">FA</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">TGO</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">TGP</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">BT</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">BD</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">BI</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">GGT</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">Amilasa</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">Lipasa</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">Urocultivo</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-3 py-2">Antibiograma</td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} className="h-8 border border-slate-900" />
-                                    </td>
-                                    <td className="px-3 py-2">
-                                        <Input disabled={soloLectura} type="date" className="h-8 border border-slate-900" />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 mt-6">
