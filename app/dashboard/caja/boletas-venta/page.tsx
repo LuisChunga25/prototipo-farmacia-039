@@ -34,7 +34,7 @@ import {
 import { useRouter } from "next/navigation"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 // DATOS DE EJEMPLO PARA LA TABLA
 const boletasVentaData = [
@@ -138,6 +138,66 @@ const boletasVentaData = [
     total: 5.83,
     usuario: "73787897",
   },
+  {
+    id: 6,
+    estado: "1",
+    pagoId: "26047882",
+    numero: "B001-0335007",
+    paciente: "HUILLCAHUARI DURAND DANIEL",
+    historia: "70919488",
+    consultorio: "TRAUMATOLOGIA Y ORTOPEDIA",
+    origen: "CE",
+    medico: "BENDEZU SARAVIA MERLYN BERNARDO",
+    modulo: "FARMACIA",
+    ordenId: "",
+    fecha_registro: "20/10/2026",
+    hora_registro: "10:12:46",
+    turno: "GD",
+    subtotal: 25.50,
+    descuento: 0.0,
+    total: 25.50,
+    usuario: "73787897",
+  },
+  {
+    id: 7,
+    estado: "1",
+    pagoId: "26047881",
+    numero: "B001-0335004",
+    paciente: "PRADO DAVILA CARLOS ENRIQUE ALBERTO",
+    historia: "76478385",
+    consultorio: "MEDICINA INTERNA",
+    origen: "CE",
+    medico: "DIONICIO IBAÑEZ LUIS FELIPE",
+    modulo: "FARMACIA",
+    ordenId: "",
+    fecha_registro: "20/10/2026",
+    hora_registro: "10:08:35",
+    turno: "GD",
+    subtotal: 12.25,
+    descuento: 0.0,
+    total: 12.25,
+    usuario: "73787897",
+  },
+  {
+    id: 8,
+    estado: "1",
+    pagoId: "26047880",
+    numero: "B001-0335002",
+    paciente: "MANRIQUE RODRIGUEZ DIJEIM SOLUN",
+    historia: "72000870",
+    consultorio: "MEDICINA INTERNA",
+    origen: "CE",
+    medico: "DIONICIO IBAÑEZ LUIS FELIPE",
+    modulo: "FARMACIA",
+    ordenId: "",
+    fecha_registro: "20/10/2026",
+    hora_registro: "10:08:35",
+    turno: "GD",
+    subtotal: 12.25,
+    descuento: 0.0,
+    total: 12.25,
+    usuario: "73787897",
+  },
 ]
 
 const pacientesData = [
@@ -215,6 +275,8 @@ const catalogoItems = [
 export default function BoletasVentaPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const registrosPorPagina = 5;
   const [boletasVisibles, setBoletasVisibles] = useState<any[]>([]);
   const router = useRouter();
   const [searchBy, setSearchBy] = useState("pagoId");
@@ -332,6 +394,27 @@ export default function BoletasVentaPage() {
     0
   );
 
+  // CALCULAR PAGINACIÓN DE BOLETAS
+  const totalPaginas = Math.ceil(
+    boletasVisibles.length / registrosPorPagina
+  );
+
+  const indiceInicial = (paginaActual - 1) * registrosPorPagina;
+
+  const indiceFinal = indiceInicial + registrosPorPagina;
+
+  const boletasPaginadas = boletasVisibles.slice(
+    indiceInicial,
+    indiceFinal
+  );
+
+  // CAMBIAR DE PÁGINA
+  const cambiarPagina = (pagina: number) => {
+    if (pagina >= 1 && pagina <= totalPaginas) {
+      setPaginaActual(pagina);
+    }
+  };
+
   // FILTRAR ÍTEMS SEGÚN EL TEXTO INGRESADO
   const itemsFiltrados = catalogoItems.filter((item) =>
     item.nombre
@@ -368,6 +451,17 @@ export default function BoletasVentaPage() {
 
     return () => clearInterval(intervalo);
   }, []);
+
+  // AJUSTAR PÁGINA SI CAMBIA LA CANTIDAD DE REGISTROS
+  useEffect(() => {
+    const paginasDisponibles = Math.ceil(
+      boletasVisibles.length / registrosPorPagina
+    );
+
+    if (paginaActual > paginasDisponibles && paginaActual > 1) {
+      setPaginaActual(Math.max(1, paginasDisponibles));
+    }
+  }, [boletasVisibles.length, paginaActual]);
 
   // FUNCIÓN BUSCAR PACIENTE
   const buscarPacientes = () => {
@@ -601,7 +695,7 @@ export default function BoletasVentaPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {boletasVisibles.map((boleta) => (
+            {boletasPaginadas.map((boleta) => (
               <TableRow key={boleta.id} className={selectedItems.includes(boleta.id) ? "bg-primary/10" : ""}>
                 <TableCell>{getEstadoBadge(boleta.estado)}</TableCell>
                 <TableCell className="font-medium">{boleta.pagoId}</TableCell>
@@ -676,6 +770,66 @@ export default function BoletasVentaPage() {
           </TableBody>
         </Table>
       </div>
+
+
+      {/* PAGINACIÓN DE LA TABLA */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4">
+
+        {/* INFORMACIÓN DE REGISTROS */}
+        <div className="text-sm text-gray-500">
+          Mostrando{" "}
+          {boletasVisibles.length === 0 ? 0 : indiceInicial + 1}
+          {" "}al{" "}
+          {Math.min(indiceFinal, boletasVisibles.length)}
+          {" "}de{" "}
+          {boletasVisibles.length} registros
+        </div>
+
+        {/* BOTONES DE NAVEGACIÓN */}
+        <div className="flex items-center gap-1">
+
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={paginaActual === 1 || totalPaginas === 0}
+            onClick={() => cambiarPagina(paginaActual - 1)}
+          >
+            Anterior
+          </Button>
+
+          {Array.from(
+            { length: totalPaginas },
+            (_, index) => index + 1
+          ).map((pagina) => (
+            <Button
+              key={pagina}
+              type="button"
+              variant={paginaActual === pagina ? "default" : "outline"}
+              size="sm"
+              className={
+                paginaActual === pagina
+                  ? "bg-cyan-600 hover:bg-cyan-700 text-white"
+                  : ""
+              }
+              onClick={() => cambiarPagina(pagina)}
+            >
+              {pagina}
+            </Button>
+          ))}
+
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={paginaActual === totalPaginas || totalPaginas === 0}
+            onClick={() => cambiarPagina(paginaActual + 1)}
+          >
+            Siguiente
+          </Button>
+        </div>
+      </div>
+
 
       {/* MODAL DE BÚDQUEDA DE PACIENTE */}
       <Dialog
@@ -1636,105 +1790,127 @@ export default function BoletasVentaPage() {
 
       {/* MODAL DE CONFIRMACIÓN DE ANULACIÓN DE BOLETA */}
 
-      {showConfirmAnulacion && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-
-            <div className="flex items-center gap-2 mb-3">
+      <Dialog
+        open={showConfirmAnulacion}
+        onOpenChange={(open) => {
+          if (!open) {
+            setShowConfirmAnulacion(false);
+          }
+        }}
+      >
+        <DialogContent
+          className="max-w-md"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <div className="flex items-center gap-2">
               <X className="h-6 w-6 text-red-600" />
-              <h2 className="text-lg font-semibold">
+              <DialogTitle>
                 Confirmar anulación de boleta
-              </h2>
+              </DialogTitle>
             </div>
 
-            <p className="text-sm text-gray-600 mb-4">
+            <DialogDescription>
               ¿Está seguro de anular la boleta{" "}
               <span className="font-semibold text-gray-900">
                 {boletaToAnular?.numero}
               </span>
               ?
-            </p>
+            </DialogDescription>
+          </DialogHeader>
 
-            <div className="space-y-4 mb-5">
+          <div className="space-y-4 py-2">
 
-              <div>
-                <Label htmlFor="motivoAnulacion">
-                  Motivo de anulación
-                </Label>
-                <textarea
-                  id="motivoAnulacion"
-                  value={motivoAnulacion}
-                  onChange={(e) => setMotivoAnulacion(e.target.value)}
-                  placeholder="Ingrese el motivo de la anulación..."
-                  rows={3}
-                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                />
-              </div>
+            <div>
+              <Label htmlFor="motivoAnulacion">
+                Motivo de anulación
+              </Label>
 
-              <div>
-                <Label htmlFor="autorizaAnulacion">
-                  Autoriza la anulación
-                </Label>
-                <Input
-                  id="autorizaAnulacion"
-                  value={autorizaAnulacion}
-                  onChange={(e) => setAutorizaAnulacion(e.target.value)}
-                  placeholder="Ingrese el nombre de quien autoriza..."
-                  className="mt-1"
-                />
-              </div>
-
+              <textarea
+                id="motivoAnulacion"
+                value={motivoAnulacion}
+                onChange={(e) => setMotivoAnulacion(e.target.value)}
+                placeholder="Ingrese el motivo de la anulación..."
+                rows={3}
+                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
             </div>
 
-            <div className="flex justify-end gap-2">
+            <div>
+              <Label htmlFor="autorizaAnulacion">
+                Autoriza la anulación
+              </Label>
 
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setShowConfirmAnulacion(false)}
-              >
-                Cancelar
-              </Button>
-
-              <Button
-                type="button"
-                className="bg-red-600 hover:bg-red-700 text-white"
-                disabled={
-                  !motivoAnulacion.trim() ||
-                  !autorizaAnulacion.trim()
-                }
-                onClick={confirmarAnulacion}
-              >
-                Confirmar anulación
-              </Button>
-
+              <Input
+                id="autorizaAnulacion"
+                value={autorizaAnulacion}
+                onChange={(e) => setAutorizaAnulacion(e.target.value)}
+                placeholder="Ingrese el nombre de quien autoriza..."
+                className="mt-1"
+              />
             </div>
 
           </div>
-        </div>
-      )}
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowConfirmAnulacion(false)}
+            >
+              Cancelar
+            </Button>
+
+            <Button
+              type="button"
+              className="bg-red-600 hover:bg-red-700 text-white"
+              disabled={
+                !motivoAnulacion.trim() ||
+                !autorizaAnulacion.trim()
+              }
+              onClick={confirmarAnulacion}
+            >
+              Confirmar anulación
+            </Button>
+          </DialogFooter>
+
+        </DialogContent>
+      </Dialog>
 
 
       {/* MODAL DE ÉXITO DE ANULACIÓN DE BOLETA */}
 
-      {showSuccessAnulacion && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-center">
+      <Dialog
+        open={showSuccessAnulacion}
+        onOpenChange={setShowSuccessAnulacion}
+      >
+        <DialogContent
+          className="max-w-md"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <div className="flex flex-col items-center text-center">
 
-            <CheckCircle className="mx-auto h-12 w-12 text-green-600 mb-3" />
+              <CheckCircle className="h-12 w-12 text-green-600 mb-3" />
 
-            <h2 className="text-lg font-semibold mb-2">
-              Anulación realizada con éxito
-            </h2>
+              <DialogTitle>
+                Anulación realizada con éxito
+              </DialogTitle>
 
-            <p className="text-sm text-gray-600 mb-5">
-              La anulación de la boleta{" "}
-              <span className="font-semibold text-gray-900">
-                {boletaToAnular?.numero}
-              </span>{" "}
-              se realizó correctamente.
-            </p>
+              <DialogDescription className="mt-2">
+                La anulación de la boleta{" "}
+                <span className="font-semibold text-gray-900">
+                  {boletaToAnular?.numero}
+                </span>{" "}
+                se realizó correctamente.
+              </DialogDescription>
 
+            </div>
+          </DialogHeader>
+
+          <DialogFooter className="sm:justify-center">
             <Button
               type="button"
               className="bg-green-600 hover:bg-green-700 text-white"
@@ -1742,10 +1918,11 @@ export default function BoletasVentaPage() {
             >
               Finalizar
             </Button>
+          </DialogFooter>
 
-          </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
+
 
     </div>
   )
