@@ -215,9 +215,6 @@ const catalogoItems = [
 export default function BoletasVentaPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-  const [showSuccessDelete, setShowSuccessDelete] = useState(false);
-  const [boletaToDelete, setBoletaToDelete] = useState<any>(null);
   const [boletasVisibles, setBoletasVisibles] = useState<any[]>([]);
   const router = useRouter();
   const [searchBy, setSearchBy] = useState("pagoId");
@@ -246,6 +243,14 @@ export default function BoletasVentaPage() {
   const [showCobroProforma, setShowCobroProforma] = useState(false);
   const [fechaHoraActual, setFechaHoraActual] = useState(new Date());
   const [showSuccessCobroCita, setShowSuccessCobroCita] = useState(false);
+
+  // ESTADOS PARA LA ANULACIÓN DE BOLETAS
+  const [showConfirmAnulacion, setShowConfirmAnulacion] = useState(false);
+  const [showSuccessAnulacion, setShowSuccessAnulacion] = useState(false);
+  const [boletaToAnular, setBoletaToAnular] = useState<any>(null);
+
+  const [motivoAnulacion, setMotivoAnulacion] = useState("");
+  const [autorizaAnulacion, setAutorizaAnulacion] = useState("");
 
   const [itemsRegistrados, setItemsRegistrados] = useState<
     Array<{
@@ -392,23 +397,37 @@ export default function BoletasVentaPage() {
     setShowBusquedaPaciente(true);
   };
 
-  // ELIMINAR SEGUIMIENTO FARMACOTERAPÉUTICO
-  const handleDeleteClick = (boleta: any) => {
-    setBoletaToDelete(boleta);
-    setShowConfirmDelete(true);
+  // ABRIR MODAL DE CONFIRMACIÓN DE ANULACIÓN
+  const handleAnularClick = (boleta: any) => {
+    setBoletaToAnular(boleta);
+    setMotivoAnulacion("");
+    setAutorizaAnulacion("");
+    setShowConfirmAnulacion(true);
   };
 
-  const confirmDelete = () => {
-    setShowConfirmDelete(false);
+  // CONFIRMAR ANULACIÓN DE BOLETA
+  const confirmarAnulacion = () => {
+    if (!motivoAnulacion.trim() || !autorizaAnulacion.trim()) {
+      return;
+    }
 
-    // Ocultamiento visual
-    setBoletasVisibles((prev) =>
-      prev.filter((s) => s.id !== boletaToDelete.id)
+    // Actualizar el estado de la boleta seleccionada
+    setBoletasVisibles((boletasActuales) =>
+      boletasActuales.map((boleta) =>
+        boleta.id === boletaToAnular.id
+          ? {
+            ...boleta,
+            estado: "3",
+            motivoAnulacion: motivoAnulacion.trim(),
+            autorizaAnulacion: autorizaAnulacion.trim(),
+          }
+          : boleta
+      )
     );
 
-    setTimeout(() => {
-      setShowSuccessDelete(true);
-    }, 200);
+    // Cerrar confirmación y mostrar mensaje de éxito
+    setShowConfirmAnulacion(false);
+    setShowSuccessAnulacion(true);
   };
 
   // OBTENER LA FECHA ACTUAL
@@ -434,15 +453,23 @@ export default function BoletasVentaPage() {
     const variants = {
       "1": "bg-yellow-100 text-yellow-800 border-yellow-300",
       "2": "bg-green-100 text-green-800 border-green-300",
-    }
+      "3": "bg-red-100 text-red-800 border-red-300",
+    };
 
     const nombreEstado = {
       "1": "REGISTRADO",
       "2": "PROCESADO",
-    }
+      "3": "ANULADO",
+    };
 
-    return <Badge className={`${variants[estado as keyof typeof variants]}`}>{nombreEstado[estado as keyof typeof nombreEstado]}</Badge>
-  }
+    return (
+      <Badge
+        className={`${variants[estado as keyof typeof variants]}`}
+      >
+        {nombreEstado[estado as keyof typeof nombreEstado]}
+      </Badge>
+    );
+  };
 
 
   return (
@@ -638,7 +665,7 @@ export default function BoletasVentaPage() {
                       className={`h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50
                         ${boleta.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
                       disabled={boleta.estado !== "1"}
-                      onClick={() => handleDeleteClick(boleta)}
+                      onClick={() => handleAnularClick(boleta)}
                     >
                       <X className="w-3 h-3" />
                     </Button>
@@ -1606,54 +1633,119 @@ export default function BoletasVentaPage() {
         </DialogContent>
       </Dialog>
 
-      {/* MODAL DE CONFIRMACIÓN DE ELIMINAR SEGUIMIENTO FARMACOTERAPÉUTICO */}
-      {showConfirmDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+
+      {/* MODAL DE CONFIRMACIÓN DE ANULACIÓN DE BOLETA */}
+
+      {showConfirmAnulacion && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-            <h2 className="text-lg font-semibold mb-2">Confirmar eliminación</h2>
+
+            <div className="flex items-center gap-2 mb-3">
+              <X className="h-6 w-6 text-red-600" />
+              <h2 className="text-lg font-semibold">
+                Confirmar anulación de boleta
+              </h2>
+            </div>
+
             <p className="text-sm text-gray-600 mb-4">
-              ¿Está seguro de eliminar el seguimiento farmacoterapéutico{" "}
-              <span className="font-semibold">{boletaToDelete?.seguimientoId}</span>?
+              ¿Está seguro de anular la boleta{" "}
+              <span className="font-semibold text-gray-900">
+                {boletaToAnular?.numero}
+              </span>
+              ?
             </p>
 
+            <div className="space-y-4 mb-5">
+
+              <div>
+                <Label htmlFor="motivoAnulacion">
+                  Motivo de anulación
+                </Label>
+                <textarea
+                  id="motivoAnulacion"
+                  value={motivoAnulacion}
+                  onChange={(e) => setMotivoAnulacion(e.target.value)}
+                  placeholder="Ingrese el motivo de la anulación..."
+                  rows={3}
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="autorizaAnulacion">
+                  Autoriza la anulación
+                </Label>
+                <Input
+                  id="autorizaAnulacion"
+                  value={autorizaAnulacion}
+                  onChange={(e) => setAutorizaAnulacion(e.target.value)}
+                  placeholder="Ingrese el nombre de quien autoriza..."
+                  className="mt-1"
+                />
+              </div>
+
+            </div>
+
             <div className="flex justify-end gap-2">
+
               <Button
+                type="button"
                 variant="outline"
-                onClick={() => setShowConfirmDelete(false)}
+                onClick={() => setShowConfirmAnulacion(false)}
               >
                 Cancelar
               </Button>
+
               <Button
+                type="button"
                 className="bg-red-600 hover:bg-red-700 text-white"
-                onClick={confirmDelete}
+                disabled={
+                  !motivoAnulacion.trim() ||
+                  !autorizaAnulacion.trim()
+                }
+                onClick={confirmarAnulacion}
               >
-                Eliminar
+                Confirmar anulación
               </Button>
+
             </div>
+
           </div>
         </div>
       )}
 
-      {/* MODAL DE ÉXITO DE ELIMINACIÓN DE SEGUIMIENTO FARMACOTERAPÉUTICO */}
-      {showSuccessDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+
+      {/* MODAL DE ÉXITO DE ANULACIÓN DE BOLETA */}
+
+      {showSuccessAnulacion && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-center">
+
             <CheckCircle className="mx-auto h-12 w-12 text-green-600 mb-3" />
-            <h2 className="text-lg font-semibold mb-2">Eliminado con éxito</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              El seguimiento farmacoterapéutico fue eliminado correctamente.
+
+            <h2 className="text-lg font-semibold mb-2">
+              Anulación realizada con éxito
+            </h2>
+
+            <p className="text-sm text-gray-600 mb-5">
+              La anulación de la boleta{" "}
+              <span className="font-semibold text-gray-900">
+                {boletaToAnular?.numero}
+              </span>{" "}
+              se realizó correctamente.
             </p>
 
             <Button
+              type="button"
               className="bg-green-600 hover:bg-green-700 text-white"
-              onClick={() => setShowSuccessDelete(false)}
+              onClick={() => setShowSuccessAnulacion(false)}
             >
-              Aceptar
+              Finalizar
             </Button>
+
           </div>
         </div>
       )}
-
 
     </div>
   )
