@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -57,6 +57,34 @@ const boletasVentaData = [
     descuento: 0.00,
     total: 67.40,
     usuario: "73787897",
+
+    // DETALLE FICTICIO DE LA COBRANZA
+    items: [
+      {
+        codigo: "CPT001",
+        item: "001",
+        nombre: "Consulta médica general",
+        cantidad: 1,
+        precio: 35.00,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT004",
+        item: "002",
+        nombre: "Hemograma completo",
+        cantidad: 1,
+        precio: 25.00,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT005",
+        item: "003",
+        nombre: "Glucosa en sangre",
+        cantidad: 1,
+        precio: 12.40,
+        descuento: 5.00,
+      },
+    ],
   },
   {
     id: 2,
@@ -77,6 +105,26 @@ const boletasVentaData = [
     descuento: 0.00,
     total: 10.00,
     usuario: "73787897",
+
+    // DETALLE FICTICIO DE LA COBRANZA
+    items: [
+      {
+        codigo: "CPT001",
+        item: "001",
+        nombre: "Consulta médica general",
+        cantidad: 1,
+        precio: 35.00,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT004",
+        item: "002",
+        nombre: "Hemograma completo",
+        cantidad: 1,
+        precio: 25.00,
+        descuento: 0.00,
+      },
+    ],
   },
   {
     id: 3,
@@ -97,6 +145,26 @@ const boletasVentaData = [
     descuento: 0.00,
     total: 23.33,
     usuario: "73787897",
+
+    // DETALLE FICTICIO DE LA COBRANZA
+    items: [
+      {
+        codigo: "CPT001",
+        item: "001",
+        nombre: "Consulta médica general",
+        cantidad: 1,
+        precio: 35.00,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT005",
+        item: "002",
+        nombre: "Glucosa en sangre",
+        cantidad: 1,
+        precio: 12.40,
+        descuento: 5.00,
+      },
+    ],
   },
   {
     id: 4,
@@ -117,6 +185,42 @@ const boletasVentaData = [
     descuento: 0.0,
     total: 190.0,
     usuario: "73787897",
+
+    // DETALLE FICTICIO DE LA COBRANZA
+    items: [
+      {
+        codigo: "CPT001",
+        item: "001",
+        nombre: "Consulta médica general",
+        cantidad: 1,
+        precio: 35.00,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT004",
+        item: "002",
+        nombre: "Hemograma completo",
+        cantidad: 1,
+        precio: 25.00,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT005",
+        item: "003",
+        nombre: "Glucosa en sangre",
+        cantidad: 1,
+        precio: 12.40,
+        descuento: 5.00,
+      },
+      {
+        codigo: "CPT006",
+        item: "004",
+        nombre: "Examen de orina completo",
+        cantidad: 1,
+        precio: 15.50,
+        descuento: 0.00,
+      },
+    ],
   },
   {
     id: 5,
@@ -137,6 +241,34 @@ const boletasVentaData = [
     descuento: 0.0,
     total: 5.83,
     usuario: "73787897",
+
+    // DETALLE FICTICIO DE LA COBRANZA
+    items: [
+      {
+        codigo: "CPT001",
+        item: "001",
+        nombre: "Consulta médica general",
+        cantidad: 1,
+        precio: 35.00,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT004",
+        item: "002",
+        nombre: "Hemograma completo",
+        cantidad: 1,
+        precio: 25.00,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT005",
+        item: "003",
+        nombre: "Glucosa en sangre",
+        cantidad: 1,
+        precio: 12.40,
+        descuento: 5.00,
+      },
+    ],
   },
   {
     id: 6,
@@ -157,6 +289,50 @@ const boletasVentaData = [
     descuento: 0.0,
     total: 25.50,
     usuario: "73787897",
+
+    // DETALLE FICTICIO DE LA COBRANZA
+    items: [
+      {
+        codigo: "CPT001",
+        item: "001",
+        nombre: "Consulta médica general",
+        cantidad: 1,
+        precio: 35.00,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT004",
+        item: "002",
+        nombre: "Hemograma completo",
+        cantidad: 1,
+        precio: 25.00,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT005",
+        item: "003",
+        nombre: "Glucosa en sangre",
+        cantidad: 1,
+        precio: 12.40,
+        descuento: 5.00,
+      },
+      {
+        codigo: "CPT007",
+        item: "004",
+        nombre: "Ecografía abdominal",
+        cantidad: 1,
+        precio: 120.30,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT008",
+        item: "005",
+        nombre: "Curación de herida",
+        cantidad: 1,
+        precio: 32.40,
+        descuento: 0.00,
+      },
+    ],
   },
   {
     id: 7,
@@ -177,6 +353,34 @@ const boletasVentaData = [
     descuento: 0.0,
     total: 12.25,
     usuario: "73787897",
+
+    // DETALLE FICTICIO DE LA COBRANZA
+    items: [
+      {
+        codigo: "CPT001",
+        item: "001",
+        nombre: "Consulta médica general",
+        cantidad: 1,
+        precio: 35.00,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT004",
+        item: "002",
+        nombre: "Hemograma completo",
+        cantidad: 1,
+        precio: 25.00,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT005",
+        item: "003",
+        nombre: "Glucosa en sangre",
+        cantidad: 1,
+        precio: 12.40,
+        descuento: 5.00,
+      },
+    ],
   },
   {
     id: 8,
@@ -197,6 +401,34 @@ const boletasVentaData = [
     descuento: 0.0,
     total: 12.25,
     usuario: "73787897",
+
+    // DETALLE FICTICIO DE LA COBRANZA
+    items: [
+      {
+        codigo: "CPT001",
+        item: "001",
+        nombre: "Consulta médica general",
+        cantidad: 1,
+        precio: 35.00,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT004",
+        item: "002",
+        nombre: "Hemograma completo",
+        cantidad: 1,
+        precio: 25.00,
+        descuento: 0.00,
+      },
+      {
+        codigo: "CPT005",
+        item: "003",
+        nombre: "Glucosa en sangre",
+        cantidad: 1,
+        precio: 12.40,
+        descuento: 5.00,
+      },
+    ],
   },
 ]
 
@@ -305,6 +537,9 @@ export default function BoletasVentaPage() {
   const [showCobroProforma, setShowCobroProforma] = useState(false);
   const [fechaHoraActual, setFechaHoraActual] = useState(new Date());
   const [showSuccessCobroCita, setShowSuccessCobroCita] = useState(false);
+
+  // CONTROL DE DETALLE EXPANDIDO EN LA TABLA
+  const [boletaExpandidaId, setBoletaExpandidaId] = useState<number | null>(null);
 
   // ESTADOS PARA LA ANULACIÓN DE BOLETAS
   const [showConfirmAnulacion, setShowConfirmAnulacion] = useState(false);
@@ -565,6 +800,18 @@ export default function BoletasVentaPage() {
     );
   };
 
+  // MOSTRAR U OCULTAR DETALLE DE LA BOLETA
+  const alternarDetalleBoleta = (boletaId: number) => {
+    setBoletaExpandidaId((actual) =>
+      actual === boletaId ? null : boletaId
+    );
+  };
+
+  // OBTENER LOS DATOS DE LA BOLETA SELECCIONADA
+  const boletaSeleccionada = boletasVisibles.find(
+    (boleta) => boleta.id === boletaExpandidaId
+  );
+
 
   return (
     <div className="container mx-auto py-6">
@@ -696,7 +943,14 @@ export default function BoletasVentaPage() {
           </TableHeader>
           <TableBody>
             {boletasPaginadas.map((boleta) => (
-              <TableRow key={boleta.id} className={selectedItems.includes(boleta.id) ? "bg-primary/10" : ""}>
+              <TableRow
+                key={boleta.id}
+                onClick={() => alternarDetalleBoleta(boleta.id)}
+                className={`cursor-pointer transition-colors ${boletaExpandidaId === boleta.id
+                  ? "bg-cyan-50"
+                  : "hover:bg-slate-50"
+                  }`}
+              >
                 <TableCell>{getEstadoBadge(boleta.estado)}</TableCell>
                 <TableCell className="font-medium">{boleta.pagoId}</TableCell>
                 <TableCell className="font-medium">{boleta.numero}</TableCell>
@@ -710,7 +964,10 @@ export default function BoletasVentaPage() {
                 </TableCell>
                 <TableCell>{boleta.usuario}</TableCell>
                 <TableCell>
-                  <div className="flex space-x-2">
+                  <div
+                    className="flex space-x-2"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {/*<Button
                       title="Firmar documento"
                       variant="outline"
@@ -718,7 +975,7 @@ export default function BoletasVentaPage() {
                     >
                       <FileSignature className="w-3 h-3" />
                     </Button>*/}
-                    <Button
+                    {/*<Button
                       title="Ver detalle"
                       variant="outline"
                       className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50"
@@ -727,7 +984,7 @@ export default function BoletasVentaPage() {
                       }
                     >
                       <Eye className="w-3 h-3" />
-                    </Button>
+                    </Button>*/}
                     <Button
                       title="Cambiar N° de boleta"
                       variant="outline"
@@ -766,6 +1023,8 @@ export default function BoletasVentaPage() {
                   </div>
                 </TableCell>
               </TableRow>
+
+
             ))}
           </TableBody>
         </Table>
@@ -829,6 +1088,122 @@ export default function BoletasVentaPage() {
           </Button>
         </div>
       </div>
+
+
+
+      {/* DETALLE DE LA COBRANZA SELECCIONADA */}
+      {boletaSeleccionada && (
+        <div className="mt-6 border rounded-lg bg-white shadow-sm overflow-hidden">
+
+          {/* ENCABEZADO DEL DETALLE */}
+          <div className="flex items-center justify-between gap-3 bg-slate-50 border-b px-5 py-4">
+
+            <div>
+              <h3 className="font-semibold text-cyan-700">
+                Detalle de la cobranza
+              </h3>
+
+              <p className="text-sm text-gray-500 mt-1">
+                Boleta: {boletaSeleccionada.numero}
+                {" | "}
+                Paciente: {boletaSeleccionada.paciente}
+              </p>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setBoletaExpandidaId(null)}
+            >
+              Cerrar detalle
+            </Button>
+
+          </div>
+
+          {/* TABLA DE ÍTEMS */}
+          <div className="p-4">
+
+            <div className="overflow-x-auto border rounded-md">
+
+              <Table>
+
+                <TableHeader>
+                  <TableRow className="bg-slate-100 hover:bg-slate-100">
+                    <TableHead>Código CPT</TableHead>
+                    <TableHead>Ítem</TableHead>
+                    <TableHead>Nombre</TableHead>
+                    <TableHead className="text-center">Cantidad</TableHead>
+                    <TableHead className="text-right">Precio (S/)</TableHead>
+                    <TableHead className="text-right">Descuento (S/)</TableHead>
+                    <TableHead className="text-right">Importe (S/)</TableHead>
+                  </TableRow>
+                </TableHeader>
+
+                <TableBody>
+                  {boletaSeleccionada.items?.map((item: any, index: number) => {
+                    const importe =
+                      item.cantidad * item.precio - item.descuento;
+
+                    return (
+                      <TableRow key={`${boletaSeleccionada.id}-${index}`}>
+
+                        <TableCell>{item.codigo}</TableCell>
+
+                        <TableCell>{item.item}</TableCell>
+
+                        <TableCell>{item.nombre}</TableCell>
+
+                        <TableCell className="text-center">
+                          {item.cantidad}
+                        </TableCell>
+
+                        <TableCell className="text-right">
+                          {item.precio.toFixed(2)}
+                        </TableCell>
+
+                        <TableCell className="text-right">
+                          {item.descuento.toFixed(2)}
+                        </TableCell>
+
+                        <TableCell className="text-right font-medium">
+                          {importe.toFixed(2)}
+                        </TableCell>
+
+                      </TableRow>
+                    );
+                  })}
+
+                  {(!boletaSeleccionada.items ||
+                    boletaSeleccionada.items.length === 0) && (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center text-gray-500 py-6">
+                          No hay ítems registrados para esta cobranza.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                </TableBody>
+
+              </Table>
+
+            </div>
+
+            {/* TOTAL DE LA COBRANZA */}
+            <div className="flex justify-end mt-4">
+              <div className="text-right">
+                <span className="text-sm text-gray-500">
+                  Total de la cobranza:
+                </span>
+
+                <p className="text-xl font-bold text-cyan-700">
+                  S/ {boletaSeleccionada.total.toFixed(2)}
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
 
 
       {/* MODAL DE BÚDQUEDA DE PACIENTE */}
