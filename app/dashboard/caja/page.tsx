@@ -68,7 +68,7 @@ export default function CajaPage() {
           </Card>
         </Link>
 
-        {/*<Link href="/dashboard/caja/notas-venta" className="block">
+        <Link href="/dashboard/caja/notas-venta" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">
@@ -82,7 +82,7 @@ export default function CajaPage() {
           </Card>
         </Link>
 
-        <Link href="/dashboard/farmacovigilancia/vacunas" className="block">
+        {/*<Link href="/dashboard/farmacovigilancia/vacunas" className="block">
           <Card className="hospital-card h-full hover:border-primary cursor-pointer transition-colors">
             <CardHeader className="p-4">
               <CardTitle className="text-lg flex items-center gap-2">

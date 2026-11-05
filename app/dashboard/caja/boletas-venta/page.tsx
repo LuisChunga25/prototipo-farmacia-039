@@ -829,7 +829,6 @@ export default function BoletasVentaPage() {
           </Button>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Boletas de Venta</h1>
-            <p className="text-muted-foreground">Gestione la emisión de las boletas de ventas por los servicios médicos brindados</p>
           </div>
         </div>
         {/*<div className="bg-cyan-50 border border-cyan-200 border-2 p-4 rounded-md">

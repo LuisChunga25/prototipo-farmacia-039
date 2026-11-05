@@ -526,7 +526,7 @@ export default function Sidebar() {
                                 <Wallet className="h-4 w-4" />
                                 <span>Boletas de venta</span>
                             </a>
-                            {/*<a
+                            <a
                                 className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname.startsWith("/dashboard/caja/notas-venta")
                                     ? "bg-blue-50 text-blue-700"
                                     : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
@@ -537,7 +537,7 @@ export default function Sidebar() {
                             >
                                 <Banknote className="h-4 w-4" />
                                 <span>Notas de venta</span>
-                            </a>*/}
+                            </a>
                         </div>
                     </div>
                 </nav>
