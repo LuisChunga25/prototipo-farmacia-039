@@ -408,7 +408,7 @@ const pacientesData = [
         nombre: "CHUNGA HUAYLINOS LUIS DIEGO",
         sexo: "M",
         fechaNacimiento: "08/03/1996",
-        seguro: "Pagante",
+        seguro: "SOAT",
         direccion: "S/N",
         distrito: "LURIGANCHO",
     },
@@ -419,7 +419,7 @@ const pacientesData = [
         nombre: "HILARIO GARCIA MIGUEL ANGEL",
         sexo: "M",
         fechaNacimiento: "16/02/1983",
-        seguro: "Pagante",
+        seguro: "SOAT",
         direccion: "S/N",
         distrito: "MATUCANA",
     },
@@ -430,7 +430,7 @@ const pacientesData = [
         nombre: "HOLGUIN CUCALON JORGE ALBERTO",
         sexo: "M",
         fechaNacimiento: "11/05/1994",
-        seguro: "Pagante",
+        seguro: "SOAT",
         direccion: "S/N",
         distrito: "JESUS MARIA",
     },
@@ -441,7 +441,7 @@ const pacientesData = [
         nombre: "QUISPE JAVIER TERRY ANFONI",
         sexo: "M",
         fechaNacimiento: "26/07/1990",
-        seguro: "Pagante",
+        seguro: "ESSALUD",
         direccion: "S/N",
         distrito: "LURIGANCHO",
     },
@@ -452,7 +452,7 @@ const pacientesData = [
         nombre: "PRADO DAVILA CARLOS ENRIQUE ALBERTO",
         sexo: "M",
         fechaNacimiento: "12/04/1997",
-        seguro: "Pagante",
+        seguro: "ESSALUD",
         direccion: "S/N",
         distrito: "LURIGANCHO",
     },
@@ -540,7 +540,7 @@ export default function NotasVentaPage() {
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [paginaActual, setPaginaActual] = useState(1);
     const registrosPorPagina = 5;
-    const [boletasVisibles, setBoletasVisibles] = useState<any[]>([]);
+    const [notasVentaVisibles, setNotasVentaVisibles] = useState<any[]>([]);
     const router = useRouter();
     const [searchBy, setSearchBy] = useState("ordenId");
     const hoy = new Date();
@@ -548,7 +548,7 @@ export default function NotasVentaPage() {
     const formatoISO = (fecha: Date) => fecha.toISOString().split("T")[0];
     const [fechaInicio, setFechaInicio] = useState(formatoISO(primerDiaMes));
     const [fechaFin, setFechaFin] = useState(formatoISO(hoy));
-    const [openEmisionBoleta, setOpenEmisionBoleta] = useState(false);
+    const [openEmisionNotaVenta, setOpenEmisionNotaVenta] = useState(false);
     const origenInputRef = useRef<HTMLInputElement>(null);
     const itemInputRef = useRef<HTMLInputElement>(null);
     const cantidadInputRef = useRef<HTMLInputElement>(null);
@@ -563,7 +563,6 @@ export default function NotasVentaPage() {
     const [pacienteSeleccionado, setPacienteSeleccionado] = useState<any>(null);
     const [pacientesEncontrados, setPacientesEncontrados] = useState<any[]>([]);
     const [valorBusquedaPaciente, setValorBusquedaPaciente] = useState("");
-    const [showEmisionBoleta, setShowEmisionBoleta] = useState(false);
     const [showCobroCita, setShowCobroCita] = useState(false);
     const [showCobroProforma, setShowCobroProforma] = useState(false);
     const [fechaHoraActual, setFechaHoraActual] = useState(new Date());
@@ -587,12 +586,12 @@ export default function NotasVentaPage() {
     });
 
     // CONTROL DE DETALLE EXPANDIDO EN LA TABLA
-    const [boletaExpandidaId, setBoletaExpandidaId] = useState<number | null>(null);
+    const [notaVentaExpandidaId, setNotaVentaExpandidaId] = useState<number | null>(null);
 
-    // ESTADOS PARA LA ANULACIÓN DE BOLETAS
+    // ESTADOS PARA LA ANULACIÓN DE NOTAS DE VENTA
     const [showConfirmAnulacion, setShowConfirmAnulacion] = useState(false);
     const [showSuccessAnulacion, setShowSuccessAnulacion] = useState(false);
-    const [boletaToAnular, setBoletaToAnular] = useState<any>(null);
+    const [notaVentaToAnular, setNotaVentaToAnular] = useState<any>(null);
 
     const [motivoAnulacion, setMotivoAnulacion] = useState("");
     const [autorizaAnulacion, setAutorizaAnulacion] = useState("");
@@ -697,14 +696,14 @@ export default function NotasVentaPage() {
 
     // CALCULAR PAGINACIÓN DE NOTAS DE
     const totalPaginas = Math.ceil(
-        boletasVisibles.length / registrosPorPagina
+        notasVentaVisibles.length / registrosPorPagina
     );
 
     const indiceInicial = (paginaActual - 1) * registrosPorPagina;
 
     const indiceFinal = indiceInicial + registrosPorPagina;
 
-    const notasVentaPaginadas = boletasVisibles.slice(
+    const notasVentaPaginadas = notasVentaVisibles.slice(
         indiceInicial,
         indiceFinal
     );
@@ -741,7 +740,7 @@ export default function NotasVentaPage() {
 
     // INICIALIZAR CUANDO CARGUE LA PÁGINA
     useEffect(() => {
-        setBoletasVisibles(notasVentaData);
+        setNotasVentaVisibles(notasVentaData);
     }, [notasVentaData]);
 
     // RELOJ EN TIEMPO REAL
@@ -756,13 +755,13 @@ export default function NotasVentaPage() {
     // AJUSTAR PÁGINA SI CAMBIA LA CANTIDAD DE REGISTROS
     useEffect(() => {
         const paginasDisponibles = Math.ceil(
-            boletasVisibles.length / registrosPorPagina
+            notasVentaVisibles.length / registrosPorPagina
         );
 
         if (paginaActual > paginasDisponibles && paginaActual > 1) {
             setPaginaActual(Math.max(1, paginasDisponibles));
         }
-    }, [boletasVisibles.length, paginaActual]);
+    }, [notasVentaVisibles.length, paginaActual]);
 
     // FUNCIÓN BUSCAR PACIENTE
     const buscarPacientes = () => {
@@ -793,30 +792,30 @@ export default function NotasVentaPage() {
     };
 
     // ABRIR MODAL DE CONFIRMACIÓN DE ANULACIÓN
-    const handleAnularClick = (boleta: any) => {
-        setBoletaToAnular(boleta);
+    const handleAnularClick = (notaVenta: any) => {
+        setNotaVentaToAnular(notaVenta);
         setMotivoAnulacion("");
         setAutorizaAnulacion("");
         setShowConfirmAnulacion(true);
     };
 
-    // CONFIRMAR ANULACIÓN DE BOLETA
+    // CONFIRMAR ANULACIÓN DE NOTA DE VENTA
     const confirmarAnulacion = () => {
         if (!motivoAnulacion.trim() || !autorizaAnulacion.trim()) {
             return;
         }
 
-        // Actualizar el estado de la boleta seleccionada
-        setBoletasVisibles((boletasActuales) =>
-            boletasActuales.map((boleta) =>
-                boleta.id === boletaToAnular.id
+        // Actualizar el estado de la nota de venta seleccionada
+        setNotasVentaVisibles((notasVentaActuales) =>
+            notasVentaActuales.map((notaVenta) =>
+                notaVenta.id === notaVentaToAnular.id
                     ? {
-                        ...boleta,
+                        ...notaVenta,
                         estado: "3",
                         motivoAnulacion: motivoAnulacion.trim(),
                         autorizaAnulacion: autorizaAnulacion.trim(),
                     }
-                    : boleta
+                    : notaVenta
             )
         );
 
@@ -866,16 +865,16 @@ export default function NotasVentaPage() {
         );
     };
 
-    // MOSTRAR U OCULTAR DETALLE DE LA BOLETA
-    const alternarDetalleBoleta = (boletaId: number) => {
-        setBoletaExpandidaId((actual) =>
-            actual === boletaId ? null : boletaId
+    // MOSTRAR U OCULTAR DETALLE DE LA NOTA DE VENTA
+    const alternarDetalleNotaVenta = (notaVentaId: number) => {
+        setNotaVentaExpandidaId((actual) =>
+            actual === notaVentaId ? null : notaVentaId
         );
     };
 
-    // OBTENER LOS DATOS DE LA BOLETA SELECCIONADA
-    const boletaSeleccionada = boletasVisibles.find(
-        (boleta) => boleta.id === boletaExpandidaId
+    // OBTENER LOS DATOS DE LA NOTA DE VENTA SELECCIONADA
+    const notaVentaSeleccionada = notasVentaVisibles.find(
+        (notaVenta) => notaVenta.id === notaVentaExpandidaId
     );
 
 
@@ -1009,29 +1008,29 @@ export default function NotasVentaPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {notasVentaPaginadas.map((boleta) => (
+                        {notasVentaPaginadas.map((notaVenta) => (
                             <TableRow
-                                key={boleta.id}
-                                onClick={() => alternarDetalleBoleta(boleta.id)}
-                                className={`cursor-pointer transition-colors ${boletaExpandidaId === boleta.id
+                                key={notaVenta.id}
+                                onClick={() => alternarDetalleNotaVenta(notaVenta.id)}
+                                className={`cursor-pointer transition-colors ${notaVentaExpandidaId === notaVenta.id
                                     ? "bg-cyan-50"
                                     : "hover:bg-slate-50"
                                     }`}
                             >
-                                <TableCell>{getEstadoBadge(boleta.estado)}</TableCell>
-                                <TableCell className="font-medium">{boleta.ordenId}</TableCell>
-                                <TableCell className="font-medium">{boleta.cuentaId}</TableCell>
-                                <TableCell className="font-medium">{boleta.paciente}</TableCell>
-                                <TableCell className="font-medium">{boleta.historia}</TableCell>
-                                <TableCell className="font-medium">{boleta.seguro}</TableCell>
-                                <TableCell className="font-medium">{boleta.origen}</TableCell>
-                                <TableCell className="font-medium">{boleta.desConsultorio}</TableCell>
-                                <TableCell className="font-medium">{boleta.total}</TableCell>
+                                <TableCell>{getEstadoBadge(notaVenta.estado)}</TableCell>
+                                <TableCell className="font-medium">{notaVenta.ordenId}</TableCell>
+                                <TableCell className="font-medium">{notaVenta.cuentaId}</TableCell>
+                                <TableCell className="font-medium">{notaVenta.paciente}</TableCell>
+                                <TableCell className="font-medium">{notaVenta.historia}</TableCell>
+                                <TableCell className="font-medium">{notaVenta.seguro}</TableCell>
+                                <TableCell className="font-medium">{notaVenta.origen}</TableCell>
+                                <TableCell className="font-medium">{notaVenta.desConsultorio}</TableCell>
+                                <TableCell className="font-medium">{notaVenta.total}</TableCell>
                                 <TableCell>
-                                    <div className="font-medium">{boleta.fecha_registro}</div>
-                                    <div className="text-gray-500">{boleta.hora_registro}</div>
+                                    <div className="font-medium">{notaVenta.fecha_registro}</div>
+                                    <div className="text-gray-500">{notaVenta.hora_registro}</div>
                                 </TableCell>
-                                <TableCell>{boleta.usuario}</TableCell>
+                                <TableCell>{notaVenta.usuario}</TableCell>
                                 <TableCell>
                                     <div
                                         className="flex space-x-2"
@@ -1049,19 +1048,19 @@ export default function NotasVentaPage() {
                       variant="outline"
                       className="h-8 w-10 p-1.5 border-blue-600 text-blue-600 hover:bg-blue-50"
                       onClick={() =>
-                        router.push(`/dashboard/farmacia-clinica/seguimiento-farmaco/detalle/${boleta.seguimientoId}`)
+                        router.push(`/dashboard/farmacia-clinica/seguimiento-farmaco/detalle/${notaVenta.seguimientoId}`)
                       }
                     >
                       <Eye className="w-3 h-3" />
                     </Button>*/}
                                         {/*<Button
-                      title="Cambiar N° de boleta"
+                      title="Cambiar N° de notaVenta"
                       variant="outline"
                       className={`h-8 w-10 p-1.5 border-yellow-600 text-yellow-600 hover:bg-yellow-50
-                        ${boleta.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
-                      disabled={boleta.estado !== "1"}
+                        ${notaVenta.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
+                      disabled={notaVenta.estado !== "1"}
                       onClick={() =>
-                        router.push(`/dashboard/farmacia-clinica/seguimiento-farmaco/editar/${boleta.seguimientoId}`)
+                        router.push(`/dashboard/farmacia-clinica/seguimiento-farmaco/editar/${notaVenta.seguimientoId}`)
                       }
                     >
                       <Edit className="w-3 h-3" />
@@ -1083,9 +1082,9 @@ export default function NotasVentaPage() {
                                             title="Anular documento"
                                             variant="outline"
                                             className={`h-8 w-10 p-1.5 border-red-600 text-red-600 hover:bg-red-50
-                        ${boleta.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
-                                            disabled={boleta.estado !== "1"}
-                                            onClick={() => handleAnularClick(boleta)}
+                        ${notaVenta.estado !== "1" ? "opacity-40 cursor-not-allowed" : ""}`}
+                                            disabled={notaVenta.estado !== "1"}
+                                            onClick={() => handleAnularClick(notaVenta)}
                                         >
                                             <X className="w-3 h-3" />
                                         </Button>
@@ -1106,11 +1105,11 @@ export default function NotasVentaPage() {
                 {/* INFORMACIÓN DE REGISTROS */}
                 <div className="text-sm text-gray-500">
                     Mostrando{" "}
-                    {boletasVisibles.length === 0 ? 0 : indiceInicial + 1}
+                    {notasVentaVisibles.length === 0 ? 0 : indiceInicial + 1}
                     {" "}al{" "}
-                    {Math.min(indiceFinal, boletasVisibles.length)}
+                    {Math.min(indiceFinal, notasVentaVisibles.length)}
                     {" "}de{" "}
-                    {boletasVisibles.length} registros
+                    {notasVentaVisibles.length} registros
                 </div>
 
                 {/* BOTONES DE NAVEGACIÓN */}
@@ -1161,7 +1160,7 @@ export default function NotasVentaPage() {
 
 
             {/* DETALLE DE LA NOTA DE VENTA SELECCIONADA */}
-            {boletaSeleccionada && (
+            {notaVentaSeleccionada && (
                 <div className="mt-6 border rounded-lg bg-white shadow-sm overflow-hidden">
 
                     {/* ENCABEZADO DEL DETALLE */}
@@ -1173,9 +1172,9 @@ export default function NotasVentaPage() {
                             </h3>
 
                             <p className="text-sm text-gray-500 mt-1">
-                                Boleta: {boletaSeleccionada.numero}
+                                Nota de Venta: {notaVentaSeleccionada.numero}
                                 {" | "}
-                                Paciente: {boletaSeleccionada.paciente}
+                                Paciente: {notaVentaSeleccionada.paciente}
                             </p>
                         </div>
 
@@ -1183,7 +1182,7 @@ export default function NotasVentaPage() {
                             type="button"
                             variant="outline"
                             size="sm"
-                            onClick={() => setBoletaExpandidaId(null)}
+                            onClick={() => setNotaVentaExpandidaId(null)}
                         >
                             Cerrar detalle
                         </Button>
@@ -1204,18 +1203,17 @@ export default function NotasVentaPage() {
                                         <TableHead>Nombre</TableHead>
                                         <TableHead className="text-center">Cantidad</TableHead>
                                         <TableHead className="text-right">Precio (S/)</TableHead>
-                                        <TableHead className="text-right">Descuento (S/)</TableHead>
                                         <TableHead className="text-right">Importe (S/)</TableHead>
                                     </TableRow>
                                 </TableHeader>
 
                                 <TableBody>
-                                    {boletaSeleccionada.items?.map((item: any, index: number) => {
+                                    {notaVentaSeleccionada.items?.map((item: any, index: number) => {
                                         const importe =
                                             item.cantidad * item.precio - item.descuento;
 
                                         return (
-                                            <TableRow key={`${boletaSeleccionada.id}-${index}`}>
+                                            <TableRow key={`${notaVentaSeleccionada.id}-${index}`}>
 
                                                 <TableCell>{item.codigo}</TableCell>
 
@@ -1231,10 +1229,6 @@ export default function NotasVentaPage() {
                                                     {item.precio.toFixed(2)}
                                                 </TableCell>
 
-                                                <TableCell className="text-right">
-                                                    {item.descuento.toFixed(2)}
-                                                </TableCell>
-
                                                 <TableCell className="text-right font-medium">
                                                     {importe.toFixed(2)}
                                                 </TableCell>
@@ -1243,8 +1237,8 @@ export default function NotasVentaPage() {
                                         );
                                     })}
 
-                                    {(!boletaSeleccionada.items ||
-                                        boletaSeleccionada.items.length === 0) && (
+                                    {(!notaVentaSeleccionada.items ||
+                                        notaVentaSeleccionada.items.length === 0) && (
                                             <TableRow>
                                                 <TableCell colSpan={7} className="text-center text-gray-500 py-6">
                                                     No hay ítems registrados para esta cobranza.
@@ -1261,11 +1255,11 @@ export default function NotasVentaPage() {
                         <div className="flex justify-end mt-4">
                             <div className="text-right">
                                 <span className="text-sm text-gray-500">
-                                    Total de la cobranza:
+                                    Total:
                                 </span>
 
                                 <p className="text-xl font-bold text-cyan-700">
-                                    S/ {boletaSeleccionada.total.toFixed(2)}
+                                    S/ {notaVentaSeleccionada.total.toFixed(2)}
                                 </p>
                             </div>
                         </div>
@@ -1399,7 +1393,7 @@ export default function NotasVentaPage() {
                                                             setMostrarTablaCuentas(true);
 
                                                             setShowBusquedaPaciente(false);
-                                                            setOpenEmisionBoleta(true);
+                                                            setOpenEmisionNotaVenta(true);
                                                         }}
                                                     >
                                                         <Receipt className="w-4 h-4 mr-1" />
@@ -1802,8 +1796,8 @@ export default function NotasVentaPage() {
 
             {/* MODAL DE EMISIÓN DE NOTA DE VENTA */}
             <Dialog
-                open={openEmisionBoleta}
-                onOpenChange={setOpenEmisionBoleta}
+                open={openEmisionNotaVenta}
+                onOpenChange={setOpenEmisionNotaVenta}
             >
                 <DialogContent
                     className="max-w-7xl max-h-[90vh] overflow-y-auto"
@@ -1824,7 +1818,7 @@ export default function NotasVentaPage() {
                                 title="Volver a búsqueda de paciente"
                                 aria-label="Volver a búsqueda de paciente"
                                 onClick={() => {
-                                    setOpenEmisionBoleta(false);
+                                    setOpenEmisionNotaVenta(false);
                                     setValorBusquedaPaciente("");
                                     setPacientesEncontrados([]);
                                     setShowBusquedaPaciente(true);
@@ -2320,7 +2314,7 @@ export default function NotasVentaPage() {
 
                         <Button
                             variant="destructive"
-                            onClick={() => setOpenEmisionBoleta(false)}
+                            onClick={() => setOpenEmisionNotaVenta(false)}
                         >
                             Cerrar
                         </Button>
@@ -2380,7 +2374,7 @@ export default function NotasVentaPage() {
                         <DialogDescription>
                             ¿Está seguro de anular la nota de venta{" "}
                             <span className="font-semibold text-gray-900">
-                                {boletaToAnular?.numero}
+                                {notaVentaToAnular?.numero}
                             </span>
                             ?
                         </DialogDescription>
@@ -2468,7 +2462,7 @@ export default function NotasVentaPage() {
                             <DialogDescription className="mt-2">
                                 La anulación de la nota de venta{" "}
                                 <span className="font-semibold text-gray-900">
-                                    {boletaToAnular?.numero}
+                                    {notaVentaToAnular?.numero}
                                 </span>{" "}
                                 se realizó correctamente.
                             </DialogDescription>
