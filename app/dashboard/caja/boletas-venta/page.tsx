@@ -984,7 +984,7 @@ export default function BoletasVentaPage() {
                     >
                       <Eye className="w-3 h-3" />
                     </Button>*/}
-                    <Button
+                    {/*<Button
                       title="Cambiar N° de boleta"
                       variant="outline"
                       className={`h-8 w-10 p-1.5 border-yellow-600 text-yellow-600 hover:bg-yellow-50
@@ -995,7 +995,7 @@ export default function BoletasVentaPage() {
                       }
                     >
                       <Edit className="w-3 h-3" />
-                    </Button>
+                    </Button>*/}
                     {/*<Button
                       title="Imprimir"
                       variant="outline"
