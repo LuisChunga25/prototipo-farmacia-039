@@ -490,6 +490,46 @@ const pacientesData = [
   },
 ];
 
+// CATÁLOGO FICTICIO DE CITAS POR PACIENTE
+const citasData = [
+  {
+    id: "26047887",
+    historia: "76516872",
+    consultorio: "MEDICINA INTERNA",
+    medico: "DIONICIO IBAÑEZ LUIS FELIPE",
+    seguro: "Pagante",
+  },
+  {
+    id: "26047890",
+    historia: "76516872",
+    consultorio: "CARDIOLOGÍA",
+    medico: "RAMIREZ TORRES ANA MARIA",
+    seguro: "Pagante",
+  },
+  {
+    id: "26047892",
+    historia: "76516872",
+    consultorio: "TRAUMATOLOGÍA",
+    medico: "GARCIA MENDOZA PEDRO LUIS",
+    seguro: "Pagante",
+  },
+  {
+    id: "26047901",
+    historia: "41877141",
+    consultorio: "CIRUGÍA GENERAL",
+    medico: "BASOMBRIO VELASQUEZ JORGE",
+    seguro: "Pagante",
+  },
+  {
+    id: "26047905",
+    historia: "73101361",
+    consultorio: "MEDICINA EMERGENCIA",
+    medico: "LLERENA ZAVALA CARMEN RUTH",
+    seguro: "SIS",
+  },
+];
+
+
 const catalogoItems = [
   { codigo: "CPT001", nombre: "Consulta médica general", precio: 35.00, descuento: 0.00 },
   { codigo: "CPT002", nombre: "Consulta médica especializada", precio: 60.00, descuento: 0.00 },
@@ -537,6 +577,9 @@ export default function BoletasVentaPage() {
   const [showCobroProforma, setShowCobroProforma] = useState(false);
   const [fechaHoraActual, setFechaHoraActual] = useState(new Date());
   const [showSuccessCobroCita, setShowSuccessCobroCita] = useState(false);
+
+  // CITA SELECCIONADA PARA EL COBRO
+  const [citaSeleccionada, setCitaSeleccionada] = useState<any>(null);
 
   // CONTROL DE DETALLE EXPANDIDO EN LA TABLA
   const [boletaExpandidaId, setBoletaExpandidaId] = useState<number | null>(null);
@@ -1307,6 +1350,7 @@ export default function BoletasVentaPage() {
                             className="border-cyan-600 text-cyan-600 hover:bg-cyan-50"
                             onClick={() => {
                               setPacienteSeleccionado(paciente);
+                              setCitaSeleccionada(null);
                               setShowBusquedaPaciente(false);
                               setShowCobroCita(true);
                             }}
@@ -1392,33 +1436,33 @@ export default function BoletasVentaPage() {
 
           {/* DATOS DEL PACIENTE */}
           <Card>
-            <CardContent className="pt-5">
-              <h3 className="font-semibold text-cyan-700 mb-4">Datos del paciente</h3>
+            <CardContent className="p-4">
+              <h3 className="font-semibold text-cyan-700 mb-2">Datos del paciente</h3>
 
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-4 gap-3">
                 <div>
-                  <Label>Historia Clínica</Label>
+                  <Label className="text-sm">Historia Clínica</Label>
                   <Input
                     value={pacienteSeleccionado?.historia}
-                    className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="h-9 border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
                     disabled
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <Label>Apellidos y Nombres</Label>
+                  <Label className="text-sm">Apellidos y Nombres</Label>
                   <Input
                     value={pacienteSeleccionado?.nombre}
-                    className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="h-9 border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
                     disabled
                   />
                 </div>
 
                 <div>
-                  <Label>Seguro</Label>
+                  <Label className="text-sm">Seguro</Label>
                   <Input
                     value={pacienteSeleccionado?.seguro}
-                    className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="h-9 border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
                     disabled
                   />
                 </div>
@@ -1426,24 +1470,96 @@ export default function BoletasVentaPage() {
             </CardContent>
           </Card>
 
-          {/* INFORMACIÓN DE LA CITA */}
+
+          {/* LISTADO DE CITAS DEL PACIENTE */}
           <Card>
-            <CardContent className="pt-5">
-              <h3 className="font-semibold text-cyan-700 mb-4">Ingresar número de la Cita</h3>
+            <CardContent className="p-4">
 
-              <div className="grid grid-cols-8 gap-4">
-                <div>
-                  <Label>N° Cita</Label>
-                  <Input value="26" />
-                </div>
+              <h3 className="font-semibold text-cyan-700 mb-3">
+                Citas registradas del paciente
+              </h3>
 
-                <div className="md:col-span-2">
-                  <Label className="invisible">Valores restantes</Label>
-                  <Input value="26047887" />
-                </div>
+              <div className="border rounded-md overflow-x-auto">
+
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-slate-50">
+                      <TableHead>ID Cita</TableHead>
+                      <TableHead>Consultorio</TableHead>
+                      <TableHead>Médico</TableHead>
+                      <TableHead>Seguro</TableHead>
+                      <TableHead className="text-center">Acción</TableHead>
+                    </TableRow>
+                  </TableHeader>
+
+                  <TableBody>
+                    {citasData
+                      .filter(
+                        (cita) =>
+                          cita.historia === pacienteSeleccionado?.historia
+                      )
+                      .map((cita) => (
+                        <TableRow key={cita.id}>
+
+                          <TableCell className="font-medium">
+                            {cita.id}
+                          </TableCell>
+
+                          <TableCell>
+                            {cita.consultorio}
+                          </TableCell>
+
+                          <TableCell>
+                            {cita.medico}
+                          </TableCell>
+
+                          <TableCell>
+                            {cita.seguro}
+                          </TableCell>
+
+                          <TableCell className="text-center">
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              className={
+                                citaSeleccionada?.id === cita.id
+                                  ? "border-cyan-600 bg-cyan-50 text-cyan-700"
+                                  : "border-cyan-600 text-cyan-600 hover:bg-cyan-50"
+                              }
+                              onClick={() => setCitaSeleccionada(cita)}
+                            >
+                              {citaSeleccionada?.id === cita.id
+                                ? "Seleccionada"
+                                : "Seleccionar"}
+                            </Button>
+                          </TableCell>
+
+                        </TableRow>
+                      ))}
+
+                    {citasData.filter(
+                      (cita) =>
+                        cita.historia === pacienteSeleccionado?.historia
+                    ).length === 0 && (
+                        <TableRow>
+                          <TableCell
+                            colSpan={5}
+                            className="py-6 text-center text-gray-500"
+                          >
+                            Este paciente no tiene citas registradas.
+                          </TableCell>
+                        </TableRow>
+                      )}
+
+                  </TableBody>
+                </Table>
+
               </div>
+
             </CardContent>
           </Card>
+
 
           {/* PACIENTE */}
           <Card>
@@ -1454,7 +1570,8 @@ export default function BoletasVentaPage() {
                 <div>
                   <Label>Consultorio</Label>
                   <Input
-                    value="MEDICINA INTERNA"
+                    value={citaSeleccionada?.consultorio ?? ""}
+                    placeholder="Seleccione una cita"
                     className="border-slate-300 disabled:cursor-not-allowed disabled:opacity-100"
                     disabled
                   />
