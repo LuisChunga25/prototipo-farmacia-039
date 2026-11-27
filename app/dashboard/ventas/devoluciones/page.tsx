@@ -72,9 +72,9 @@ const devolucionesData = [
     historiaClinica: "72000870",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "02/10/2026",
+    fecha: "27/11/2026",
     hora: "11:26:15",
-    fecha_proceso: "02/10/2026",
+    fecha_proceso: "27/11/2026",
     hora_proceso: "11:27:28",
     nombreAlmacen: "CONSULTORIOS EXTERNOS",
     usuario: "10170704",
@@ -112,9 +112,9 @@ const devolucionesData = [
     historiaClinica: "48088772",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "02/10/2026",
+    fecha: "27/11/2026",
     hora: "11:12:07",
-    fecha_proceso: "02/10/2026",
+    fecha_proceso: "27/11/2026",
     hora_proceso: "11:13:15",
     nombreAlmacen: "CONSULTORIOS EXTERNOS",
     usuario: "10170704",
@@ -152,9 +152,9 @@ const devolucionesData = [
     historiaClinica: "76516872",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "02/10/2026",
+    fecha: "27/11/2026",
     hora: "11:12:07",
-    fecha_proceso: "02/10/2026",
+    fecha_proceso: "27/11/2026",
     hora_proceso: "11:13:15",
     nombreAlmacen: "FARMACIA EMERGENCIA",
     usuario: "10170704",
@@ -192,9 +192,9 @@ const devolucionesData = [
     historiaClinica: "41877141",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "02/10/2026",
+    fecha: "27/11/2026",
     hora: "11:10:25",
-    fecha_proceso: "02/10/2026",
+    fecha_proceso: "27/11/2026",
     hora_proceso: "11:11:45",
     nombreAlmacen: "FARMACIA EMERGENCIA",
     usuario: "10170704",
@@ -232,9 +232,9 @@ const devolucionesData = [
     historiaClinica: "73101361",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "02/10/2026",
+    fecha: "27/11/2026",
     hora: "11:09:11",
-    fecha_proceso: "02/10/2026",
+    fecha_proceso: "27/11/2026",
     hora_proceso: "11:10:24",
     nombreAlmacen: "FARMACIA EMERGENCIA",
     usuario: "10170704",
@@ -272,9 +272,9 @@ const devolucionesData = [
     historiaClinica: "70919488",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "01/10/2026",
+    fecha: "27/11/2026",
     hora: "11:05:28",
-    fecha_proceso: "01/10/2026",
+    fecha_proceso: "27/11/2026",
     hora_proceso: "11:08:52",
     nombreAlmacen: "FARMACIA HOSPITALIZACION",
     usuario: "10170704",
@@ -312,9 +312,9 @@ const devolucionesData = [
     historiaClinica: "46428041",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "01/10/2026",
+    fecha: "27/11/2026",
     hora: "11:02:01",
-    fecha_proceso: "01/10/2026",
+    fecha_proceso: "27/11/2026",
     hora_proceso: "11:02:35",
     nombreAlmacen: "FARMACIA HOSPITALIZACION",
     usuario: "10170704",
@@ -352,9 +352,9 @@ const devolucionesData = [
     historiaClinica: "76478385",
     tipoTransaccion: "IDE",
     nombreTransaccion: "Ingreso por Devolución",
-    fecha: "01/10/2026",
+    fecha: "27/11/2026",
     hora: "11:00:15",
-    fecha_proceso: "01/10/2026",
+    fecha_proceso: "27/11/2026",
     hora_proceso: "11:02:19",
     nombreAlmacen: "FARMACIA HOSPITALIZACION",
     usuario: "10170704",
@@ -461,7 +461,7 @@ const kardexPrueba: Record<string, any[]> = {
   "76516872": [
     {
       proforma: "1726151436",
-      fecha: "23/09/2026",
+      fecha: "27/11/2026",
       usuario: "RIVAS BRAVO FLOR DE MARIA",
       items: [
         { codItem: "170073", nombre: "MIDAZOLAM 5 MG 5 ML (S)", cantidad: 3, precio: "S/ 10.910", importe: "S/ 32.730" },
@@ -473,7 +473,7 @@ const kardexPrueba: Record<string, any[]> = {
     },
     {
       proforma: "1726151435",
-      fecha: "22/09/2026",
+      fecha: "27/11/2026",
       usuario: "YALOPOMA POMA JHENRY",
       items: [
         { codItem: "170073", nombre: "MIDAZOLAM 5 MG 5 ML (S)", cantidad: 1, precio: "S/ 10.910", importe: "S/ 10.910" },
@@ -483,7 +483,7 @@ const kardexPrueba: Record<string, any[]> = {
   "41877141": [
     {
       proforma: "1726152001",
-      fecha: "23/09/2026",
+      fecha: "27/11/2026",
       usuario: "BASOMBRIO",
       items: [
         { codItem: "170093", nombre: "IBUPROFENO 400 MG TAB", cantidad: 12, precio: "S/ 1.80", importe: "S/ 21.60" },
@@ -519,6 +519,7 @@ export default function DevolucionesPage() {
   const [showSuccessDelete, setShowSuccessDelete] = useState(false);
   const [devolucionToProcess, setDevolucionToProcess] = useState<number | null>(null);
   const [devolucionesVisibles, setDevolucionesVisibles] = useState(devolucionesData);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Formatear a yyyy-MM-dd para que el input type="date" lo acepte
   const hoy = new Date();
@@ -905,6 +906,29 @@ export default function DevolucionesPage() {
             )}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Paginación */}
+      <div className="flex justify-center mt-4 gap-2">
+        <Button
+          variant="outline"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+        >
+          Anterior
+        </Button>
+
+        <span className="px-4 py-2">
+          Página {currentPage} de 5
+        </span>
+
+        <Button
+          variant="outline"
+          disabled={currentPage === 5}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+        >
+          Siguiente
+        </Button>
       </div>
 
       {/* MODAL DE REGISTRO DE NUEVA DEVOLUCION */}
